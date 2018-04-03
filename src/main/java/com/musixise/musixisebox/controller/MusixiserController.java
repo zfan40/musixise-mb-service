@@ -29,7 +29,7 @@ public class MusixiserController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping(value = "/musixisers", method = RequestMethod.GET)
-    @AppMethod(isLogin = true)
+    @AppMethod(isAdmin = true)
     public ResponseData getMusixisers(@RequestParam(value = "page", defaultValue = "0") Integer page,
                                       @RequestParam(value = "size", defaultValue = "10") Integer size) {
 
@@ -48,21 +48,21 @@ public class MusixiserController {
     }
 
     @RequestMapping(value = "/musixisers", method = RequestMethod.PUT)
-    @AppMethod(isLogin = true)
+    @AppMethod(isAdmin = true)
     public ResponseData updateMusixser(@Valid Musixiser musixiser) {
         musixiserRepository.save(musixiser);
         return new ResponseData(ExceptionMsg.SUCCESS);
     }
 
     @RequestMapping(value = "/musixisers/{id}", method = RequestMethod.GET)
-    @AppMethod(isLogin = true)
+    @AppMethod(isAdmin = true)
     public ResponseData getMusixiser(@PathVariable Long id) {
         Musixiser musixiser = musixiserRepository.getOne(id);
         return new ResponseData(ExceptionMsg.SUCCESS, musixiser);
     }
 
     @RequestMapping(value = "/musixisers/{id}", method = RequestMethod.DELETE)
-    @AppMethod(isLogin = true)
+    @AppMethod(isAdmin = true)
     public ResponseData delMusixiser(@PathVariable Long id) {
         musixiserRepository.deleteById(id);
         return new ResponseData(ExceptionMsg.SUCCESS);

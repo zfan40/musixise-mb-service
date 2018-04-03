@@ -16,4 +16,6 @@ public @interface AppMethod {
      * @return
      */
     boolean isLogin() default false;
+
+    boolean isAdmin() default false;
 }
