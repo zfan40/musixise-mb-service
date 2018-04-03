@@ -12,12 +12,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 /**
  * Created by zhaowei on 2018/4/1.
@@ -48,5 +46,27 @@ public class MusixiserController {
         return new ResponseData(ExceptionMsg.SUCCESS, jsonObject);
 
     }
+
+    @RequestMapping(value = "/musixisers", method = RequestMethod.PUT)
+    @AppMethod(isLogin = true)
+    public ResponseData updateMusixser(@Valid Musixiser musixiser) {
+        musixiserRepository.save(musixiser);
+        return new ResponseData(ExceptionMsg.SUCCESS);
+    }
+
+    @RequestMapping(value = "/musixisers/{id}", method = RequestMethod.GET)
+    @AppMethod(isLogin = true)
+    public ResponseData getMusixiser(@PathVariable Long id) {
+        Musixiser musixiser = musixiserRepository.getOne(id);
+        return new ResponseData(ExceptionMsg.SUCCESS, musixiser);
+    }
+
+    @RequestMapping(value = "/musixisers/{id}", method = RequestMethod.DELETE)
+    @AppMethod(isLogin = true)
+    public ResponseData delMusixiser(@PathVariable Long id) {
+        musixiserRepository.deleteById(id);
+        return new ResponseData(ExceptionMsg.SUCCESS);
+    }
+
 
 }
