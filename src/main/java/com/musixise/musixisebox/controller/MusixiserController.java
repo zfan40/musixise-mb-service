@@ -41,7 +41,9 @@ public class MusixiserController {
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("total", all.getTotalElements());
-        jsonObject.put("data", all.getContent());
+        jsonObject.put("list", all.getContent());
+        jsonObject.put("size", size);
+        jsonObject.put("current", page);
 
         return new ResponseData(ExceptionMsg.SUCCESS, jsonObject);
 
