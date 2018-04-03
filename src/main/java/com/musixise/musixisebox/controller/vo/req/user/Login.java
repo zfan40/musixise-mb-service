@@ -1,12 +1,12 @@
-package com.musixise.musixisebox.controller.vo.req;
+package com.musixise.musixisebox.controller.vo.req.user;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- * Created by zhaowei on 2018/4/1.
+ * Created by zhaowei on 2018/4/3.
  */
-public class UserReq {
+public class Login {
 
     @NotNull
     @Size(min = 1, max = 50)

@@ -7,12 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by zhaowei on 2018/4/1.
  */
 public interface MusixiserRepository extends JpaRepository<Musixiser, Long> {
-    Musixiser findOneByUserId(Long userId);
+    Optional<Musixiser> findOneByUserId(Long userId);
 
     @Transactional
     @Modifying
