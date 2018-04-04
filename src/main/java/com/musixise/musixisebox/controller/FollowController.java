@@ -114,7 +114,7 @@ public class FollowController {
         if (status == 1) {
             //检查是否已经关注
             followService.add(uid, followId);
-        } else if(status == 2) {
+        } else if(status == 0) {
             followService.cancel(uid, followId);
         } else {
             return new ResponseData(ExceptionMsg.ParamError);
