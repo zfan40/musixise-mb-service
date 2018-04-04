@@ -111,20 +111,16 @@ public class FollowController {
     public ResponseData add(Long uid, @RequestParam(value = "followId", defaultValue = "0") Long followId ,
                             @RequestParam(value = "status", defaultValue = "1") Integer status) {
 
-        if (uid > 0) {
-            if (status == 1) {
-                //检查是否已经关注
-                followService.add(uid, followId);
-            } else if(status == 2) {
-                followService.cancel(uid, followId);
-            } else {
-                return new ResponseData(ExceptionMsg.ParamError);
-            }
-            //更新计数器
-            musixiseService.updateFollowCount(uid, followId);
-            return new ResponseData(ExceptionMsg.SUCCESS);
+        if (status == 1) {
+            //检查是否已经关注
+            followService.add(uid, followId);
+        } else if(status == 2) {
+            followService.cancel(uid, followId);
         } else {
-            return new ResponseData(ExceptionMsg.NEED_LOGIN);
+            return new ResponseData(ExceptionMsg.ParamError);
         }
+        //更新计数器
+        musixiseService.updateFollowCount(uid, followId);
+        return new ResponseData(ExceptionMsg.SUCCESS);
     }
 }
