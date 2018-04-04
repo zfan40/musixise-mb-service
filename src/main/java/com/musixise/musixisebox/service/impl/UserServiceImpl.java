@@ -6,7 +6,7 @@ import com.musixise.musixisebox.MusixiseException;
 import com.musixise.musixisebox.controller.vo.req.user.Login;
 import com.musixise.musixisebox.controller.vo.req.user.Register;
 import com.musixise.musixisebox.controller.vo.req.user.Update;
-import com.musixise.musixisebox.controller.vo.resp.UserDetail;
+import com.musixise.musixisebox.controller.vo.resp.UserVO;
 import com.musixise.musixisebox.domain.Musixiser;
 import com.musixise.musixisebox.domain.User;
 import com.musixise.musixisebox.repository.MusixiserRepository;
@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetail getById(Long uid) {
+    public UserVO getById(Long uid) {
 
         Optional<Musixiser> musixiser = musixiserRepository.findOneByUserId(uid);
         musixiser.map(mu -> {

@@ -5,7 +5,7 @@ import com.musixise.musixisebox.controller.vo.req.user.Login;
 import com.musixise.musixisebox.controller.vo.req.user.Register;
 import com.musixise.musixisebox.controller.vo.req.user.Update;
 import com.musixise.musixisebox.controller.vo.resp.JWTToken;
-import com.musixise.musixisebox.controller.vo.resp.UserDetail;
+import com.musixise.musixisebox.controller.vo.resp.UserVO;
 import com.musixise.musixisebox.domain.result.ExceptionMsg;
 import com.musixise.musixisebox.domain.result.ResponseData;
 import com.musixise.musixisebox.service.UserService;
@@ -42,8 +42,8 @@ public class UserController {
     @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
     @AppMethod
     public ResponseData getInfo(@PathVariable Long uid) {
-        UserDetail userDetail = userService.getById(uid);
-        return new ResponseData(ExceptionMsg.SUCCESS, userDetail);
+        UserVO userVO = userService.getById(uid);
+        return new ResponseData(ExceptionMsg.SUCCESS, userVO);
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)

@@ -3,7 +3,7 @@ package com.musixise.musixisebox.service;
 import com.musixise.musixisebox.controller.vo.req.user.Login;
 import com.musixise.musixisebox.controller.vo.req.user.Register;
 import com.musixise.musixisebox.controller.vo.req.user.Update;
-import com.musixise.musixisebox.controller.vo.resp.UserDetail;
+import com.musixise.musixisebox.controller.vo.resp.UserVO;
 
 /**
  * Created by zhaowei on 2018/4/1.
@@ -14,5 +14,5 @@ public interface UserService {
     Long getUserIdByToken(String token);
     Long register(Register register);
     void updateInfo(Long uid, Update update);
-    UserDetail getById(Long uid);
+    UserVO getById(Long uid);
 }

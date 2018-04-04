@@ -3,7 +3,7 @@ package com.musixise.musixisebox.controller.vo.resp;
 /**
  * Created by zhaowei on 2018/4/3.
  */
-public class UserDetail {
+public class UserVO {
 
     private Long id;
 
