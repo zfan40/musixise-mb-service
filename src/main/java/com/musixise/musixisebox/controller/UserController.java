@@ -3,6 +3,7 @@ package com.musixise.musixisebox.controller;
 import com.google.common.base.Preconditions;
 import com.musixise.musixisebox.MusixiseException;
 import com.musixise.musixisebox.aop.AppMethod;
+import com.musixise.musixisebox.aop.MusixiseContext;
 import com.musixise.musixisebox.config.SocialConfiguration;
 import com.musixise.musixisebox.controller.vo.req.user.Login;
 import com.musixise.musixisebox.controller.vo.req.user.Register;
@@ -16,6 +17,7 @@ import com.musixise.musixisebox.domain.result.ResponseData;
 import com.musixise.musixisebox.manager.UserManager;
 import com.musixise.musixisebox.repository.UserRepository;
 import com.musixise.musixisebox.service.CustomOAuthService;
+import com.musixise.musixisebox.service.FollowService;
 import com.musixise.musixisebox.service.UserService;
 import com.musixise.musixisebox.service.impl.OAuthServices;
 import com.musixise.musixisebox.service.impl.SocialService;
@@ -55,6 +57,8 @@ public class UserController {
 
     @Resource UserRepository userRepository;
 
+    @Resource FollowService followService;
+
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     @AppMethod
     public ResponseData authorize(Model model,  @Valid Login login) {
@@ -68,7 +72,15 @@ public class UserController {
     @AppMethod
     public ResponseData getInfo(@Valid @PathVariable Long uid) {
         Preconditions.checkArgument( uid != null &&uid > 0);
+
+        Long currenUid = MusixiseContext.getCurrentUid();
         UserVO userVO = userService.getById(uid);
+        if (currenUid > 0) {
+            //更新关注装填
+            userVO.setFollowNum(followService.isFollow(currenUid, uid) ? 1 : 0);
+        } else {
+            userVO.setFollowStatus(0);
+        }
         return new ResponseData(ExceptionMsg.SUCCESS, userVO);
     }
 
