@@ -7,7 +7,9 @@ public enum  ExceptionMsg {
     SUCCESS("0", "success"),
     FAILED("20000","fail"),
     NEED_LOGIN("40000","请登录"),
-    ParamError("20001", "参数错误");
+    PARAM_ERROR("20001", "参数错误"),
+    NOT_EXIST("10000", "记录不存在");
+
 
     private ExceptionMsg(String code, String msg) {
         this.code = code;

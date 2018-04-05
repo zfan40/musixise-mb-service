@@ -10,4 +10,10 @@ public interface MusixiseService {
      * @param followId
      */
     public void updateFollowCount(Long uid, Long followId);
+
+    /**
+     * 更新作品数量
+     * @param uid
+     */
+    public void updateWorkCount(Long uid);
 }
