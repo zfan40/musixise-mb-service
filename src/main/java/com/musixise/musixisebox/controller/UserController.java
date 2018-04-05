@@ -77,7 +77,7 @@ public class UserController {
         UserVO userVO = userService.getById(uid);
         if (currenUid > 0) {
             //更新关注装填
-            userVO.setFollowNum(followService.isFollow(currenUid, uid) ? 1 : 0);
+            userVO.setFollowStatus(followService.isFollow(currenUid, uid) ? 1 : 0);
         } else {
             userVO.setFollowStatus(0);
         }
