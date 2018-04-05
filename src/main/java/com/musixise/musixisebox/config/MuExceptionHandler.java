@@ -20,6 +20,13 @@ public class MuExceptionHandler implements Ordered {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    /**
+     * 处理系统级异常
+     * @param e
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
     public ResponseData defaultErrorHandler(Exception e, HttpServletRequest request) throws Exception {
@@ -32,6 +39,12 @@ public class MuExceptionHandler implements Ordered {
         return 3;
     }
 
+    /**
+     * 处理应用程序异常
+     * @param e
+     * @param request
+     * @return
+     */
     @ExceptionHandler(MusixiseException.class)
     @ResponseBody
     ResponseData handleBusinessException(MusixiseException e, HttpServletRequest request){
