@@ -50,20 +50,23 @@ public class AppAdvice implements Ordered {
 
         Object result = null;
         //需要检测登录
-        if (appMethod.isLogin()) {
-            String accessToken = request.getParameter("access_token");
-            if (StringUtils.hasText(accessToken)) {
+        String accessToken = request.getParameter("access_token");
+        if (StringUtils.hasText(accessToken)) {
+            //获取登录状态
+            Boolean islogin = islogin(accessToken);
+
+            if (appMethod.isLogin()) {
                 //check
-                if (!islogin(accessToken)) {
+                if (!islogin) {
                     return  new ResponseData(ExceptionMsg.NEED_LOGIN);
                 } else {
                     Object[] args = point.getArgs();
                     args[0] = userService.getUserIdByToken(accessToken);;
                     return point.proceed(args);
                 }
-            } else {
-                return  new ResponseData(ExceptionMsg.NEED_LOGIN);
             }
+        } else {
+            MusixiseContext.set("_uid", 0);
         }
 
         if (result == null) {
@@ -80,6 +83,8 @@ public class AppAdvice implements Ordered {
     private Boolean islogin(String accessToken) {
         //检测 access_token 是否存在
         Long userId = userService.getUserIdByToken(accessToken);
+        //写入用户ID
+        MusixiseContext.set("_uid", userId);
         return userId > 0;
     }
 
