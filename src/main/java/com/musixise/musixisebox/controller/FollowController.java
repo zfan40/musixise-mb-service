@@ -117,7 +117,7 @@ public class FollowController {
         } else if(status == 0) {
             followService.cancel(uid, followId);
         } else {
-            return new ResponseData(ExceptionMsg.ParamError);
+            return new ResponseData(ExceptionMsg.PARAM_ERROR);
         }
         //更新计数器
         musixiseService.updateFollowCount(uid, followId);
