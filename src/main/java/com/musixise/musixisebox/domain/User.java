@@ -11,6 +11,7 @@ import java.io.Serializable;
  * Created by zhaowei on 2018/4/1.
  */
 @Entity
+@Table(name = "mu_user")
 public class User implements Serializable {
 
     private static final long serialVersionUID = -6182017962007061631L;

@@ -8,6 +8,7 @@ import java.io.Serializable;
  * Created by zhaowei on 2018/4/4.
  */
 @Entity
+@Table(name = "mu_musixiser_follow")
 public class Follow extends AbstractEntity implements Serializable {
 
     private static final long serialVersionUID = -6687709261905352491L;

@@ -6,6 +6,7 @@ import javax.persistence.*;
  * Created by zhaowei on 2018/4/1.
  */
 @Entity
+@Table(name = "mu_musixiser")
 public class Musixiser extends AbstractEntity {
 
     @Id
