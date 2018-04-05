@@ -1,7 +1,7 @@
 package com.musixise.musixisebox.controller.vo.req.user;
 
-import org.hibernate.validator.constraints.Email;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -23,7 +23,8 @@ public class Register {
 
     private String tel;
 
-    @Email(message="不是有效的 Email 格式")
+    @NotNull
+    @Email(message = "不是有效的 Email 格式")
     private String email;
 
     private String birth;

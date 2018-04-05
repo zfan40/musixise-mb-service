@@ -97,13 +97,17 @@ public class UserServiceImpl implements UserService {
     public Long register(Register register) {
         User user = new User();
         user.setLogin(register.getUsername());
-        user.setPassword(register.getPassword());
+        user.setPassword(passwordEncoder.encode(register.getPassword()));
         user.setActivated(true);
         user.setEmail(register.getEmail());
         userRepository.save(user);
 
         Musixiser musixiser = new Musixiser();
         CommonUtil.copyPropertiesIgnoreNull(register, musixiser);
+        musixiser.setFansNum(0);
+        musixiser.setFollowNum(0);
+        musixiser.setSongNum(0);
+        musixiser.setPv(0);
         Musixiser save = musixiserRepository.save(musixiser);
         Preconditions.checkNotNull(save, "保存失败");
         return user.getId();

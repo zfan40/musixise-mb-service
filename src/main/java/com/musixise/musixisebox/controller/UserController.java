@@ -88,9 +88,9 @@ public class UserController {
     @AppMethod
     public MusixiseResponse register(@Valid Register register) {
         Preconditions.checkArgument(register.getUsername() != null && register.getPassword() != null,
-                "请填写用户和密码");
+                "请填写用户和密码", register.getUsername(), register.getPassword());
 
-        Preconditions.checkArgument(register.getEmail() != null, "邮箱不能为空");
+        Preconditions.checkArgument(register.getEmail() != null, "邮箱不能为空", register.getEmail());
 
         User byLogin = userRepository.findByLogin(register.getUsername());
 
