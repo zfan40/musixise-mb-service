@@ -6,9 +6,10 @@ package com.musixise.musixisebox.domain.result;
 public enum  ExceptionMsg {
     SUCCESS("0", "success"),
     FAILED("20000","fail"),
-    NEED_LOGIN("40000","请登录"),
-    PARAM_ERROR("20001", "参数错误"),
-    NOT_EXIST("10000", "记录不存在");
+    PARAM_ERROR("20001", "params error"),
+    NOT_EXIST("30000", "record not found"),
+    NEED_LOGIN("40000","need login"),
+    UPLOAD_ERROR("50000","upload error");
 
 
     private ExceptionMsg(String code, String msg) {
