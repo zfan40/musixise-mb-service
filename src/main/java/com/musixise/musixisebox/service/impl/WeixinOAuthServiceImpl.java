@@ -3,6 +3,7 @@ package com.musixise.musixisebox.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
+import com.musixise.musixisebox.MusixiseException;
 import com.musixise.musixisebox.config.OAuthTypesConstants;
 import com.musixise.musixisebox.controller.vo.resp.SocialVO;
 import com.musixise.musixisebox.service.CustomOAuthService;
@@ -38,7 +39,7 @@ public class WeixinOAuthServiceImpl extends OAuth20ServiceImpl implements Custom
     }
 
     @Override
-    public Token getAccessToken(Token requestToken, Verifier verifier){
+    public Token getAccessToken(Token requestToken, Verifier verifier) {
         OAuthRequest request = new OAuthRequest(api.getAccessTokenVerb(), api.getAccessTokenEndpoint());
         request.addQuerystringParameter("appid", config.getApiKey());
         request.addQuerystringParameter("secret", config.getApiSecret());
@@ -50,7 +51,7 @@ public class WeixinOAuthServiceImpl extends OAuth20ServiceImpl implements Custom
         Object result = JSON.parse(responceBody);
         if (((JSONObject) result).get("errcode") != null) {
             log.error("get accesstoken fail {}", responceBody);
-            return null;
+            throw new MusixiseException("获取微信 AccessToken 失败");
         } else {
             return new Token(JSONPath.eval(result, "$.access_token").toString(), "", responceBody);
         }
@@ -72,7 +73,7 @@ public class WeixinOAuthServiceImpl extends OAuth20ServiceImpl implements Custom
             return socialInfoDTO;
         }
 
-        return null;
+        throw new MusixiseException("获取微信用户授权失败");
     }
 
     // https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN
@@ -85,7 +86,7 @@ public class WeixinOAuthServiceImpl extends OAuth20ServiceImpl implements Custom
         Object result = JSON.parse(responceBody);
         if (((JSONObject) result).get("errcode") != null) {
             log.error("get getuserinfo fail {}", responceBody);
-            return null;
+            throw new MusixiseException("获取微信用户信息失败");
         } else {
             SocialVO socialVO = new SocialVO();
             socialVO.setOpenId(JSONPath.eval(result, "$.openid").toString());
