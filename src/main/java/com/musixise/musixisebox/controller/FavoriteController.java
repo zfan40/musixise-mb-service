@@ -6,7 +6,7 @@ import com.musixise.musixisebox.controller.vo.resp.UserVO;
 import com.musixise.musixisebox.controller.vo.resp.favorite.FavoriteVO;
 import com.musixise.musixisebox.domain.Favorite;
 import com.musixise.musixisebox.domain.result.ExceptionMsg;
-import com.musixise.musixisebox.domain.result.ResponseData;
+import com.musixise.musixisebox.domain.result.MusixiseResponse;
 import com.musixise.musixisebox.repository.FavoriteRepository;
 import com.musixise.musixisebox.service.FavoriteService;
 import com.musixise.musixisebox.service.UserService;
@@ -42,9 +42,9 @@ public class FavoriteController {
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @AppMethod(isLogin = true)
-    public ResponseData create(Long uid,
-                               @RequestParam(value = "workId", defaultValue = "0") Long workId,
-                               @RequestParam(value = "status", defaultValue = "1") Integer status) {
+    public MusixiseResponse create(Long uid,
+                                   @RequestParam(value = "workId", defaultValue = "0") Long workId,
+                                   @RequestParam(value = "status", defaultValue = "1") Integer status) {
 
         Favorite favorite = favoriteRepository.getOne(workId);
         if (favorite != null) {
@@ -53,21 +53,21 @@ public class FavoriteController {
             } else if (status == 0) {
                 favoriteService.cancle(uid, workId);
             } else {
-                return new ResponseData(ExceptionMsg.PARAM_ERROR);
+                return new MusixiseResponse(ExceptionMsg.PARAM_ERROR);
             }
             //更新收藏数
             workService.updateFavoriteCount(workId);
-            return new ResponseData(ExceptionMsg.SUCCESS);
+            return new MusixiseResponse(ExceptionMsg.SUCCESS);
         } else {
-            return new ResponseData(ExceptionMsg.NOT_EXIST);
+            return new MusixiseResponse(ExceptionMsg.NOT_EXIST);
         }
     }
 
     @RequestMapping(value = "/getWorkList/{uid}", method = RequestMethod.GET)
     @AppMethod
-    public ResponseData getList(@RequestParam(value = "uid", defaultValue = "0") Long uid,
-                                @RequestParam(value = "page", defaultValue = "1") Integer page,
-                                @RequestParam(value = "size", defaultValue = "10") Integer size) {
+    public MusixiseResponse getList(@RequestParam(value = "uid", defaultValue = "0") Long uid,
+                                    @RequestParam(value = "page", defaultValue = "1") Integer page,
+                                    @RequestParam(value = "size", defaultValue = "10") Integer size) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         Pageable pageable = new PageRequest(page, size, sort);
 
@@ -86,7 +86,7 @@ public class FavoriteController {
         jsonObject.put("size", size);
         jsonObject.put("current", page);
 
-        return new ResponseData(ExceptionMsg.SUCCESS, jsonObject);
+        return new MusixiseResponse(ExceptionMsg.SUCCESS, jsonObject);
     }
 
 }

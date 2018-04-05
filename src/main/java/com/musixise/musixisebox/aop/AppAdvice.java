@@ -2,7 +2,7 @@ package com.musixise.musixisebox.aop;
 
 import com.alibaba.fastjson.JSON;
 import com.musixise.musixisebox.domain.result.ExceptionMsg;
-import com.musixise.musixisebox.domain.result.ResponseData;
+import com.musixise.musixisebox.domain.result.MusixiseResponse;
 import com.musixise.musixisebox.service.UserService;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.aspectj.lang.JoinPoint;
@@ -58,7 +58,7 @@ public class AppAdvice implements Ordered {
             if (appMethod.isLogin()) {
                 //check
                 if (!islogin) {
-                    return  new ResponseData(ExceptionMsg.NEED_LOGIN);
+                    return  new MusixiseResponse(ExceptionMsg.NEED_LOGIN);
                 } else {
                     Object[] args = point.getArgs();
                     args[0] = userService.getUserIdByToken(accessToken);;

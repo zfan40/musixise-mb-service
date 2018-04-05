@@ -2,7 +2,7 @@ package com.musixise.musixisebox.config;
 
 import com.musixise.musixisebox.MusixiseException;
 import com.musixise.musixisebox.domain.result.ExceptionMsg;
-import com.musixise.musixisebox.domain.result.ResponseData;
+import com.musixise.musixisebox.domain.result.MusixiseResponse;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +29,9 @@ public class MuExceptionHandler implements Ordered {
      */
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
-    public ResponseData defaultErrorHandler(Exception e, HttpServletRequest request) throws Exception {
+    public MusixiseResponse defaultErrorHandler(Exception e, HttpServletRequest request) throws Exception {
         logger.info("请求地址：" + request.getRequestURL());
-        return ResponseData.errorResponse(e.getMessage());
+        return MusixiseResponse.errorResponse(e.getMessage());
     }
 
     @Override
@@ -47,9 +47,9 @@ public class MuExceptionHandler implements Ordered {
      */
     @ExceptionHandler(MusixiseException.class)
     @ResponseBody
-    ResponseData handleBusinessException(MusixiseException e, HttpServletRequest request){
+    MusixiseResponse handleBusinessException(MusixiseException e, HttpServletRequest request){
         logger.info("请求地址：" + request.getRequestURL());
-        return ResponseData.errorResponse(e.getMessage());
+        return MusixiseResponse.errorResponse(e.getMessage());
     }
 
     /**
@@ -59,10 +59,10 @@ public class MuExceptionHandler implements Ordered {
      */
     @ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
     @ResponseBody
-    ResponseData handleMethodArgumentNotValidException(MethodArgumentTypeMismatchException e,
-                                                       HttpServletRequest request){
+    MusixiseResponse handleMethodArgumentNotValidException(MethodArgumentTypeMismatchException e,
+                                                           HttpServletRequest request){
 
         logger.info("请求地址：" + request.getRequestURL());
-        return new ResponseData(ExceptionMsg.PARAM_ERROR, e.getMessage());
+        return new MusixiseResponse(ExceptionMsg.PARAM_ERROR, e.getMessage());
     }
 }

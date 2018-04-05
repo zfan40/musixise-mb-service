@@ -3,7 +3,7 @@ package com.musixise.musixisebox.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.musixise.musixisebox.aop.AppMethod;
 import com.musixise.musixisebox.domain.result.ExceptionMsg;
-import com.musixise.musixisebox.domain.result.ResponseData;
+import com.musixise.musixisebox.domain.result.MusixiseResponse;
 import com.musixise.musixisebox.manager.WeChatManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +28,7 @@ public class WeChatController {
 
     @RequestMapping(value = "/getTicket", method = RequestMethod.POST)
     @AppMethod
-    public ResponseData getJsTicket(@RequestParam(value = "url", defaultValue = "") String url) {
+    public MusixiseResponse getJsTicket(@RequestParam(value = "url", defaultValue = "") String url) {
 
         Map<String, String> ret = weChatManager.getJsTicket(weixinAppId, weixinAppSecret, url);
 
@@ -41,9 +41,9 @@ public class WeChatController {
             jsonObject.put("signature", ret.get("signature"));
             jsonObject.put("appId", ret.get("weixinAppId"));
 
-            return new ResponseData(ExceptionMsg.SUCCESS, jsonObject);
+            return new MusixiseResponse(ExceptionMsg.SUCCESS, jsonObject);
         } else {
-            return new ResponseData(ExceptionMsg.FAILED);
+            return new MusixiseResponse(ExceptionMsg.FAILED);
         }
     }
 }

@@ -13,7 +13,7 @@ import com.musixise.musixisebox.controller.vo.resp.SocialVO;
 import com.musixise.musixisebox.controller.vo.resp.UserVO;
 import com.musixise.musixisebox.domain.User;
 import com.musixise.musixisebox.domain.result.ExceptionMsg;
-import com.musixise.musixisebox.domain.result.ResponseData;
+import com.musixise.musixisebox.domain.result.MusixiseResponse;
 import com.musixise.musixisebox.manager.UserManager;
 import com.musixise.musixisebox.repository.UserRepository;
 import com.musixise.musixisebox.service.CustomOAuthService;
@@ -61,16 +61,16 @@ public class UserController {
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     @AppMethod
-    public ResponseData authorize(Model model,  @Valid Login login) {
+    public MusixiseResponse authorize(Model model, @Valid Login login) {
 
         Preconditions.checkArgument(login.getUserName() != null && login.getPassWord() != null);
         String jwt = userService.auth(login);
-        return new ResponseData(ExceptionMsg.SUCCESS, new JWTToken(jwt));
+        return new MusixiseResponse(ExceptionMsg.SUCCESS, new JWTToken(jwt));
     }
 
     @RequestMapping(value = "/detail/{uid}", method = RequestMethod.GET)
     @AppMethod
-    public ResponseData getInfo(@Valid @PathVariable Long uid) {
+    public MusixiseResponse getInfo(@Valid @PathVariable Long uid) {
         Preconditions.checkArgument( uid != null &&uid > 0);
 
         Long currenUid = MusixiseContext.getCurrentUid();
@@ -81,42 +81,42 @@ public class UserController {
         } else {
             userVO.setFollowStatus(0);
         }
-        return new ResponseData(ExceptionMsg.SUCCESS, userVO);
+        return MusixiseResponse.successResponse(userVO);
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @AppMethod
-    public ResponseData register(@Valid Register register) {
+    public MusixiseResponse register(@Valid Register register) {
         Preconditions.checkArgument(register.getUsername() != null && register.getPassword() != null
                 && register.getEmail() != null);
 
         User byLogin = userRepository.findByLogin(register.getUsername());
 
         if (byLogin != null) {
-            return new ResponseData(ExceptionMsg.USERNAME_USED);
+            return new MusixiseResponse(ExceptionMsg.USERNAME_USED);
         }
 
         User byEmail = userRepository.findByEmail(register.getEmail());
 
         if (byEmail != null) {
-            return new ResponseData(ExceptionMsg.EMAIL_USED);
+            return new MusixiseResponse(ExceptionMsg.EMAIL_USED);
         }
 
         Long id = userService.register(register);
-        return new ResponseData(ExceptionMsg.SUCCESS, id);
+        return new MusixiseResponse(ExceptionMsg.SUCCESS, id);
     }
 
     @RequestMapping(value = "/updateInfo", method = RequestMethod.PUT)
     @AppMethod(isLogin = true)
-    public ResponseData updateInfo(Long uid, @Valid Update update) {
+    public MusixiseResponse updateInfo(Long uid, @Valid Update update) {
         userService.updateInfo(uid, update);
-        return new ResponseData(ExceptionMsg.SUCCESS);
+        return new MusixiseResponse(ExceptionMsg.SUCCESS);
     }
 
     @RequestMapping(value = "/authByAccessToken/{platform}", method = RequestMethod.POST)
     @AppMethod
-    public ResponseData authenticateBySocialToken(@PathVariable String platform,
-                                                  @RequestParam(value = "token", defaultValue = "") String token) {
+    public MusixiseResponse authenticateBySocialToken(@PathVariable String platform,
+                                                      @RequestParam(value = "token", defaultValue = "") String token) {
 
         AccessGrant accessGrant = new AccessGrant(token);
         Map<String, OAuth2ConnectionFactory> oAuth2ConnectionFactoryMap = socialConfiguration.getoAuth2ConnectionFactoryMap();
@@ -134,32 +134,32 @@ public class UserController {
                     //check user bind info
                     String login = userService.isUserBindThis(userProfile.getUsername(), platform);
                     if (login == null) {
-                        return new ResponseData(ExceptionMsg.FAILED);
+                        return new MusixiseResponse(ExceptionMsg.FAILED);
                     } else {
                         String jwt = userService.getTokenByLogin(login);
-                        return new ResponseData(ExceptionMsg.SUCCESS, new JWTToken(jwt));
+                        return new MusixiseResponse(ExceptionMsg.SUCCESS, new JWTToken(jwt));
                     }
                 } else {
-                    return new ResponseData(ExceptionMsg.FAILED, "create-connection-fail");
+                    return new MusixiseResponse(ExceptionMsg.FAILED, "create-connection-fail");
                 }
 
             } catch (Exception e) {
                 logger.error("Exception creating social user: ", e);
-                return new ResponseData(ExceptionMsg.FAILED);
+                return new MusixiseResponse(ExceptionMsg.FAILED);
             }
         } else {
-            return new ResponseData(ExceptionMsg.PARAM_ERROR);
+            return new MusixiseResponse(ExceptionMsg.PARAM_ERROR);
         }
 
     }
 
     @RequestMapping(value = "/oauth/{platform}/callbac", method = RequestMethod.POST)
     @AppMethod
-    public ResponseData authenticateBySocialCode(@PathVariable String platform,
-                                                 @RequestParam(value = "code", required = true) String code) {
+    public MusixiseResponse authenticateBySocialCode(@PathVariable String platform,
+                                                     @RequestParam(value = "code", required = true) String code) {
         Map<String, OAuth2ConnectionFactory> oAuth2ConnectionFactoryMap = socialConfiguration.getoAuth2ConnectionFactoryMap();
         if (!oAuth2ConnectionFactoryMap.containsKey(platform)) {
-            return new ResponseData(ExceptionMsg.PARAM_ERROR);
+            return new MusixiseResponse(ExceptionMsg.PARAM_ERROR);
         }
 
         CustomOAuthService oAuthService = oAuthServices.getOAuthService(platform);
@@ -179,14 +179,14 @@ public class UserController {
                 }
 
                 String jwt = userService.getTokenByLogin(login);
-                return new ResponseData(ExceptionMsg.SUCCESS, new JWTToken(jwt));
+                return new MusixiseResponse(ExceptionMsg.SUCCESS, new JWTToken(jwt));
 
             } else {
-               return new ResponseData(ExceptionMsg.FAILED);
+               return new MusixiseResponse(ExceptionMsg.FAILED);
             }
 
         } else {
-            return new ResponseData(ExceptionMsg.FAILED, "accessToken not valid");
+            return new MusixiseResponse(ExceptionMsg.FAILED, "accessToken not valid");
         }
     }
 }

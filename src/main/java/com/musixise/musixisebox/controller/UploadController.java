@@ -2,7 +2,7 @@ package com.musixise.musixisebox.controller;
 
 import com.musixise.musixisebox.aop.AppMethod;
 import com.musixise.musixisebox.domain.result.ExceptionMsg;
-import com.musixise.musixisebox.domain.result.ResponseData;
+import com.musixise.musixisebox.domain.result.MusixiseResponse;
 import com.musixise.musixisebox.manager.UploaderManager;
 import com.musixise.musixisebox.service.impl.UploadServiceQiniuImpl;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +29,7 @@ public class UploadController {
      */
     @RequestMapping(value = "/picture/uploadPic", method = RequestMethod.POST)
     @AppMethod
-    public ResponseData uploadPic(@RequestParam("files")MultipartFile file) {
+    public MusixiseResponse uploadPic(@RequestParam("files")MultipartFile file) {
 
         uploaderManager.setUploadService(new UploadServiceQiniuImpl());
 
@@ -37,9 +37,9 @@ public class UploadController {
         String fileName = uploaderManager.buildFileName(file.getOriginalFilename());
         //上传文件
         if (uploaderManager.upload(file, fileName)) {
-            return new ResponseData(ExceptionMsg.SUCCESS, fileName);
+            return new MusixiseResponse(ExceptionMsg.SUCCESS, fileName);
         } else {
-            return new ResponseData(ExceptionMsg.UPLOAD_ERROR);
+            return new MusixiseResponse(ExceptionMsg.UPLOAD_ERROR);
         }
     }
 
@@ -52,7 +52,7 @@ public class UploadController {
      */
     @RequestMapping(value = "uploadAudio", method = RequestMethod.POST)
     @AppMethod(isLogin = true)
-    public ResponseData uploadAudio(Long uid, @RequestParam String data, @RequestParam String fname) {
+    public MusixiseResponse uploadAudio(Long uid, @RequestParam String data, @RequestParam String fname) {
 
         uploaderManager.setUploadService(new UploadServiceQiniuImpl());
 
@@ -67,13 +67,13 @@ public class UploadController {
             String fileName = uploaderManager.buildFileName(fname);
             //上传文件
             if (uploaderManager.upload(bt, fileName)) {
-                return new ResponseData(ExceptionMsg.SUCCESS, fileName);
+                return new MusixiseResponse(ExceptionMsg.SUCCESS, fileName);
             } else {
-                return new ResponseData(ExceptionMsg.UPLOAD_ERROR);
+                return new MusixiseResponse(ExceptionMsg.UPLOAD_ERROR);
             }
 
         } catch (Exception e) {
-            return new ResponseData(ExceptionMsg.UPLOAD_ERROR);
+            return new MusixiseResponse(ExceptionMsg.UPLOAD_ERROR);
         }
     }
 }

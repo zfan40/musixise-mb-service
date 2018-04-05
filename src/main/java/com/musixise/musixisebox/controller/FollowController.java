@@ -5,7 +5,7 @@ import com.musixise.musixisebox.aop.AppMethod;
 import com.musixise.musixisebox.controller.vo.resp.follow.FollowVO;
 import com.musixise.musixisebox.domain.Follow;
 import com.musixise.musixisebox.domain.result.ExceptionMsg;
-import com.musixise.musixisebox.domain.result.ResponseData;
+import com.musixise.musixisebox.domain.result.MusixiseResponse;
 import com.musixise.musixisebox.repository.FollowRepository;
 import com.musixise.musixisebox.service.FollowService;
 import com.musixise.musixisebox.service.MusixiseService;
@@ -41,9 +41,9 @@ public class FollowController {
      */
     @RequestMapping(value = "/followings/{uid}", method = RequestMethod.GET)
     @AppMethod
-    public ResponseData getFollowingList(@PathVariable Long uid,
-                                         @RequestParam(value = "page", defaultValue = "1") Integer page,
-                                         @RequestParam(value = "size", defaultValue = "10") Integer size) {
+    public MusixiseResponse getFollowingList(@PathVariable Long uid,
+                                             @RequestParam(value = "page", defaultValue = "1") Integer page,
+                                             @RequestParam(value = "size", defaultValue = "10") Integer size) {
 
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         Pageable pageable = new PageRequest(page, size, sort);
@@ -63,7 +63,7 @@ public class FollowController {
         jsonObject.put("size", size);
         jsonObject.put("current", page);
 
-        return new ResponseData(ExceptionMsg.SUCCESS, jsonObject);
+        return new MusixiseResponse(ExceptionMsg.SUCCESS, jsonObject);
     }
 
 
@@ -76,9 +76,9 @@ public class FollowController {
      */
     @RequestMapping(value = "/followers/{uid}")
     @AppMethod
-    public ResponseData getFollowers(@PathVariable Long uid,
-                                     @RequestParam(value = "page", defaultValue = "1") Integer page,
-                                     @RequestParam(value = "size", defaultValue = "10") Integer size) {
+    public MusixiseResponse getFollowers(@PathVariable Long uid,
+                                         @RequestParam(value = "page", defaultValue = "1") Integer page,
+                                         @RequestParam(value = "size", defaultValue = "10") Integer size) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         Pageable pageable = new PageRequest(page, size, sort);
 
@@ -97,7 +97,7 @@ public class FollowController {
         jsonObject.put("size", size);
         jsonObject.put("current", page);
 
-        return new ResponseData(ExceptionMsg.SUCCESS, jsonObject);
+        return new MusixiseResponse(ExceptionMsg.SUCCESS, jsonObject);
     }
 
     /**
@@ -108,8 +108,8 @@ public class FollowController {
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @AppMethod(isLogin = true)
-    public ResponseData add(Long uid, @RequestParam(value = "followId", defaultValue = "0") Long followId ,
-                            @RequestParam(value = "status", defaultValue = "1") Integer status) {
+    public MusixiseResponse add(Long uid, @RequestParam(value = "followId", defaultValue = "0") Long followId ,
+                                @RequestParam(value = "status", defaultValue = "1") Integer status) {
 
         if (status == 1) {
             //检查是否已经关注
@@ -117,10 +117,10 @@ public class FollowController {
         } else if(status == 0) {
             followService.cancel(uid, followId);
         } else {
-            return new ResponseData(ExceptionMsg.PARAM_ERROR);
+            return new MusixiseResponse(ExceptionMsg.PARAM_ERROR);
         }
         //更新计数器
         musixiseService.updateFollowCount(uid, followId);
-        return new ResponseData(ExceptionMsg.SUCCESS);
+        return new MusixiseResponse(ExceptionMsg.SUCCESS);
     }
 }

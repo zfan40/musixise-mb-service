@@ -6,7 +6,7 @@ import com.musixise.musixisebox.controller.vo.req.user.CreateWork;
 import com.musixise.musixisebox.controller.vo.resp.work.WorkVO;
 import com.musixise.musixisebox.domain.Work;
 import com.musixise.musixisebox.domain.result.ExceptionMsg;
-import com.musixise.musixisebox.domain.result.ResponseData;
+import com.musixise.musixisebox.domain.result.MusixiseResponse;
 import com.musixise.musixisebox.repository.WorkRepository;
 import com.musixise.musixisebox.service.MusixiseService;
 import com.musixise.musixisebox.transfter.WorkTransfter;
@@ -37,22 +37,22 @@ public class WorkController {
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @AppMethod(isLogin = true)
-    public ResponseData create(Long uid, @Valid CreateWork createWork) {
+    public MusixiseResponse create(Long uid, @Valid CreateWork createWork) {
 
         Work word = WorkTransfter.getWord(createWork);
         word.setUserId(uid);
         workRepository.save(word);
         musixiseService.updateWorkCount(uid);
-        return new ResponseData(ExceptionMsg.SUCCESS);
+        return new MusixiseResponse(ExceptionMsg.SUCCESS);
 
     }
 
 
     @RequestMapping(value = "/getListByUid/{uid}", method = RequestMethod.GET)
     @AppMethod
-    public ResponseData getListByUid(@PathVariable Long uid,
-                                     @RequestParam(value = "page", defaultValue = "!") int page,
-                                     @RequestParam(value = "size", defaultValue = "10") int size) {
+    public MusixiseResponse getListByUid(@PathVariable Long uid,
+                                         @RequestParam(value = "page", defaultValue = "!") int page,
+                                         @RequestParam(value = "size", defaultValue = "10") int size) {
 
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         Pageable pageable = new PageRequest(page, size, sort);
@@ -68,31 +68,31 @@ public class WorkController {
         jsonObject.put("size", size);
         jsonObject.put("current", page);
 
-        return new ResponseData(ExceptionMsg.SUCCESS, jsonObject);
+        return new MusixiseResponse(ExceptionMsg.SUCCESS, jsonObject);
     }
 
     @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
     @AppMethod
-    public ResponseData getDetail(@PathVariable Long id) {
+    public MusixiseResponse getDetail(@PathVariable Long id) {
         Optional<Work> work = workRepository.findById(id);
         if (work.isPresent()) {
             WorkVO workVO = WorkTransfter.getWorkVO(work.get());
-            return new ResponseData(ExceptionMsg.SUCCESS, workVO);
+            return new MusixiseResponse(ExceptionMsg.SUCCESS, workVO);
         } else {
-            return new ResponseData(ExceptionMsg.NOT_EXIST);
+            return new MusixiseResponse(ExceptionMsg.NOT_EXIST);
         }
     }
 
     @RequestMapping(value = "/updateWork/{id}", method = RequestMethod.PUT)
     @AppMethod(isLogin = true)
-    public ResponseData update(Long uid, @PathVariable Long id, @Valid CreateWork createWork) {
+    public MusixiseResponse update(Long uid, @PathVariable Long id, @Valid CreateWork createWork) {
         Work one = workRepository.getOne(id);
         if (one.getUserId().equals(uid)) {
             CommonUtil.copyPropertiesIgnoreNull(createWork, one);
             workRepository.save(one);
-            return new ResponseData(ExceptionMsg.SUCCESS);
+            return new MusixiseResponse(ExceptionMsg.SUCCESS);
         } else {
-            return new ResponseData(ExceptionMsg.FAILED);
+            return new MusixiseResponse(ExceptionMsg.FAILED);
         }
     }
 }
