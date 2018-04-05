@@ -32,6 +32,19 @@ public interface FollowService {
      */
     Boolean add(Long uid, Long followId);
 
+    /**
+     * 取消关注
+     * @param uid
+     * @param followId
+     * @return
+     */
     Boolean cancel(Long uid, Long followId);
 
+    /**
+     * 是否关注
+     * @param uid
+     * @param followId
+     * @return
+     */
+    Boolean isFollow(Long uid, Long followId);
 }

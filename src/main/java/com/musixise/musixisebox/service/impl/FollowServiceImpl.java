@@ -66,4 +66,14 @@ public class FollowServiceImpl implements FollowService {
             return false;
         }
     }
+
+    @Override
+    public Boolean isFollow(Long uid, Long followId) {
+        Follow follow = followRepository.findByUserIdAndFollowUid(uid, followId);
+        if (follow == null) {
+            return false;
+        } else {
+            return false;
+        }
+    }
 }
