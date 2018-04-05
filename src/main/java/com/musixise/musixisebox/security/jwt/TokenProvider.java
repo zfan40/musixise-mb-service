@@ -22,8 +22,6 @@ public class TokenProvider {
 
     private String secretKey;
 
-
-
     @PostConstruct
     public void init() {
 
