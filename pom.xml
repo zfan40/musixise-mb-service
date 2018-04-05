@@ -9,7 +9,7 @@
 	<packaging>jar</packaging>
 
 	<name>musixise-box</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Demo project for musixiser box</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
