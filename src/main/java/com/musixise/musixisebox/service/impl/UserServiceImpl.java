@@ -123,7 +123,8 @@ public class UserServiceImpl implements UserService {
 
         Optional<Musixiser> musixiser = musixiserRepository.findOneByUserId(uid);
         return musixiser.map(mu -> {
-            return UserTransfter.getUserDetail(mu);
+            User user = userRepository.findById(mu.getUserId()).orElseThrow(() -> new MusixiseException("账号被禁用:"+mu.getUserId()));
+            return UserTransfter.getUserDetail(mu, user);
         }).orElseThrow(() -> new MusixiseException("不存在的用户"));
     }
 
