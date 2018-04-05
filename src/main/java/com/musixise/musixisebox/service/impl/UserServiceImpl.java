@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public String auth(Login login) {
-        Preconditions.checkNotNull(login);
+        Preconditions.checkNotNull(login, "login 参数为空");
         Optional<User> oneByLogin = userRepository.findByLoginOrEmail(login.getUserName(), login.getUserName());
         return oneByLogin.map(user -> {
             if (!user.isActivated()) {
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Login UsernamePasswordAuthenticationToken(String content) {
-        Preconditions.checkNotNull(content);
+        Preconditions.checkNotNull(content, "参数为空");
 
         return JSON.parseObject(content, Login.class);
 
@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Long getUserIdByToken(String token) {
-        Preconditions.checkArgument(token != null);
+        Preconditions.checkArgument(token != null, "token 为空");
         Claims claims = null;
 
         try {
@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
         Musixiser musixiser = new Musixiser();
         CommonUtil.copyPropertiesIgnoreNull(register, musixiser);
         Musixiser save = musixiserRepository.save(musixiser);
-        Preconditions.checkNotNull(save);
+        Preconditions.checkNotNull(save, "保存失败");
         return user.getId();
     }
 

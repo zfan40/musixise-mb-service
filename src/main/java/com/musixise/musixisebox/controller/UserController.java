@@ -63,7 +63,7 @@ public class UserController {
     @AppMethod
     public MusixiseResponse authorize(Model model, @Valid Login login) {
 
-        Preconditions.checkArgument(login.getUserName() != null && login.getPassWord() != null);
+        Preconditions.checkArgument(login.getUserName() != null && login.getPassWord() != null, "请输入用户名和密码");
         String jwt = userService.auth(login);
         return new MusixiseResponse(ExceptionMsg.SUCCESS, new JWTToken(jwt));
     }
@@ -71,7 +71,7 @@ public class UserController {
     @RequestMapping(value = "/detail/{uid}", method = RequestMethod.GET)
     @AppMethod
     public MusixiseResponse getInfo(@Valid @PathVariable Long uid) {
-        Preconditions.checkArgument( uid != null &&uid > 0);
+        Preconditions.checkArgument( uid != null &&uid > 0, "请填写正确的用户ID");
 
         Long currenUid = MusixiseContext.getCurrentUid();
         UserVO userVO = userService.getById(uid);
@@ -87,8 +87,10 @@ public class UserController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @AppMethod
     public MusixiseResponse register(@Valid Register register) {
-        Preconditions.checkArgument(register.getUsername() != null && register.getPassword() != null
-                && register.getEmail() != null);
+        Preconditions.checkArgument(register.getUsername() != null && register.getPassword() != null,
+                "请填写用户和密码");
+
+        Preconditions.checkArgument(register.getEmail() != null, "邮箱不能为空");
 
         User byLogin = userRepository.findByLogin(register.getUsername());
 
