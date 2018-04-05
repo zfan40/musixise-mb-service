@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "mu_user")
-public class User implements Serializable {
+public class User extends AbstractEntity implements Serializable {
 
     private static final long serialVersionUID = -6182017962007061631L;
     @Id
@@ -33,6 +33,11 @@ public class User implements Serializable {
     @NotNull
     @Column(nullable = false)
     private boolean activated = false;
+
+    @NotNull
+    @Size(max = 100)
+    @Column(length = 100, unique = true)
+    private String email;
 
     public Long getId() {
         return id;
@@ -64,5 +69,13 @@ public class User implements Serializable {
 
     public void setActivated(boolean activated) {
         this.activated = activated;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

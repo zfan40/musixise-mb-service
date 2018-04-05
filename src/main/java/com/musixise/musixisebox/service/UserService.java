@@ -15,4 +15,8 @@ public interface UserService {
     Long register(Register register);
     void updateInfo(Long uid, Update update);
     UserVO getById(Long uid);
+
+    String isUserBindThis(String openId, String provider);
+
+    String getTokenByLogin(String login);
 }
