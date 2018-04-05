@@ -122,12 +122,9 @@ public class UserServiceImpl implements UserService {
     public UserVO getById(Long uid) {
 
         Optional<Musixiser> musixiser = musixiserRepository.findOneByUserId(uid);
-        musixiser.map(mu -> {
+        return musixiser.map(mu -> {
             return UserTransfter.getUserDetail(mu);
-
         }).orElseThrow(() -> new MusixiseException("不存在的用户"));
-
-        return null;
     }
 
     /**

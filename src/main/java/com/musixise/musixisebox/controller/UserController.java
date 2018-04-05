@@ -64,9 +64,9 @@ public class UserController {
         return new ResponseData(ExceptionMsg.SUCCESS, new JWTToken(jwt));
     }
 
-    @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/detail/{uid}", method = RequestMethod.GET)
     @AppMethod
-    public ResponseData getInfo(@PathVariable Long uid) {
+    public ResponseData getInfo(@Valid @PathVariable Long uid) {
         Preconditions.checkArgument( uid != null &&uid > 0);
         UserVO userVO = userService.getById(uid);
         return new ResponseData(ExceptionMsg.SUCCESS, userVO);

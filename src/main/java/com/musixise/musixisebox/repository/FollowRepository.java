@@ -22,7 +22,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
     @Modifying
     @Transactional
-    @Query("delete MusixiserFollow where user_id=?1 and follow_uid  = ?2")
+    @Query("delete Follow where user_id=?1 and follow_uid  = ?2")
     int deleteByUserIdAndFollowUid(Long userId,  Long followUid);
 
     @Query(value="SELECT * FROM `mu_musixiser_follow` m LEFT JOIN mu_user u on u.id=m.follow_uid WHERE m.user_id=?1 and m.follow_uid=?2", nativeQuery = true)

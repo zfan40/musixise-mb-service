@@ -30,6 +30,31 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 public class UserControllerTest {
 
+    @Test
+    public void getInfo() throws Exception {
+
+    }
+
+    @Test
+    public void register() throws Exception {
+
+    }
+
+    @Test
+    public void updateInfo() throws Exception {
+
+    }
+
+    @Test
+    public void authenticateBySocialToken() throws Exception {
+
+    }
+
+    @Test
+    public void authenticateBySocialCode() throws Exception {
+
+    }
+
     private MockMvc mvc;
 
     @Resource UserService userService;

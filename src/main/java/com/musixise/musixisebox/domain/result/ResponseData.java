@@ -11,6 +11,10 @@ public class ResponseData extends Response {
         this.data = data;
     }
 
+    public static ResponseData errorResponse(String msg) {
+        return new ResponseData(ExceptionMsg.FAILED, msg);
+    }
+
     public ResponseData(ExceptionMsg msg) {
         super(msg);
     }

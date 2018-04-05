@@ -10,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.util.Optional;
+
 /**
  * Created by zhaowei on 2018/4/1.
  */
@@ -37,9 +39,9 @@ public class MusixiserRepositoryTest {
         musixiserRepository.save(musixiser);
 
         Long userId = 1L;
-        Musixiser oneByUserId = musixiserRepository.findOneByUserId(userId);
-        Assert.assertEquals("musixiser", oneByUserId.getRealname());
-        musixiserRepository.delete(oneByUserId);
+        Optional<Musixiser> oneByUserId = musixiserRepository.findOneByUserId(userId);
+        Assert.assertEquals("musixiser", oneByUserId.get().getRealname());
+        musixiserRepository.delete(oneByUserId.get());
     }
 
 }

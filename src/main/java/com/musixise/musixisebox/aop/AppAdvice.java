@@ -1,5 +1,6 @@
 package com.musixise.musixisebox.aop;
 
+import com.alibaba.fastjson.JSON;
 import com.musixise.musixisebox.domain.result.ExceptionMsg;
 import com.musixise.musixisebox.domain.result.ResponseData;
 import com.musixise.musixisebox.service.UserService;
@@ -10,6 +11,7 @@ import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
@@ -25,9 +27,14 @@ import java.lang.reflect.Method;
  */
 @Aspect
 @Component
-public class AppAdvice {
+public class AppAdvice implements Ordered {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Override
+    public int getOrder() {
+        return 1;
+    }
 
     @Resource UserService userService;
 
@@ -59,12 +66,8 @@ public class AppAdvice {
             }
         }
 
-        try {
-            if (result == null) {
-                result = point.proceed();
-            }
-        } catch (Throwable e) {
-            //exception
+        if (result == null) {
+            result = point.proceed();
         }
 
         return result;
@@ -94,7 +97,7 @@ public class AppAdvice {
 
     @AfterThrowing(pointcut = "within(com.musixise.musixisebox..*) && @annotation(appMethod)", throwing = "ex")
     public void addAfterThrowingLogger(JoinPoint joinPoint, AppMethod appMethod, Exception ex) {
-        logger.error("run " + getInvokeName(joinPoint) + " EXCEPTION", ex);
+        logger.error("run exception" + getInvokeName(joinPoint) + " Params "+ JSON.toJSONString(joinPoint.getArgs()) + "  EXCEPTION", ex);
     }
 
     private String parseParames(Object[] parames) {

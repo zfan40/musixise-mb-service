@@ -5,6 +5,7 @@ import com.musixise.musixisebox.repository.MusixiserRepository;
 import com.musixise.musixisebox.repository.WorkRepository;
 import com.musixise.musixisebox.service.MusixiseService;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
@@ -12,6 +13,7 @@ import javax.transaction.Transactional;
 /**
  * Created by zhaowei on 2018/4/4.
  */
+@Component
 public class MusixiseServiceImpl implements MusixiseService {
 
     @Resource MusixiserRepository musixiserRepository;
