@@ -155,7 +155,7 @@ public class UserController {
 
     }
 
-    @RequestMapping(value = "/oauth/{platform}/callbac", method = RequestMethod.POST)
+    @RequestMapping(value = "/oauth/{platform}/callback", method = RequestMethod.POST)
     @AppMethod
     public MusixiseResponse authenticateBySocialCode(@PathVariable String platform,
                                                      @RequestParam(value = "code", required = true) String code) {
@@ -166,29 +166,20 @@ public class UserController {
 
         CustomOAuthService oAuthService = oAuthServices.getOAuthService(platform);
         Token accessToken = oAuthService.getAccessToken(null, new Verifier(code));
-        if (accessToken != null) {
-            SocialVO socialVO = oAuthService.getOAuthUser(accessToken);
-            //检查是否已初始化
-            if (socialVO != null && socialVO.getOpenId() != null) {
-                String login = userManager.getLoginName(socialVO.getOpenId(), socialVO.getProvider());
-                if (userService.isUserBindThis(socialVO.getOpenId(), socialVO.getProvider()) == null) {
-                    //需要初始化
-                    try {
-                        login = userManager.createByOauth(socialVO);
-                    } catch (Exception e) {
-                        throw new MusixiseException("授权异常，请联系客服解决");
-                    }
-                }
 
-                String jwt = userService.getTokenByLogin(login);
-                return new MusixiseResponse(ExceptionMsg.SUCCESS, new JWTToken(jwt));
-
-            } else {
-               return new MusixiseResponse(ExceptionMsg.FAILED);
+        SocialVO socialVO = oAuthService.getOAuthUser(accessToken);
+        //检查是否已初始化
+        String login = userManager.getLoginName(socialVO.getOpenId(), socialVO.getProvider());
+        if (userService.isUserBindThis(socialVO.getOpenId(), socialVO.getProvider()) == null) {
+            //需要初始化
+            try {
+                login = userManager.createByOauth(socialVO);
+            } catch (Exception e) {
+                throw new MusixiseException("授权异常，请联系客服解决");
             }
-
-        } else {
-            return new MusixiseResponse(ExceptionMsg.FAILED, "accessToken not valid");
         }
+
+        String jwt = userService.getTokenByLogin(login);
+        return new MusixiseResponse(ExceptionMsg.SUCCESS, new JWTToken(jwt));
     }
 }
