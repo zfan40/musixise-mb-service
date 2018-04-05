@@ -5,6 +5,7 @@ import com.musixise.musixisebox.controller.vo.req.user.Register;
 import com.musixise.musixisebox.controller.vo.resp.SocialVO;
 import com.musixise.musixisebox.domain.UserBind;
 import com.musixise.musixisebox.repository.UserBindRepository;
+import com.musixise.musixisebox.repository.UserRepository;
 import com.musixise.musixisebox.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,8 @@ import javax.transaction.Transactional;
 public class UserManager {
 
     @Resource UserService userService;
+
+    @Resource UserRepository userRepository;
 
     @Resource UserBindRepository userBindRepository;
 

@@ -1,5 +1,6 @@
 package com.musixise.musixisebox.controller;
 
+import com.google.common.base.Preconditions;
 import com.musixise.musixisebox.MusixiseException;
 import com.musixise.musixisebox.aop.AppMethod;
 import com.musixise.musixisebox.config.SocialConfiguration;
@@ -9,9 +10,11 @@ import com.musixise.musixisebox.controller.vo.req.user.Update;
 import com.musixise.musixisebox.controller.vo.resp.JWTToken;
 import com.musixise.musixisebox.controller.vo.resp.SocialVO;
 import com.musixise.musixisebox.controller.vo.resp.UserVO;
+import com.musixise.musixisebox.domain.User;
 import com.musixise.musixisebox.domain.result.ExceptionMsg;
 import com.musixise.musixisebox.domain.result.ResponseData;
 import com.musixise.musixisebox.manager.UserManager;
+import com.musixise.musixisebox.repository.UserRepository;
 import com.musixise.musixisebox.service.CustomOAuthService;
 import com.musixise.musixisebox.service.UserService;
 import com.musixise.musixisebox.service.impl.OAuthServices;
@@ -50,10 +53,13 @@ public class UserController {
 
     @Resource UserManager userManager;
 
+    @Resource UserRepository userRepository;
+
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     @AppMethod
     public ResponseData authorize(Model model,  @Valid Login login) {
 
+        Preconditions.checkArgument(login.getUserName() != null && login.getPassWord() != null);
         String jwt = userService.auth(login);
         return new ResponseData(ExceptionMsg.SUCCESS, new JWTToken(jwt));
     }
@@ -61,6 +67,7 @@ public class UserController {
     @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
     @AppMethod
     public ResponseData getInfo(@PathVariable Long uid) {
+        Preconditions.checkArgument( uid != null &&uid > 0);
         UserVO userVO = userService.getById(uid);
         return new ResponseData(ExceptionMsg.SUCCESS, userVO);
     }
@@ -68,7 +75,21 @@ public class UserController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @AppMethod
     public ResponseData register(@Valid Register register) {
-        //todo:查询账号是否已创建
+        Preconditions.checkArgument(register.getUsername() != null && register.getPassword() != null
+                && register.getEmail() != null);
+
+        User byLogin = userRepository.findByLogin(register.getUsername());
+
+        if (byLogin != null) {
+            return new ResponseData(ExceptionMsg.USERNAME_USED);
+        }
+
+        User byEmail = userRepository.findByEmail(register.getEmail());
+
+        if (byEmail != null) {
+            return new ResponseData(ExceptionMsg.EMAIL_USED);
+        }
+
         Long id = userService.register(register);
         return new ResponseData(ExceptionMsg.SUCCESS, id);
     }

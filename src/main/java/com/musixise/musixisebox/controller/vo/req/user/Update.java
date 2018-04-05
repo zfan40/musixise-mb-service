@@ -8,8 +8,6 @@ public class Update {
 
     private String tel;
 
-    private String email;
-
     private String birth;
 
     private String gender;
@@ -36,14 +34,6 @@ public class Update {
 
     public void setTel(String tel) {
         this.tel = tel;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getBirth() {

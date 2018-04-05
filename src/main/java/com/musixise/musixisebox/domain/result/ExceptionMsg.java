@@ -9,7 +9,10 @@ public enum  ExceptionMsg {
     PARAM_ERROR("20001", "params error"),
     NOT_EXIST("30000", "record not found"),
     NEED_LOGIN("40000","need login"),
+    EMAIL_USED("40001","邮箱已被使用"),
+    USERNAME_USED("40002","用户名已被使用"),
     UPLOAD_ERROR("50000","upload error");
+
 
 
     private ExceptionMsg(String code, String msg) {

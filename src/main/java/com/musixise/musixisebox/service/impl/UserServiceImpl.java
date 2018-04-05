@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
 
     public String auth(Login login) {
         Preconditions.checkNotNull(login);
-        Optional<User> oneByLogin = userRepository.findOneByLogin(login.getUserName());
+        Optional<User> oneByLogin = userRepository.findByLoginOrEmail(login.getUserName(), login.getUserName());
         return oneByLogin.map(user -> {
             if (!user.isActivated()) {
                 logger.warn("user no active");
