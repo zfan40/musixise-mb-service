@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class JWTToken {
 
-    @ApiModelProperty(value = "登录秘钥", example = "xxxxxxxxxxxxxxxxxx")
+    @ApiModelProperty(value = "登录秘钥", example = "eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjUsInN1YiI6IjUiLCJleHAiOjE1MjU1OTE2MjksImlhdCI6MTUyMjk5OTYyOSwianRpIjoiMTUyMjk5OTYyOTE2NSJ9.f-p9Jwj1Ye3Uba_4ZvOEkgZhCXnecSG5FwmUSIE4l68")
     private String idToken;
 
     public JWTToken(String idToken) {
