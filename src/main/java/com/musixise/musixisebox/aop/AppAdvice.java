@@ -1,6 +1,5 @@
 package com.musixise.musixisebox.aop;
 
-import com.alibaba.fastjson.JSON;
 import com.musixise.musixisebox.domain.result.ExceptionMsg;
 import com.musixise.musixisebox.domain.result.MusixiseResponse;
 import com.musixise.musixisebox.service.UserService;
@@ -106,7 +105,7 @@ public class AppAdvice implements Ordered {
 
     @AfterThrowing(pointcut = "within(com.musixise.musixisebox..*) && @annotation(appMethod)", throwing = "ex")
     public void addAfterThrowingLogger(JoinPoint joinPoint, AppMethod appMethod, Exception ex) {
-        logger.error("run exception" + getInvokeName(joinPoint) + " Params "+ JSON.toJSONString(joinPoint.getArgs()) + "  EXCEPTION", ex);
+        logger.error("run exception" + getInvokeName(joinPoint) + " Params "+ ToStringBuilder.reflectionToString(joinPoint.getArgs()) + "  EXCEPTION", ex);
     }
 
     private String parseParames(Object[] parames) {
