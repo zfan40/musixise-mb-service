@@ -8,4 +8,7 @@ public interface FavoriteService {
     Boolean create(Long uid, Long workId);
 
     Boolean cancle(Long uid, Long workId);
+
+    Boolean isFavorite(Long uid, Long workId);
+
 }

@@ -30,8 +30,12 @@ public class DateUtil {
     }
 
     public static String asDate(Date date) {
-        String format = "yyyy-MM-dd HH:mm:ss";
-        return new SimpleDateFormat(format).format(date);
+        try {
+            String format = "yyyy-MM-dd HH:mm:ss";
+            return new SimpleDateFormat(format).format(date);
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     public static String asDate(String format, Date date) {

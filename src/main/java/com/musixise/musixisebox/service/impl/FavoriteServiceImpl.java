@@ -6,6 +6,7 @@ import com.musixise.musixisebox.service.FavoriteService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.Optional;
 
 /**
  * Created by zhaowei on 2018/4/5.
@@ -46,6 +47,22 @@ public class FavoriteServiceImpl implements FavoriteService {
         } else {
             favoriteRepository.delete(favorite);
             return true;
+        }
+    }
+
+    /**
+     * 是否收藏过
+     * @param uid
+     * @param workId
+     * @return
+     */
+    @Override
+    public Boolean isFavorite(Long uid, Long workId) {
+        Optional<Favorite> oneByUserIdAndWorkId = favoriteRepository.findOneByUserIdAndWorkId(uid, workId);
+        if (oneByUserIdAndWorkId.isPresent()) {
+            return true;
+        } else {
+            return false;
         }
     }
 }
