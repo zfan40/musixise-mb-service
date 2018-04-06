@@ -9,10 +9,10 @@ import io.swagger.annotations.ApiModelProperty;
 public class Response {
 
     @JsonProperty("errcode")
-    @ApiModelProperty(value = "状态码", example = "0", allowableValues="0=成功, 20000=失败, 20001=参数错误")
+    @ApiModelProperty(value = "状态码", example = "0", allowableValues="0=成功, 20000=失败, 20001=参数错误", position = 1)
     private String rspCode="0";
 
-    @ApiModelProperty(value = "原因", example = "success", reference= "")
+    @ApiModelProperty(value = "原因", example = "success", reference= "", position = 2)
     @JsonProperty("resmsg")
     private String rspMsg="success";
 

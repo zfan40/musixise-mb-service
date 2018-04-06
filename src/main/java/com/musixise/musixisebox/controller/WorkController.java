@@ -78,7 +78,7 @@ public class WorkController {
             workVOList.add(WorkTransfter.getWorkVO(work, userVO, isFavorite));
         });
 
-        return new MusixisePageResponse<>(workVOList, workList.getTotalPages(), size, page);
+        return new MusixisePageResponse<>(workVOList, workList.getTotalElements(), size, page);
     }
 
     @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)

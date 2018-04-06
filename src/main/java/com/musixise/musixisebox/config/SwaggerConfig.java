@@ -31,7 +31,7 @@ public class SwaggerConfig {
                 .title("MUSIXISE RESTful APIs")
                 .description("spring boot , swagger2")
                 .termsOfServiceUrl("github-url")
-                .contact(new Contact("zhaowei, zfan40", "www.musixise.com", "developer@musixise.com"))
+                .contact(new Contact("zhaowei, zfan40", "http://www.musixise.com", "developer@musixise.com"))
                 .version("1.0.0")
                 .build();
     }

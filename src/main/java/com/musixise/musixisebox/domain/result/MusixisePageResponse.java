@@ -9,8 +9,8 @@ public class MusixisePageResponse<T> extends Response {
 
     protected MusixisePage data;
 
-    public MusixisePageResponse(T data, int page, int size, int current) {
-        this.data = new MusixisePage<>(data, page, size, current);
+    public MusixisePageResponse(T data, long total, int size, int current) {
+        this.data = new MusixisePage<>(data, total, size, current);
     }
 
     public MusixisePage getData() {
@@ -27,23 +27,23 @@ public class MusixisePageResponse<T> extends Response {
         private T list;
 
         @ApiModelProperty(value = "记录总数", example = "9999", position = 1)
-        private int total;
+        private long total;
 
         @ApiModelProperty(value = "每页显示数量", example = "10", position = 2)
         private int size;
 
         @ApiModelProperty(value = "当前页码", example = "1",position = 3)
-        private int curren;
+        private int current;
 
         public MusixisePage(T list) {
             this.list = list;
         }
 
-        public MusixisePage(T list, int total, int size, int curren) {
+        public MusixisePage(T list, long total, int size, int curren) {
             this.list = list;
             this.total = total;
             this.size = size;
-            this.curren = curren;
+            this.current = curren;
         }
 
         public T getList() {
@@ -54,11 +54,11 @@ public class MusixisePageResponse<T> extends Response {
             this.list = list;
         }
 
-        public int getTotal() {
+        public long getTotal() {
             return total;
         }
 
-        public void setTotal(int total) {
+        public void setTotal(long total) {
             this.total = total;
         }
 
@@ -70,12 +70,12 @@ public class MusixisePageResponse<T> extends Response {
             this.size = size;
         }
 
-        public int getCurren() {
-            return curren;
+        public int getCurrent() {
+            return current;
         }
 
-        public void setCurren(int curren) {
-            this.curren = curren;
+        public void setCurrent(int curren) {
+            this.current = curren;
         }
     }
 }

@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
  */
 public class CreateWork {
 
-    @ApiModelProperty(value = "作品ID", example = "1")
+    @ApiModelProperty(value = "作品ID", example = "0")
     private Long id;
 
     @ApiModelProperty(value = "作品标题", required = true, example = "1")
