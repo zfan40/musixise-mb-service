@@ -21,10 +21,15 @@ import com.musixise.musixisebox.service.FollowService;
 import com.musixise.musixisebox.service.UserService;
 import com.musixise.musixisebox.service.impl.OAuthServices;
 import com.musixise.musixisebox.service.impl.SocialService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.UserProfile;
 import org.springframework.social.connect.support.OAuth2ConnectionFactory;
@@ -41,6 +46,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/user")
+@Api(value = "用户接口", description = "用户接口描述")
 public class UserController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -59,18 +65,20 @@ public class UserController {
 
     @Resource FollowService followService;
 
-    @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
+    @RequestMapping(value = "/authenticate", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
+    @ApiOperation(value = "授权接口",notes = "获取 accesstoken")
     @AppMethod
-    public MusixiseResponse authorize(Model model, @Valid Login login) {
+    public MusixiseResponse<JWTToken> authorize(Model model, @Valid @RequestBody Login login) {
 
         Preconditions.checkArgument(login.getUserName() != null && login.getPassWord() != null, "请输入用户名和密码");
         String jwt = userService.auth(login);
         return new MusixiseResponse(ExceptionMsg.SUCCESS, new JWTToken(jwt));
     }
 
-    @RequestMapping(value = "/detail/{uid}", method = RequestMethod.GET)
+    @RequestMapping(value = "/detail/{uid}", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
+    @ApiOperation(value = "获取用户详细信息", notes = "通过传入用户ID ")
     @AppMethod
-    public MusixiseResponse getInfo(@Valid @PathVariable Long uid) {
+    public MusixiseResponse<UserVO> getInfo(@Valid @PathVariable Long uid) {
         Preconditions.checkArgument( uid != null &&uid > 0, "请填写正确的用户ID");
 
         Long currenUid = MusixiseContext.getCurrentUid();
@@ -84,9 +92,10 @@ public class UserController {
         return MusixiseResponse.successResponse(userVO);
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @RequestMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
+    @ApiOperation(value = "注册一个账号", notes = "")
     @AppMethod
-    public MusixiseResponse register(@Valid Register register) {
+    public MusixiseResponse<Long> register(@Valid @RequestBody Register register) {
         Preconditions.checkArgument(register.getUsername() != null && register.getPassword() != null,
                 "请填写用户和密码", register.getUsername(), register.getPassword());
 
@@ -108,14 +117,15 @@ public class UserController {
         return new MusixiseResponse(ExceptionMsg.SUCCESS, id);
     }
 
-    @RequestMapping(value = "/updateInfo", method = RequestMethod.PUT)
+    @RequestMapping(value = "/updateInfo", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.PUT)
+    @ApiOperation(value = "更新用户信息", notes = "需要登录")
     @AppMethod(isLogin = true)
-    public MusixiseResponse updateInfo(Long uid, @Valid Update update) {
+    public MusixiseResponse<Void> updateInfo(Long uid, @Valid @RequestBody Update update) {
         userService.updateInfo(uid, update);
         return new MusixiseResponse(ExceptionMsg.SUCCESS);
     }
 
-    @RequestMapping(value = "/authByAccessToken/{platform}", method = RequestMethod.POST)
+    @RequestMapping(value = "/authByAccessToken/{platform}", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
     @AppMethod
     public MusixiseResponse authenticateBySocialToken(@PathVariable String platform,
                                                       @RequestParam(value = "token", defaultValue = "") String token) {
@@ -155,9 +165,14 @@ public class UserController {
 
     }
 
-    @RequestMapping(value = "/oauth/{platform}/callback", method = RequestMethod.POST)
+    @RequestMapping(value = "/oauth/{platform}/callback", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
+    @ApiOperation(value = "社交账号 OAUTH ", notes = "")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "platform", value = "社交平台 wechat, weibo",  required = true, dataTypeClass = String.class),
+            @ApiImplicitParam(name = "code", value = "code", required = true, dataTypeClass = String.class)
+    })
     @AppMethod
-    public MusixiseResponse authenticateBySocialCode(@PathVariable String platform,
+    public MusixiseResponse<JWTToken> authenticateBySocialCode(@PathVariable String platform,
                                                      @RequestParam(value = "code", required = true) String code) {
         Map<String, OAuth2ConnectionFactory> oAuth2ConnectionFactoryMap = socialConfiguration.getoAuth2ConnectionFactoryMap();
         if (!oAuth2ConnectionFactoryMap.containsKey(platform)) {
