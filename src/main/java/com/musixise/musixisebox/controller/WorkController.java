@@ -58,8 +58,8 @@ public class WorkController {
     @ApiOperation(value = "获取指定用户的作品列表",notes = "")
     @AppMethod
     public MusixisePageResponse<List<WorkVO>> getListByUid(@PathVariable Long uid,
-                                         @RequestParam(value = "page", defaultValue = "1") int page,
-                                         @RequestParam(value = "size", defaultValue = "10") int size) {
+                                                           @RequestParam(value = "page", defaultValue = "1") int page,
+                                                           @RequestParam(value = "size", defaultValue = "10") int size) {
 
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         Pageable pageable = new PageRequest(page, size, sort);
@@ -69,7 +69,7 @@ public class WorkController {
             workVOList.add(WorkTransfter.getWorkVO(work));
         });
 
-        return new MusixisePageResponse(workVOList, workList.getTotalPages(), size, page);
+        return new MusixisePageResponse<>(workVOList, workList.getTotalPages(), size, page);
     }
 
     @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)

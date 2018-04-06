@@ -9,7 +9,7 @@ import io.swagger.annotations.ApiModel;
 @ApiModel(parent = Response.class)
 public class MusixiseResponse<T> extends Response {
 
-    private T data;
+    protected T data;
 
     public MusixiseResponse(T data) {
         this.data = data;

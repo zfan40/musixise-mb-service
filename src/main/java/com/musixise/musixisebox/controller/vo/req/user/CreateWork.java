@@ -13,7 +13,7 @@ public class CreateWork {
     @ApiModelProperty(value = "作品ID", example = "1")
     private Long id;
 
-    @ApiModelProperty(value = "作品标题", example = "1")
+    @ApiModelProperty(value = "作品标题", required = true, example = "1")
     @NotNull(message = "作品标题不能为空")
     @Size(min = 3, max = 50)
     private String title;
@@ -25,7 +25,7 @@ public class CreateWork {
     private String content;
 
     @NotNull
-    @ApiModelProperty(value = "音频地址", example = "http://oiqvdjk3s.bkt.clouddn.com/kuNziglJ_test.txt")
+    @ApiModelProperty(value = "音频地址", required = true, example = "http://oiqvdjk3s.bkt.clouddn.com/kuNziglJ_test.txt")
     private String url;
 
     @NotNull(message = "请填写作品状态(0=公开，1=私人，2=垃圾箱)")
