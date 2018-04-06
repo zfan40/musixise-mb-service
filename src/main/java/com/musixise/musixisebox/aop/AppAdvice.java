@@ -66,7 +66,7 @@ public class AppAdvice implements Ordered {
                 }
             }
         } else {
-            MusixiseContext.set("_uid", 0);
+            MusixiseContext.set("_uid", 0L);
         }
 
         if (result == null) {
