@@ -1,14 +1,17 @@
 package com.musixise.musixisebox.domain.result;
 
+import io.swagger.annotations.ApiModel;
+
 /**
  * Created by zhaowei on 2018/4/1.
  */
 
-public class MusixiseResponse extends Response {
+@ApiModel(parent = Response.class)
+public class MusixiseResponse<T> extends Response {
 
-    private Object data;
+    private T data;
 
-    public MusixiseResponse(Object data) {
+    public MusixiseResponse(T data) {
         this.data = data;
     }
 
@@ -28,21 +31,21 @@ public class MusixiseResponse extends Response {
         super(rspCode, rspMsg);
     }
 
-    public MusixiseResponse(String rspCode, String rspMsg, Object data) {
+    public MusixiseResponse(String rspCode, String rspMsg, T  data) {
         super(rspCode, rspMsg);
         this.data = data;
     }
 
-    public MusixiseResponse(ExceptionMsg msg, Object data) {
+    public MusixiseResponse(ExceptionMsg msg, T  data) {
         super(msg);
         this.data = data;
     }
 
-    public Object getData() {
+    public T getData() {
         return data;
     }
 
-    public void setData(Object data) {
+    public void setData(T  data) {
         this.data = data;
     }
 

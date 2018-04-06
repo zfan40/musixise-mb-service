@@ -1,6 +1,7 @@
 package com.musixise.musixisebox.domain.result;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by zhaowei on 2018/4/1.
@@ -8,8 +9,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Response {
 
     @JsonProperty("errcode")
+    @ApiModelProperty(value = "状态码", example = "0", allowableValues="0=成功, 20000=失败, 20001=参数错误")
     private String rspCode="0";
 
+    @ApiModelProperty(value = "原因", example = "success", reference= "")
     @JsonProperty("resmsg")
     private String rspMsg="success";
 
