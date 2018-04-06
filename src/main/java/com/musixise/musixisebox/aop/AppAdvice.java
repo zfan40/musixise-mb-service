@@ -66,7 +66,11 @@ public class AppAdvice implements Ordered {
                 }
             }
         } else {
-            MusixiseContext.set("_uid", 0L);
+            if (appMethod.isLogin()) {
+                return  new MusixiseResponse(ExceptionMsg.NEED_LOGIN);
+            } else {
+                MusixiseContext.set("_uid", 0L);
+            }
         }
 
         if (result == null) {

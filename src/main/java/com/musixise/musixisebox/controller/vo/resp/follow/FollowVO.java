@@ -1,5 +1,7 @@
 package com.musixise.musixisebox.controller.vo.resp.follow;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * Created by zhaowei on 2018/4/4.
  */
@@ -7,12 +9,16 @@ public class FollowVO {
 
     private Long id;
 
+    @ApiModelProperty(value = "用户ID", example = "88888")
     private Long userId;
 
+    @ApiModelProperty(value = "头像", example = "https://gw.alicdn.com/tps/TB1fcMYNVXXXXXqXVXXXXXXXXXX-750-750.png")
     private String smallAvatar;
 
+    @ApiModelProperty(value = "头像", example = "https://gw.alicdn.com/tps/TB1fcMYNVXXXXXqXVXXXXXXXXXX-750-750.png")
     private String largeAvatar;
 
+    @ApiModelProperty(value = "操作时间", example = "2018-04-06 17:00:17")
     private String createdDate;
 
     public Long getId() {

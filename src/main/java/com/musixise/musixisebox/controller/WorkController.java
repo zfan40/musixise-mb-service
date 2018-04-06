@@ -1,16 +1,19 @@
 package com.musixise.musixisebox.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.musixise.musixisebox.aop.AppMethod;
 import com.musixise.musixisebox.controller.vo.req.user.CreateWork;
 import com.musixise.musixisebox.controller.vo.resp.work.WorkVO;
 import com.musixise.musixisebox.domain.Work;
 import com.musixise.musixisebox.domain.result.ExceptionMsg;
+import com.musixise.musixisebox.domain.result.MusixisePageResponse;
 import com.musixise.musixisebox.domain.result.MusixiseResponse;
 import com.musixise.musixisebox.repository.WorkRepository;
 import com.musixise.musixisebox.service.MusixiseService;
 import com.musixise.musixisebox.transfter.WorkTransfter;
 import com.musixise.musixisebox.utils.CommonUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +31,7 @@ import java.util.Optional;
  */
 
 @RestController
+@Api(value = "用户接口", description = "作品接口")
 @RequestMapping("/api/work")
 public class WorkController {
 
@@ -36,22 +40,25 @@ public class WorkController {
     @Resource MusixiseService musixiseService;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @ApiOperation(value = "新建作品",notes = "")
+    @ApiImplicitParam(name = "uid", value = "用户ID", defaultValue = "", readOnly=true, dataType = "Long")
     @AppMethod(isLogin = true)
-    public MusixiseResponse create(Long uid, @Valid CreateWork createWork) {
+    public MusixiseResponse<Long> create(Long uid, @Valid @RequestBody CreateWork createWork) {
 
-        Work word = WorkTransfter.getWord(createWork);
-        word.setUserId(uid);
-        workRepository.save(word);
-        musixiseService.updateWorkCount(uid);
+        Work work = WorkTransfter.getWork(createWork);
+        work.setUserId(uid);
+        workRepository.save(work);
+        musixiseService.updateWorkCount(work.getId());
         return new MusixiseResponse(ExceptionMsg.SUCCESS);
 
     }
 
 
     @RequestMapping(value = "/getListByUid/{uid}", method = RequestMethod.GET)
+    @ApiOperation(value = "获取指定用户的作品列表",notes = "")
     @AppMethod
-    public MusixiseResponse getListByUid(@PathVariable Long uid,
-                                         @RequestParam(value = "page", defaultValue = "!") int page,
+    public MusixisePageResponse<List<WorkVO>> getListByUid(@PathVariable Long uid,
+                                         @RequestParam(value = "page", defaultValue = "1") int page,
                                          @RequestParam(value = "size", defaultValue = "10") int size) {
 
         Sort sort = new Sort(Sort.Direction.DESC, "id");
@@ -62,18 +69,13 @@ public class WorkController {
             workVOList.add(WorkTransfter.getWorkVO(work));
         });
 
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("total", workList.getTotalElements());
-        jsonObject.put("list", workVOList);
-        jsonObject.put("size", size);
-        jsonObject.put("current", page);
-
-        return new MusixiseResponse(ExceptionMsg.SUCCESS, jsonObject);
+        return new MusixisePageResponse(workVOList, workList.getTotalPages(), size, page);
     }
 
     @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
+    @ApiOperation(value = "获取作品详细信息",notes = "")
     @AppMethod
-    public MusixiseResponse getDetail(@PathVariable Long id) {
+    public MusixiseResponse<WorkVO> getDetail(@PathVariable Long id) {
         Optional<Work> work = workRepository.findById(id);
         if (work.isPresent()) {
             WorkVO workVO = WorkTransfter.getWorkVO(work.get());
@@ -84,8 +86,10 @@ public class WorkController {
     }
 
     @RequestMapping(value = "/updateWork/{id}", method = RequestMethod.PUT)
+    @ApiOperation(value = "更新作品详细信息",notes = "")
+    @ApiImplicitParam(name = "uid", value = "用户ID", defaultValue = "", readOnly=true, dataType = "Long")
     @AppMethod(isLogin = true)
-    public MusixiseResponse update(Long uid, @PathVariable Long id, @Valid CreateWork createWork) {
+    public MusixiseResponse<Void> update(Long uid, @PathVariable Long id, @Valid @RequestBody CreateWork createWork) {
         Work one = workRepository.getOne(id);
         if (one.getUserId().equals(uid)) {
             CommonUtil.copyPropertiesIgnoreNull(createWork, one);

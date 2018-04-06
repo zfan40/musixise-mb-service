@@ -5,6 +5,8 @@ import com.musixise.musixisebox.aop.AppMethod;
 import com.musixise.musixisebox.domain.result.ExceptionMsg;
 import com.musixise.musixisebox.domain.result.MusixiseResponse;
 import com.musixise.musixisebox.manager.WeChatManager;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,6 +20,7 @@ import java.util.Map;
  * Created by zhaowei on 2018/4/5.
  */
 @RestController
+@Api(value = "微信 JsTicket", description = "获取微信 JsTicket")
 @RequestMapping("/wechat")
 public class WeChatController {
 
@@ -27,8 +30,9 @@ public class WeChatController {
     @Value("${spring.social.wechat.clientSecret}") String weixinAppSecret;
 
     @RequestMapping(value = "/getTicket", method = RequestMethod.POST)
+    @ApiOperation(value = "获取 JsTicket",notes = "")
     @AppMethod
-    public MusixiseResponse getJsTicket(@RequestParam(value = "url", defaultValue = "") String url) {
+    public MusixiseResponse<JSONObject> getJsTicket(@RequestParam(value = "url", defaultValue = "") String url) {
 
         Map<String, String> ret = weChatManager.getJsTicket(weixinAppId, weixinAppSecret, url);
 

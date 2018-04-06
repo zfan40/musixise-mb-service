@@ -10,7 +10,7 @@ import com.musixise.musixisebox.utils.CommonUtil;
  */
 public class WorkTransfter {
 
-    public static Work getWord(CreateWork createWork) {
+    public static Work getWork(CreateWork createWork) {
         Work work = new Work();
         CommonUtil.copyPropertiesIgnoreNull(createWork, work);
         return work;

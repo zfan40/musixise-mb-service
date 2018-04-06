@@ -1,22 +1,35 @@
 package com.musixise.musixisebox.controller.vo.req.user;
 
+import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 /**
  * Created by zhaowei on 2018/4/5.
  */
 public class CreateWork {
 
+    @ApiModelProperty(value = "作品ID", example = "1")
     private Long id;
 
+    @ApiModelProperty(value = "作品标题", example = "1")
+    @NotNull(message = "作品标题不能为空")
+    @Size(min = 3, max = 50)
     private String title;
 
+    @ApiModelProperty(value = "封面", example = "https://gw.alicdn.com/tps/TB1fcMYNVXXXXXqXVXXXXXXXXXX-750-750.png")
     private String cover;
 
+    @ApiModelProperty(value = "描述", example = "")
     private String content;
 
+    @NotNull
+    @ApiModelProperty(value = "音频地址", example = "http://oiqvdjk3s.bkt.clouddn.com/kuNziglJ_test.txt")
     private String url;
 
-    private Long userId;
-
+    @NotNull(message = "请填写作品状态(0=公开，1=私人，2=垃圾箱)")
+    @ApiModelProperty(value = "作品状态", example = "0")
     private Integer status;
 
     public Long getId() {
@@ -57,14 +70,6 @@ public class CreateWork {
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public Integer getStatus() {
