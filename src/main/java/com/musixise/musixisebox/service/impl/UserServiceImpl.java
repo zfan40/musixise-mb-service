@@ -104,10 +104,12 @@ public class UserServiceImpl implements UserService {
 
         Musixiser musixiser = new Musixiser();
         CommonUtil.copyPropertiesIgnoreNull(register, musixiser);
+        musixiser.setUserId(user.getId());
         musixiser.setFansNum(0);
         musixiser.setFollowNum(0);
         musixiser.setSongNum(0);
         musixiser.setPv(0);
+        musixiser.setIsMaster(0);
         Musixiser save = musixiserRepository.save(musixiser);
         Preconditions.checkNotNull(save, "保存失败");
         return user.getId();

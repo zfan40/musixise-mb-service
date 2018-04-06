@@ -93,7 +93,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
-    @ApiOperation(value = "注册一个账号", notes = "")
+    @ApiOperation(value = "注册一个账号", notes = "注册成功，返回用户ID")
     @AppMethod
     public MusixiseResponse<Long> register(@Valid @RequestBody Register register) {
         Preconditions.checkArgument(register.getUsername() != null && register.getPassword() != null,
