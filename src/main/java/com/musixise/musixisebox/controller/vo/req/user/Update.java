@@ -94,4 +94,18 @@ public class Update {
     public void setBrief(String brief) {
         this.brief = brief;
     }
+
+    @Override
+    public String toString() {
+        return "Update{" +
+                "realname='" + realname + '\'' +
+                ", tel='" + tel + '\'' +
+                ", birth='" + birth + '\'' +
+                ", gender='" + gender + '\'' +
+                ", smallAvatar='" + smallAvatar + '\'' +
+                ", largeAvatar='" + largeAvatar + '\'' +
+                ", nation='" + nation + '\'' +
+                ", brief='" + brief + '\'' +
+                '}';
+    }
 }

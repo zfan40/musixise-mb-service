@@ -35,4 +35,12 @@ public class Login {
     public void setPassWord(String passWord) {
         this.passWord = passWord;
     }
+
+    @Override
+    public String toString() {
+        return "Login{" +
+                "userName='" + userName + '\'' +
+                ", passWord='" + passWord + '\'' +
+                '}';
+    }
 }

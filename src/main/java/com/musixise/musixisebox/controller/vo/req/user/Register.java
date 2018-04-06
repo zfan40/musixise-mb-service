@@ -127,4 +127,20 @@ public class Register {
     public void setNation(String nation) {
         this.nation = nation;
     }
+
+    @Override
+    public String toString() {
+        return "Register{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", realname='" + realname + '\'' +
+                ", tel='" + tel + '\'' +
+                ", email='" + email + '\'' +
+                ", birth='" + birth + '\'' +
+                ", gender='" + gender + '\'' +
+                ", smallAvatar='" + smallAvatar + '\'' +
+                ", largeAvatar='" + largeAvatar + '\'' +
+                ", nation='" + nation + '\'' +
+                '}';
+    }
 }

@@ -79,4 +79,16 @@ public class CreateWork {
     public void setStatus(Integer status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "CreateWork{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", cover='" + cover + '\'' +
+                ", content='" + content + '\'' +
+                ", url='" + url + '\'' +
+                ", status=" + status +
+                '}';
+    }
 }
