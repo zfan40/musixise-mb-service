@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class Musixiser extends AbstractEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "realname")

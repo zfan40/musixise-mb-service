@@ -13,7 +13,7 @@ public class Follow extends AbstractEntity implements Serializable {
 
     private static final long serialVersionUID = -6687709261905352491L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull

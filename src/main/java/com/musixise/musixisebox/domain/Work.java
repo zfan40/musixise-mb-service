@@ -14,7 +14,7 @@ import java.io.Serializable;
 public class Work extends AbstractEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull

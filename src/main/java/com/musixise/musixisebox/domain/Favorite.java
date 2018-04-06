@@ -13,7 +13,7 @@ public class Favorite extends AbstractEntity implements Serializable {
 
     private static final long serialVersionUID = 5414810587282134536L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "work_id")
