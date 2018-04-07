@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Created by zhaowei on 2018/4/1.
@@ -90,6 +91,18 @@ public class UserController {
             userVO.setFollowStatus(0);
         }
         return MusixiseResponse.successResponse(userVO);
+    }
+
+    @RequestMapping(value = "/getInfo", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
+    @ApiOperation(value = "获取当前用户信息")
+    @AppMethod(isLogin = true)
+    public MusixiseResponse<UserVO> getCuurentUserInfo(Long uid) {
+        Optional<UserVO> userVO = Optional.ofNullable(userService.getById(uid));
+        if (userVO.isPresent()) {
+            return MusixiseResponse.successResponse(userVO.get());
+        } else {
+            return MusixiseResponse.errorResponse("获取信息失败");
+        }
     }
 
     @RequestMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
