@@ -5,10 +5,9 @@ import com.musixise.musixisebox.domain.result.ExceptionMsg;
 import com.musixise.musixisebox.domain.result.MusixiseResponse;
 import com.musixise.musixisebox.manager.UploaderManager;
 import com.musixise.musixisebox.service.impl.UploadServiceQiniuImpl;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -17,6 +16,7 @@ import javax.annotation.Resource;
  * Created by zhaowei on 2018/4/5.
  */
 @RestController
+@Api(value = "上传文件", description = "上传文件")
 @RequestMapping("/api")
 public class UploadController {
 
@@ -28,8 +28,9 @@ public class UploadController {
      * @return
      */
     @RequestMapping(value = "/picture/uploadPic", method = RequestMethod.POST)
+    @ApiOperation(value = "上传图片")
     @AppMethod
-    public MusixiseResponse uploadPic(@RequestParam("files")MultipartFile file) {
+    public MusixiseResponse uploadPic(@RequestBody @RequestParam("files")MultipartFile file) {
 
         uploaderManager.setUploadService(new UploadServiceQiniuImpl());
 
@@ -51,8 +52,10 @@ public class UploadController {
      * @return
      */
     @RequestMapping(value = "uploadAudio", method = RequestMethod.POST)
+    @ApiOperation(value = "上传音频")
     @AppMethod(isLogin = true)
-    public MusixiseResponse uploadAudio(Long uid, @RequestParam String data, @RequestParam String fname) {
+    public MusixiseResponse uploadAudio(Long uid, @RequestBody @RequestParam String data,
+                                        @RequestParam String fname) {
 
         uploaderManager.setUploadService(new UploadServiceQiniuImpl());
 

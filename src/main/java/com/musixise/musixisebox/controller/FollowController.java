@@ -1,18 +1,22 @@
 package com.musixise.musixisebox.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.musixise.musixisebox.aop.AppMethod;
 import com.musixise.musixisebox.controller.vo.resp.follow.FollowVO;
 import com.musixise.musixisebox.domain.Follow;
 import com.musixise.musixisebox.domain.result.ExceptionMsg;
+import com.musixise.musixisebox.domain.result.MusixisePageResponse;
 import com.musixise.musixisebox.domain.result.MusixiseResponse;
 import com.musixise.musixisebox.repository.FollowRepository;
 import com.musixise.musixisebox.service.FollowService;
 import com.musixise.musixisebox.service.MusixiseService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -23,6 +27,7 @@ import java.util.List;
  * Created by zhaowei on 2018/4/4.
  */
 @RestController
+@Api(value = "用户关注", description = "用户关注")
 @RequestMapping("/api/follow")
 public class FollowController {
 
@@ -39,14 +44,15 @@ public class FollowController {
      * @param size
      * @return
      */
-    @RequestMapping(value = "/followings/{uid}", method = RequestMethod.GET)
+    @RequestMapping(value = "/followings/{uid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "获取关注列表")
     @AppMethod
-    public MusixiseResponse getFollowingList(@PathVariable Long uid,
+    public MusixisePageResponse<List<FollowVO>> getFollowingList(@PathVariable Long uid,
                                              @RequestParam(value = "page", defaultValue = "1") Integer page,
                                              @RequestParam(value = "size", defaultValue = "10") Integer size) {
 
         Sort sort = new Sort(Sort.Direction.DESC, "id");
-        Pageable pageable = new PageRequest(page, size, sort);
+        Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<Follow> follows = followRepository.findAllByUserId(pageable, uid);
 
@@ -57,13 +63,7 @@ public class FollowController {
             followVOList.add(followVO);
         });
 
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("total", follows.getTotalElements());
-        jsonObject.put("list", followVOList);
-        jsonObject.put("size", size);
-        jsonObject.put("current", page);
-
-        return new MusixiseResponse(ExceptionMsg.SUCCESS, jsonObject);
+        return new MusixisePageResponse<>(followVOList, follows.getTotalElements(), size, page);
     }
 
 
@@ -74,13 +74,14 @@ public class FollowController {
      * @param size
      * @return
      */
-    @RequestMapping(value = "/followers/{uid}")
+    @RequestMapping(value = "/followers/{uid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "获取粉丝列表")
     @AppMethod
-    public MusixiseResponse getFollowers(@PathVariable Long uid,
+    public MusixisePageResponse<List<FollowVO>> getFollowers(@PathVariable Long uid,
                                          @RequestParam(value = "page", defaultValue = "1") Integer page,
                                          @RequestParam(value = "size", defaultValue = "10") Integer size) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
-        Pageable pageable = new PageRequest(page, size, sort);
+        Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<Follow> follows = followRepository.findAllByFollowId(pageable, uid);
 
@@ -91,13 +92,7 @@ public class FollowController {
             followVOList.add(followVO);
         });
 
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("total", follows.getTotalElements());
-        jsonObject.put("list", followVOList);
-        jsonObject.put("size", size);
-        jsonObject.put("current", page);
-
-        return new MusixiseResponse(ExceptionMsg.SUCCESS, jsonObject);
+        return new MusixisePageResponse<>(followVOList, follows.getTotalElements(), size, page);
     }
 
     /**
@@ -106,8 +101,10 @@ public class FollowController {
      * @param status 1=关注，0=解除关注
      * @return
      */
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "关注用户")
     @AppMethod(isLogin = true)
+    @ApiImplicitParam(name = "status", value = "关注状态 (1=关注，0=解除关注)", defaultValue = "1", allowableValues="0,1", dataType = "Integer")
     public MusixiseResponse add(Long uid, @RequestParam(value = "followId", defaultValue = "0") Long followId ,
                                 @RequestParam(value = "status", defaultValue = "1") Integer status) {
 
@@ -121,6 +118,6 @@ public class FollowController {
         }
         //更新计数器
         musixiseService.updateFollowCount(uid, followId);
-        return new MusixiseResponse(ExceptionMsg.SUCCESS);
+        return MusixiseResponse.successResponse("ok");
     }
 }

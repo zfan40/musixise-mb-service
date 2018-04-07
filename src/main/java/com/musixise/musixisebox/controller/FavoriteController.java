@@ -1,17 +1,20 @@
 package com.musixise.musixisebox.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.musixise.musixisebox.aop.AppMethod;
 import com.musixise.musixisebox.controller.vo.resp.UserVO;
 import com.musixise.musixisebox.controller.vo.resp.favorite.FavoriteVO;
 import com.musixise.musixisebox.domain.Favorite;
 import com.musixise.musixisebox.domain.result.ExceptionMsg;
+import com.musixise.musixisebox.domain.result.MusixisePageResponse;
 import com.musixise.musixisebox.domain.result.MusixiseResponse;
 import com.musixise.musixisebox.repository.FavoriteRepository;
 import com.musixise.musixisebox.service.FavoriteService;
 import com.musixise.musixisebox.service.UserService;
 import com.musixise.musixisebox.service.WorkService;
 import com.musixise.musixisebox.transfter.FavoriteTransfter;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +32,7 @@ import java.util.List;
  * Created by zhaowei on 2018/4/5.
  */
 @RestController
+@Api(value = "收藏", description = "收藏操作")
 @RequestMapping("/api/favorite")
 public class FavoriteController {
 
@@ -41,6 +45,8 @@ public class FavoriteController {
     @Resource UserService userService;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @ApiOperation(value = "添加收藏")
+    @ApiImplicitParam(name = "status", value = "操作收藏 (1=收藏，0=取消收藏)", defaultValue = "1", allowableValues="0,1", dataType = "Integer")
     @AppMethod(isLogin = true)
     public MusixiseResponse create(Long uid,
                                    @RequestParam(value = "workId", defaultValue = "0") Long workId,
@@ -64,12 +70,13 @@ public class FavoriteController {
     }
 
     @RequestMapping(value = "/getWorkList/{uid}", method = RequestMethod.GET)
+    @ApiOperation(value = "获取收藏列表")
     @AppMethod
-    public MusixiseResponse getList(@RequestParam(value = "uid", defaultValue = "0") Long uid,
-                                    @RequestParam(value = "page", defaultValue = "1") Integer page,
-                                    @RequestParam(value = "size", defaultValue = "10") Integer size) {
+    public MusixisePageResponse<List<FavoriteVO>> getList(@RequestParam(value = "uid", defaultValue = "0") Long uid,
+                                        @RequestParam(value = "page", defaultValue = "1") Integer page,
+                                        @RequestParam(value = "size", defaultValue = "10") Integer size) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
-        Pageable pageable = new PageRequest(page, size, sort);
+        Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<Favorite> favorites = favoriteRepository.findAllByUserIdOrderByIdDesc(uid, pageable);
 
@@ -80,13 +87,7 @@ public class FavoriteController {
             favoriteVOList.add(FavoriteTransfter.getFavoriteWithUser(favorite, userVO));
         });
 
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("total", favorites.getTotalElements());
-        jsonObject.put("list", favoriteVOList);
-        jsonObject.put("size", size);
-        jsonObject.put("current", page);
-
-        return new MusixiseResponse(ExceptionMsg.SUCCESS, jsonObject);
+        return new MusixisePageResponse<>(favoriteVOList, favorites.getTotalElements(), size, page);
     }
 
 }
