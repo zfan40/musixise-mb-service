@@ -39,7 +39,7 @@ public class MusixiserController {
                                                     @RequestParam(value = "size", defaultValue = "10") Integer size) {
 
         Sort sort = new Sort(Sort.Direction.DESC, "id");
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageable = PageRequest.of(page-1, size, sort);
         Page<Musixiser> all = musixiserRepository.findAll(pageable);
         return new MusixisePageResponse<>(all.getContent(), all.getTotalElements(), size, page);
     }

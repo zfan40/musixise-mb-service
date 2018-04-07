@@ -52,7 +52,7 @@ public class FollowController {
                                              @RequestParam(value = "size", defaultValue = "10") Integer size) {
 
         Sort sort = new Sort(Sort.Direction.DESC, "id");
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageable = PageRequest.of(page-1, size, sort);
 
         Page<Follow> follows = followRepository.findAllByUserId(pageable, uid);
 
@@ -81,7 +81,7 @@ public class FollowController {
                                          @RequestParam(value = "page", defaultValue = "1") Integer page,
                                          @RequestParam(value = "size", defaultValue = "10") Integer size) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageable = PageRequest.of(page-1, size, sort);
 
         Page<Follow> follows = followRepository.findAllByFollowId(pageable, uid);
 
