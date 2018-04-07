@@ -65,12 +65,20 @@ public class WorkController {
     @ApiOperation(value = "获取指定用户的作品列表",notes = "")
     @AppMethod
     public MusixisePageResponse<List<WorkVO>> getListByUid(@PathVariable Long uid,
+                                                           @RequestParam(value = "title", required = false) String title,
                                                            @RequestParam(value = "page", defaultValue = "1") int page,
                                                            @RequestParam(value = "size", defaultValue = "10") int size) {
 
         Sort sort = new Sort(Sort.Direction.DESC, "id");
-        Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Work> workList = workRepository.findAllByUserIdOrderByIdDesc(uid, pageable);
+        Pageable pageable = PageRequest.of(page-1, size, sort);
+
+        Page<Work> workList = null;
+        if (title == null) {
+            workList = workRepository.findAllByUserIdOrderByIdDesc(uid, pageable);
+        } else {
+            workList = workRepository.findAllByUserIdAndTitleLikeOrderByIdDesc(uid, "%"+title+"%", pageable);
+
+        }
         List<WorkVO> workVOList = new ArrayList<>();
         workList.forEach(work -> {
             UserVO userVO = userService.getById(work.getUserId());
