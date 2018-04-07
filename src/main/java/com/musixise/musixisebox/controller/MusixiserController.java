@@ -47,7 +47,7 @@ public class MusixiserController {
     @RequestMapping(value = "/musixisers", method = RequestMethod.PUT)
     @ApiOperation(value = "修改基本信息")
     @AppMethod(isAdmin = true)
-    public MusixiseResponse updateMusixser(@Valid Musixiser musixiser) {
+    public MusixiseResponse updateMusixser(@Valid @RequestBody Musixiser musixiser) {
         musixiserRepository.save(musixiser);
         return new MusixiseResponse(ExceptionMsg.SUCCESS);
     }
@@ -55,9 +55,9 @@ public class MusixiserController {
     @RequestMapping(value = "/musixisers/{id}", method = RequestMethod.GET)
     @ApiOperation(value = "获取单条信息")
     @AppMethod(isAdmin = true)
-    public MusixiseResponse getMusixiser(@PathVariable Long id) {
+    public MusixiseResponse<Musixiser> getMusixiser(@PathVariable Long id) {
         Musixiser musixiser = musixiserRepository.getOne(id);
-        return new MusixiseResponse(ExceptionMsg.SUCCESS, musixiser);
+        return new MusixiseResponse<>(ExceptionMsg.SUCCESS, musixiser);
     }
 
     @RequestMapping(value = "/musixisers/{id}", method = RequestMethod.DELETE)
