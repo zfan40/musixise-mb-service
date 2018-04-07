@@ -27,7 +27,7 @@ import java.util.List;
  * Created by zhaowei on 2018/4/4.
  */
 @RestController
-@Api(value = "用户关注", description = "用户关注")
+@Api(value = "用户关注", description = "用户关注", tags = "用户关注")
 @RequestMapping("/api/follow")
 public class FollowController {
 

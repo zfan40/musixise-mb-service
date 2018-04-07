@@ -20,7 +20,7 @@ import java.util.Map;
  * Created by zhaowei on 2018/4/5.
  */
 @RestController
-@Api(value = "微信 JsTicket", description = "获取微信 JsTicket")
+@Api(value = "微信 JsTicket", description = "获取微信 JsTicket", tags = "微信相关")
 @RequestMapping("/wechat")
 public class WeChatController {
 

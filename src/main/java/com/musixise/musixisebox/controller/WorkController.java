@@ -34,7 +34,7 @@ import java.util.Optional;
  */
 
 @RestController
-@Api(value = "用户接口", description = "作品接口")
+@Api(value = "作品接口", description = "作品接口", tags = "作品接口")
 @RequestMapping("/api/work")
 public class WorkController {
 

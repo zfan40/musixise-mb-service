@@ -46,7 +46,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/user")
-@Api(value = "用户接口", description = "用户接口描述")
+@Api(value = "用户接口", description = "用户接口描述", tags = "用户常用接口")
 public class UserController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());

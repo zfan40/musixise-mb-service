@@ -32,7 +32,7 @@ import java.util.List;
  * Created by zhaowei on 2018/4/5.
  */
 @RestController
-@Api(value = "收藏", description = "收藏操作")
+@Api(value = "收藏", description = "收藏操作", tags = "收藏")
 @RequestMapping("/api/favorite")
 public class FavoriteController {
 
