@@ -21,7 +21,7 @@ import java.util.Map;
  */
 @RestController
 @Api(value = "微信 JsTicket", description = "获取微信 JsTicket", tags = "微信相关")
-@RequestMapping("/wechat")
+@RequestMapping("/api/v1/wechat")
 public class WeChatController {
 
     @Resource WeChatManager weChatManager;

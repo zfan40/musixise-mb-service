@@ -45,7 +45,7 @@ import java.util.Map;
  * Created by zhaowei on 2018/4/1.
  */
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/v1/user")
 @Api(value = "用户接口", description = "用户接口描述", tags = "用户常用接口")
 public class UserController {
 

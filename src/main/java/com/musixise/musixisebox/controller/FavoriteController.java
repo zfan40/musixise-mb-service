@@ -33,7 +33,7 @@ import java.util.List;
  */
 @RestController
 @Api(value = "收藏", description = "收藏操作", tags = "收藏")
-@RequestMapping("/api/favorite")
+@RequestMapping("/api/v1/favorite")
 public class FavoriteController {
 
     @Resource FavoriteRepository favoriteRepository;

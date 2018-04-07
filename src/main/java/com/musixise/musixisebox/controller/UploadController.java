@@ -17,7 +17,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @Api(value = "上传文件", description = "上传文件", tags = "文件存储")
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class UploadController {
 
     @Resource UploaderManager uploaderManager;

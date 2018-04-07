@@ -25,7 +25,7 @@ import java.util.List;
  */
 @RestController
 @Api(value = "用户基本信息", description = "用户基本信息管理", tags = {"后台接口"})
-@RequestMapping("/api")
+@RequestMapping("/api/v1/admin/")
 public class MusixiserController {
 
     @Resource MusixiserRepository musixiserRepository;

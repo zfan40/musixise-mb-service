@@ -28,7 +28,7 @@ import java.util.List;
  */
 @RestController
 @Api(value = "用户关注", description = "用户关注", tags = "用户关注")
-@RequestMapping("/api/follow")
+@RequestMapping("/api/v1/follow")
 public class FollowController {
 
     @Resource FollowRepository followRepository;
