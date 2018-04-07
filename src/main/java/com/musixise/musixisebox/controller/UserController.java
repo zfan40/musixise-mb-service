@@ -97,12 +97,8 @@ public class UserController {
     @ApiOperation(value = "获取当前用户信息")
     @AppMethod(isLogin = true)
     public MusixiseResponse<UserVO> getCuurentUserInfo(Long uid) {
-        Optional<UserVO> userVO = Optional.ofNullable(userService.getById(uid));
-        if (userVO.isPresent()) {
-            return MusixiseResponse.successResponse(userVO.get());
-        } else {
-            return MusixiseResponse.errorResponse("获取信息失败");
-        }
+        UserVO userVO = Optional.ofNullable(userService.getById(uid)).orElseThrow(() -> new MusixiseException("不存在的用户"));
+        return MusixiseResponse.successResponse(userVO);
     }
 
     @RequestMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
