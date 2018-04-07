@@ -45,9 +45,9 @@ public class WeChatController {
             jsonObject.put("signature", ret.get("signature"));
             jsonObject.put("appId", ret.get("weixinAppId"));
 
-            return new MusixiseResponse(ExceptionMsg.SUCCESS, jsonObject);
+            return new MusixiseResponse<>(ExceptionMsg.SUCCESS, jsonObject);
         } else {
-            return new MusixiseResponse(ExceptionMsg.FAILED);
+            return new MusixiseResponse<>(ExceptionMsg.FAILED);
         }
     }
 }

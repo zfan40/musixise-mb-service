@@ -56,7 +56,7 @@ public class WorkController {
         work.setUserId(uid);
         workRepository.save(work);
         musixiseService.updateWorkCount(work.getId());
-        return new MusixiseResponse(ExceptionMsg.SUCCESS);
+        return new MusixiseResponse<>(ExceptionMsg.SUCCESS);
 
     }
 
@@ -96,9 +96,9 @@ public class WorkController {
         Optional<Work> work = workRepository.findById(id);
         if (work.isPresent()) {
             WorkVO workVO = WorkTransfter.getWorkVO(work.get());
-            return new MusixiseResponse(ExceptionMsg.SUCCESS, workVO);
+            return new MusixiseResponse<>(ExceptionMsg.SUCCESS, workVO);
         } else {
-            return new MusixiseResponse(ExceptionMsg.NOT_EXIST);
+            return new MusixiseResponse<>(ExceptionMsg.NOT_EXIST);
         }
     }
 
@@ -111,9 +111,9 @@ public class WorkController {
         if (one.getUserId().equals(uid)) {
             CommonUtil.copyPropertiesIgnoreNull(createWork, one);
             workRepository.save(one);
-            return new MusixiseResponse(ExceptionMsg.SUCCESS);
+            return new MusixiseResponse<>(ExceptionMsg.SUCCESS);
         } else {
-            return new MusixiseResponse(ExceptionMsg.FAILED);
+            return new MusixiseResponse<>(ExceptionMsg.FAILED);
         }
     }
 }

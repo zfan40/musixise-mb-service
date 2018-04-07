@@ -73,7 +73,7 @@ public class UserController {
 
         Preconditions.checkArgument(login.getUserName() != null && login.getPassWord() != null, "请输入用户名和密码");
         String jwt = userService.auth(login);
-        return new MusixiseResponse(ExceptionMsg.SUCCESS, new JWTToken(jwt));
+        return new MusixiseResponse<>(ExceptionMsg.SUCCESS, new JWTToken(jwt));
     }
 
     @RequestMapping(value = "/detail/{uid}", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
@@ -90,7 +90,7 @@ public class UserController {
         } else {
             userVO.setFollowStatus(0);
         }
-        return MusixiseResponse.successResponse(userVO);
+        return new MusixiseResponse<>(ExceptionMsg.SUCCESS, userVO);
     }
 
     @RequestMapping(value = "/getInfo", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
@@ -98,7 +98,7 @@ public class UserController {
     @AppMethod(isLogin = true)
     public MusixiseResponse<UserVO> getCuurentUserInfo(Long uid) {
         UserVO userVO = Optional.ofNullable(userService.getById(uid)).orElseThrow(() -> new MusixiseException("不存在的用户"));
-        return MusixiseResponse.successResponse(userVO);
+        return new MusixiseResponse<>(userVO);
     }
 
     @RequestMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
@@ -113,17 +113,17 @@ public class UserController {
         User byLogin = userRepository.findByLogin(register.getUsername());
 
         if (byLogin != null) {
-            return new MusixiseResponse(ExceptionMsg.USERNAME_USED);
+            return new MusixiseResponse<>(ExceptionMsg.USERNAME_USED);
         }
 
         User byEmail = userRepository.findByEmail(register.getEmail());
 
         if (byEmail != null) {
-            return new MusixiseResponse(ExceptionMsg.EMAIL_USED);
+            return new MusixiseResponse<>(ExceptionMsg.EMAIL_USED);
         }
 
         Long id = userService.register(register);
-        return new MusixiseResponse(ExceptionMsg.SUCCESS, id);
+        return new MusixiseResponse<>(ExceptionMsg.SUCCESS, id);
     }
 
     @RequestMapping(value = "/updateInfo", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.PUT)
@@ -131,7 +131,7 @@ public class UserController {
     @AppMethod(isLogin = true)
     public MusixiseResponse<Void> updateInfo(Long uid, @Valid @RequestBody Update update) {
         userService.updateInfo(uid, update);
-        return new MusixiseResponse(ExceptionMsg.SUCCESS);
+        return new MusixiseResponse<>(ExceptionMsg.SUCCESS);
     }
 
     @RequestMapping(value = "/authByAccessToken/{platform}", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
@@ -158,18 +158,18 @@ public class UserController {
                         return new MusixiseResponse(ExceptionMsg.FAILED);
                     } else {
                         String jwt = userService.getTokenByLogin(login);
-                        return new MusixiseResponse(ExceptionMsg.SUCCESS, new JWTToken(jwt));
+                        return new MusixiseResponse<>(ExceptionMsg.SUCCESS, new JWTToken(jwt));
                     }
                 } else {
-                    return new MusixiseResponse(ExceptionMsg.FAILED, "create-connection-fail");
+                    return new MusixiseResponse<>(ExceptionMsg.FAILED, "create-connection-fail");
                 }
 
             } catch (Exception e) {
                 logger.error("Exception creating social user: ", e);
-                return new MusixiseResponse(ExceptionMsg.FAILED);
+                return new MusixiseResponse<>(ExceptionMsg.FAILED);
             }
         } else {
-            return new MusixiseResponse(ExceptionMsg.PARAM_ERROR);
+            return new MusixiseResponse<>(ExceptionMsg.PARAM_ERROR);
         }
 
     }
@@ -185,7 +185,7 @@ public class UserController {
                                                      @RequestParam(value = "code", required = true) String code) {
         Map<String, OAuth2ConnectionFactory> oAuth2ConnectionFactoryMap = socialConfiguration.getoAuth2ConnectionFactoryMap();
         if (!oAuth2ConnectionFactoryMap.containsKey(platform)) {
-            return new MusixiseResponse(ExceptionMsg.PARAM_ERROR);
+            return new MusixiseResponse<>(ExceptionMsg.PARAM_ERROR);
         }
 
         CustomOAuthService oAuthService = oAuthServices.getOAuthService(platform);
@@ -204,6 +204,6 @@ public class UserController {
         }
 
         String jwt = userService.getTokenByLogin(login);
-        return new MusixiseResponse(ExceptionMsg.SUCCESS, new JWTToken(jwt));
+        return new MusixiseResponse<>(ExceptionMsg.SUCCESS, new JWTToken(jwt));
     }
 }

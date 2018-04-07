@@ -38,9 +38,9 @@ public class UploadController {
         String fileName = uploaderManager.buildFileName(file.getOriginalFilename());
         //上传文件
         if (uploaderManager.upload(file, fileName)) {
-            return new MusixiseResponse(ExceptionMsg.SUCCESS, fileName);
+            return new MusixiseResponse<>(ExceptionMsg.SUCCESS, fileName);
         } else {
-            return new MusixiseResponse(ExceptionMsg.UPLOAD_ERROR);
+            return new MusixiseResponse<>(ExceptionMsg.UPLOAD_ERROR);
         }
     }
 
@@ -70,13 +70,13 @@ public class UploadController {
             String fileName = uploaderManager.buildFileName(fname);
             //上传文件
             if (uploaderManager.upload(bt, fileName)) {
-                return new MusixiseResponse(ExceptionMsg.SUCCESS, fileName);
+                return new MusixiseResponse<>(ExceptionMsg.SUCCESS, fileName);
             } else {
-                return new MusixiseResponse(ExceptionMsg.UPLOAD_ERROR);
+                return new MusixiseResponse<>(ExceptionMsg.UPLOAD_ERROR);
             }
 
         } catch (Exception e) {
-            return new MusixiseResponse(ExceptionMsg.UPLOAD_ERROR);
+            return new MusixiseResponse<>(ExceptionMsg.UPLOAD_ERROR);
         }
     }
 }

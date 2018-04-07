@@ -105,7 +105,7 @@ public class FollowController {
     @ApiOperation(value = "关注用户")
     @AppMethod(isLogin = true)
     @ApiImplicitParam(name = "status", value = "关注状态 (1=关注，0=解除关注)", defaultValue = "1", allowableValues="0,1", dataType = "Integer")
-    public MusixiseResponse add(Long uid, @RequestParam(value = "followId", defaultValue = "0") Long followId ,
+    public MusixiseResponse<Void> add(Long uid, @RequestParam(value = "followId", defaultValue = "0") Long followId ,
                                 @RequestParam(value = "status", defaultValue = "1") Integer status) {
 
         if (status == 1) {
@@ -114,7 +114,7 @@ public class FollowController {
         } else if(status == 0) {
             followService.cancel(uid, followId);
         } else {
-            return new MusixiseResponse(ExceptionMsg.PARAM_ERROR);
+            return new MusixiseResponse<>(ExceptionMsg.PARAM_ERROR);
         }
         //更新计数器
         musixiseService.updateFollowCount(uid, followId);
