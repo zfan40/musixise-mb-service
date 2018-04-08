@@ -3,7 +3,7 @@ package com.musixise.musixisebox.aop;
 import com.musixise.musixisebox.domain.result.ExceptionMsg;
 import com.musixise.musixisebox.domain.result.MusixiseResponse;
 import com.musixise.musixisebox.service.UserService;
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -93,19 +93,26 @@ public class AppAdvice implements Ordered {
 
     @Before("within(com.musixise.musixisebox..*)")
     public void addBeforeLogger(JoinPoint joinPoint) {
-        logger.info("run " + getInvokeName(joinPoint) + " begin");
+        logger.info("run before " + getInvokeName(joinPoint));
         logger.info(joinPoint.getSignature().toString());
         logger.info(parseParames(joinPoint.getArgs()));
     }
 
-    @AfterReturning("within(com.musixise.musixisebox..*)")
-    public void addAfterReturningLogger(JoinPoint joinPoint) {
-        logger.info("run " + getInvokeName(joinPoint) + " end");
+    @AfterReturning(pointcut = "within(com.musixise.musixisebox..*)", returning = "rvt")
+    public void addAfterReturningLogger(JoinPoint joinPoint, Object rvt) {
+        StringBuffer param = new StringBuffer("get params[{}] ");
+        String retString = "";
+        if (rvt != null) {
+            retString = ReflectionToStringBuilder.toString(rvt);
+        } else {
+            retString = "void";
+        }
+        logger.info("run after " + getInvokeName(joinPoint)+ " returnObj="+retString.toString());
     }
 
     @AfterThrowing(pointcut = "within(com.musixise.musixisebox..*) && @annotation(appMethod)", throwing = "ex")
     public void addAfterThrowingLogger(JoinPoint joinPoint, AppMethod appMethod, Exception ex) {
-        logger.error("run exception" + getInvokeName(joinPoint) + " Params "+ ToStringBuilder.reflectionToString(joinPoint.getArgs()) + "  EXCEPTION", ex);
+        logger.error("run exception " + getInvokeName(joinPoint) + " Params "+ ReflectionToStringBuilder.toString(joinPoint.getArgs()) + "  EXCEPTION", ex);
     }
 
     private String parseParames(Object[] parames) {
@@ -114,7 +121,7 @@ public class AppAdvice implements Ordered {
         }
         StringBuffer param = new StringBuffer("get params[{}] ");
         for (Object obj : parames) {
-            param.append(ToStringBuilder.reflectionToString(obj)).append("  ");
+            param.append(ReflectionToStringBuilder.toString(obj)).append("  ");
         }
         return param.toString();
     }
