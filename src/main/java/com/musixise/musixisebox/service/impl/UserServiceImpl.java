@@ -151,11 +151,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public String getTokenByLogin(String login) {
         Optional<User> user = userRepository.findOneByLogin(login);
-        user.map(u -> {
+        return user.map(u -> {
             String onece = String.valueOf(System.currentTimeMillis());
-            return tokenProvider.createToken(onece, u.getId(), 3600*24*30*1000L);
+            return tokenProvider.createToken(onece, u.getId(), 3600 * 24 * 30 * 1000L);
         }).orElseThrow(() -> new MusixiseException("不存在的用户"));
-        return null;
     }
 }
 
