@@ -28,6 +28,10 @@ import java.lang.reflect.Method;
 @Component
 public class AppAdvice implements Ordered {
 
+    private final static String AUTHORIZATION_HEADER = "Authorization";
+
+    public final static String AUTHORIZATION_TOKEN = "access_token";
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
@@ -49,7 +53,12 @@ public class AppAdvice implements Ordered {
 
         Object result = null;
         //需要检测登录
-        String accessToken = request.getParameter("access_token");
+        String accessToken = request.getParameter(AUTHORIZATION_TOKEN);
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (!StringUtils.hasText(accessToken) && StringUtils.hasText(bearerToken)) {
+            accessToken = bearerToken;
+        }
+
         if (StringUtils.hasText(accessToken)) {
             //获取登录状态
             Boolean islogin = islogin(accessToken);
