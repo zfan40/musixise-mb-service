@@ -100,7 +100,7 @@ public class WorkController {
     @ApiOperation(value = "更新作品详细信息",notes = "")
     @ApiImplicitParam(name = "uid", value = "用户ID", defaultValue = "", readOnly=true, dataType = "Long")
     @AppMethod(isLogin = true)
-    public MusixiseResponse<Void> update(Long uid, @PathVariable Long id, @Valid @RequestBody WorkMeta workMeta) {
+    public MusixiseResponse<Void> update(Long uid, @PathVariable Long id, @RequestBody WorkMeta workMeta) {
         Work one = workRepository.getOne(id);
         if (one.getUserId().equals(uid)) {
             CommonUtil.copyPropertiesIgnoreNull(workMeta, one);

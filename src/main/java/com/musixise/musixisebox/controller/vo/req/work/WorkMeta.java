@@ -28,7 +28,6 @@ public class WorkMeta {
     @ApiModelProperty(value = "音频地址", required = true, example = "http://oiqvdjk3s.bkt.clouddn.com/kuNziglJ_test.txt")
     private String url;
 
-    @NotNull(message = "请填写作品状态(0=公开，1=私人，2=垃圾箱)")
     @ApiModelProperty(value = "作品状态(0=公开，1=私人，2=垃圾箱)", example = "0")
     private Integer status;
 
