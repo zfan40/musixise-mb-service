@@ -5,6 +5,7 @@ import com.musixise.musixisebox.domain.Musixiser;
 import com.musixise.musixisebox.domain.User;
 import com.musixise.musixisebox.utils.CommonUtil;
 import com.musixise.musixisebox.utils.DateUtil;
+import com.musixise.musixisebox.utils.FileUtil;
 
 /**
  * Created by zhaowei on 2018/4/3.
@@ -17,6 +18,8 @@ public class UserTransfter {
         userVO.setUsername(user.getLogin());
         userVO.setEmail(user.getEmail());
         userVO.setCreatedDate(DateUtil.asDate(musixiser.getCreatedDate()));
+        userVO.setSmallAvatar(FileUtil.getImageFullName(userVO.getSmallAvatar()));
+        userVO.setLargeAvatar(FileUtil.getImageFullName(userVO.getSmallAvatar()));
 
         return userVO;
     }

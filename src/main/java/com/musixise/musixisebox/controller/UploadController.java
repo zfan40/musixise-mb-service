@@ -5,6 +5,7 @@ import com.musixise.musixisebox.domain.result.ExceptionMsg;
 import com.musixise.musixisebox.domain.result.MusixiseResponse;
 import com.musixise.musixisebox.manager.UploaderManager;
 import com.musixise.musixisebox.service.impl.UploadServiceQiniuImpl;
+import com.musixise.musixisebox.utils.FileUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,8 @@ public class UploadController {
 
     @Resource UploaderManager uploaderManager;
 
+    @Resource UploadServiceQiniuImpl uploadServiceQiniu;
+
     /**
      * 上传图片
      * @param file
@@ -38,7 +41,7 @@ public class UploadController {
         String fileName = uploaderManager.buildFileName(file.getOriginalFilename());
         //上传文件
         if (uploaderManager.upload(file, fileName)) {
-            return new MusixiseResponse<>(ExceptionMsg.SUCCESS, fileName);
+            return new MusixiseResponse<>(ExceptionMsg.SUCCESS, FileUtil.getImageFullName(fileName));
         } else {
             return new MusixiseResponse<>(ExceptionMsg.UPLOAD_ERROR);
         }
@@ -54,10 +57,10 @@ public class UploadController {
     @RequestMapping(value = "uploadAudio", method = RequestMethod.POST)
     @ApiOperation(value = "上传音频")
     @AppMethod(isLogin = true)
-    public MusixiseResponse uploadAudio(Long uid, @RequestBody @RequestParam String data,
+    public MusixiseResponse uploadAudio(Long uid, @RequestParam String data,
                                         @RequestParam String fname) {
 
-        uploaderManager.setUploadService(new UploadServiceQiniuImpl());
+        uploaderManager.setUploadService(uploadServiceQiniu);
 
         byte[] bt = null;
         try {
@@ -70,7 +73,7 @@ public class UploadController {
             String fileName = uploaderManager.buildFileName(fname);
             //上传文件
             if (uploaderManager.upload(bt, fileName)) {
-                return new MusixiseResponse<>(ExceptionMsg.SUCCESS, fileName);
+                return new MusixiseResponse<>(ExceptionMsg.SUCCESS, FileUtil.getAudioFullName(fileName));
             } else {
                 return new MusixiseResponse<>(ExceptionMsg.UPLOAD_ERROR);
             }

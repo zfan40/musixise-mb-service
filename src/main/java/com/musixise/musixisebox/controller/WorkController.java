@@ -1,17 +1,16 @@
 package com.musixise.musixisebox.controller;
 
 import com.musixise.musixisebox.aop.AppMethod;
+import com.musixise.musixisebox.aop.MusixiseContext;
 import com.musixise.musixisebox.controller.vo.req.user.CreateWork;
-import com.musixise.musixisebox.controller.vo.resp.UserVO;
 import com.musixise.musixisebox.controller.vo.resp.work.WorkVO;
 import com.musixise.musixisebox.domain.Work;
 import com.musixise.musixisebox.domain.result.ExceptionMsg;
 import com.musixise.musixisebox.domain.result.MusixisePageResponse;
 import com.musixise.musixisebox.domain.result.MusixiseResponse;
+import com.musixise.musixisebox.manager.WorkManager;
 import com.musixise.musixisebox.repository.WorkRepository;
-import com.musixise.musixisebox.service.FavoriteService;
 import com.musixise.musixisebox.service.MusixiseService;
-import com.musixise.musixisebox.service.UserService;
 import com.musixise.musixisebox.transfter.WorkTransfter;
 import com.musixise.musixisebox.utils.CommonUtil;
 import io.swagger.annotations.Api;
@@ -42,9 +41,7 @@ public class WorkController {
 
     @Resource MusixiseService musixiseService;
 
-    @Resource UserService userService;
-
-    @Resource FavoriteService favoriteService;
+    @Resource WorkManager workManager;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ApiOperation(value = "新建作品",notes = "")
@@ -57,9 +54,7 @@ public class WorkController {
         workRepository.save(work);
         musixiseService.updateWorkCount(work.getId());
         return new MusixiseResponse<>(ExceptionMsg.SUCCESS);
-
     }
-
 
     @RequestMapping(value = "/getListByUid/{uid}", method = RequestMethod.GET)
     @ApiOperation(value = "获取指定用户的作品列表",notes = "")
@@ -81,9 +76,8 @@ public class WorkController {
         }
         List<WorkVO> workVOList = new ArrayList<>();
         workList.forEach(work -> {
-            UserVO userVO = userService.getById(work.getUserId());
-            Boolean isFavorite = favoriteService.isFavorite(uid, work.getId());
-            workVOList.add(WorkTransfter.getWorkVO(work, userVO, isFavorite));
+            WorkVO workVO = workManager.getWorkVO(MusixiseContext.getCurrentUid(), work);
+            workVOList.add(workVO);
         });
 
         return new MusixisePageResponse<>(workVOList, workList.getTotalElements(), size, page);
@@ -95,7 +89,7 @@ public class WorkController {
     public MusixiseResponse<WorkVO> getDetail(@PathVariable Long id) {
         Optional<Work> work = workRepository.findById(id);
         if (work.isPresent()) {
-            WorkVO workVO = WorkTransfter.getWorkVO(work.get());
+            WorkVO workVO = workManager.getWorkVO(MusixiseContext.getCurrentUid(), work.get());
             return new MusixiseResponse<>(ExceptionMsg.SUCCESS, workVO);
         } else {
             return new MusixiseResponse<>(ExceptionMsg.NOT_EXIST);

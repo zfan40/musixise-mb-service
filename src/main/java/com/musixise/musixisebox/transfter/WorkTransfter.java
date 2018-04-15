@@ -6,6 +6,8 @@ import com.musixise.musixisebox.controller.vo.resp.work.WorkVO;
 import com.musixise.musixisebox.domain.Work;
 import com.musixise.musixisebox.utils.CommonUtil;
 import com.musixise.musixisebox.utils.DateUtil;
+import com.musixise.musixisebox.utils.FileUtil;
+import com.musixise.musixisebox.utils.StringUtil;
 
 /**
  * Created by zhaowei on 2018/4/5.
@@ -24,6 +26,11 @@ public class WorkTransfter {
         CommonUtil.copyPropertiesIgnoreNull(work, workVO);
         workVO.setCreatedDate(DateUtil.asDate(work.getCreatedDate()));
         workVO.setLastModifiedDate(DateUtil.asDate(work.getLastModifiedDate()));
+        workVO.setUrl(FileUtil.getAudioFullName(work.getUrl()));
+        workVO.setFileHash(StringUtil.getMD5(work.getUrl()));
+        if (work.getCollectNum() == null) {
+            work.setCollectNum(0);
+        }
         return workVO;
     }
 
@@ -38,6 +45,7 @@ public class WorkTransfter {
         workVO.setFavStatus(isFavorite ? 1 : 0);
         workVO.setCreatedDate(DateUtil.asDate(work.getCreatedDate()));
         workVO.setLastModifiedDate(DateUtil.asDate(work.getLastModifiedDate()));
+        workVO.setUrl(FileUtil.getAudioFullName(work.getUrl()));
         return workVO;
     }
 }
