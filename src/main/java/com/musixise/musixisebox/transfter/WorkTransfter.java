@@ -29,7 +29,7 @@ public class WorkTransfter {
         workVO.setUrl(FileUtil.getAudioFullName(work.getUrl()));
         workVO.setFileHash(StringUtil.getMD5(work.getUrl()));
         if (work.getCollectNum() == null) {
-            work.setCollectNum(0);
+            workVO.setCollectNum(0);
         }
         return workVO;
     }
