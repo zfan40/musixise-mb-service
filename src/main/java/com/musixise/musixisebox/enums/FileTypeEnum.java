@@ -3,14 +3,14 @@ package com.musixise.musixisebox.enums;
 /**
  * Created by zhaowei on 2018/4/15.
  */
-public enum FILE_TYPE {
+public enum FileTypeEnum {
     IMAGE("图片", 1),
     AUDIO("音频",2 );
 
     private String name;
     private int val;
 
-    FILE_TYPE(String name, int val) {
+    FileTypeEnum(String name, int val) {
         this.name = name;
         this.val = val;
     }
