@@ -24,12 +24,12 @@ public class FavoriteServiceImpl implements FavoriteService {
      */
     @Override
     public Boolean create(Long uid, Long workId) {
-        Favorite one = favoriteRepository.getOne(workId);
-        if (one == null) {
+        Optional<Favorite> optional = favoriteRepository.findOneByUserIdAndWorkId(uid, workId);
+        if (optional.isPresent()) {
+            return false;
+        } else {
             favoriteRepository.save(new Favorite(uid, workId));
             return true;
-        } else {
-            return false;
         }
     }
 
@@ -41,12 +41,12 @@ public class FavoriteServiceImpl implements FavoriteService {
      */
     @Override
     public Boolean cancle(Long uid, Long workId) {
-        Favorite favorite = favoriteRepository.getOne(workId);
-        if (favorite == null) {
-            return false;
-        } else {
-            favoriteRepository.delete(favorite);
+        Optional<Favorite> favorite = favoriteRepository.findOneByUserIdAndWorkId(uid, workId);
+        if (favorite.isPresent()) {
+            favoriteRepository.delete(favorite.get());
             return true;
+        } else {
+            return false;
         }
     }
 
