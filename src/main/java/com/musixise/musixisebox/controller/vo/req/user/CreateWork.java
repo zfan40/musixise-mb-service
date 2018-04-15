@@ -29,7 +29,7 @@ public class CreateWork {
     private String url;
 
     @NotNull(message = "请填写作品状态(0=公开，1=私人，2=垃圾箱)")
-    @ApiModelProperty(value = "作品状态", example = "0")
+    @ApiModelProperty(value = "作品状态(0=公开，1=私人，2=垃圾箱)", example = "0")
     private Integer status;
 
     public Long getId() {
