@@ -1,4 +1,4 @@
-package com.musixise.musixisebox.controller.vo.req.user;
+package com.musixise.musixisebox.controller.vo.req.work;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 /**
  * Created by zhaowei on 2018/4/5.
  */
-public class CreateWork {
+public class WorkMeta {
 
     @ApiModelProperty(value = "作品ID", example = "0")
     private Long id;
@@ -82,7 +82,7 @@ public class CreateWork {
 
     @Override
     public String toString() {
-        return "CreateWork{" +
+        return "WorkMeta{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", cover='" + cover + '\'' +

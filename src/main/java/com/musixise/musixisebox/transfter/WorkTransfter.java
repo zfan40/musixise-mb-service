@@ -1,6 +1,6 @@
 package com.musixise.musixisebox.transfter;
 
-import com.musixise.musixisebox.controller.vo.req.user.CreateWork;
+import com.musixise.musixisebox.controller.vo.req.work.WorkMeta;
 import com.musixise.musixisebox.controller.vo.resp.UserVO;
 import com.musixise.musixisebox.controller.vo.resp.work.WorkVO;
 import com.musixise.musixisebox.domain.Work;
@@ -14,9 +14,9 @@ import com.musixise.musixisebox.utils.StringUtil;
  */
 public class WorkTransfter {
 
-    public static Work getWork(CreateWork createWork) {
+    public static Work getWork(WorkMeta workMeta) {
         Work work = new Work();
-        CommonUtil.copyPropertiesIgnoreNull(createWork, work);
+        CommonUtil.copyPropertiesIgnoreNull(workMeta, work);
 
         return work;
     }

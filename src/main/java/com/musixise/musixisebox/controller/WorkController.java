@@ -2,7 +2,7 @@ package com.musixise.musixisebox.controller;
 
 import com.musixise.musixisebox.aop.AppMethod;
 import com.musixise.musixisebox.aop.MusixiseContext;
-import com.musixise.musixisebox.controller.vo.req.user.CreateWork;
+import com.musixise.musixisebox.controller.vo.req.work.WorkMeta;
 import com.musixise.musixisebox.controller.vo.resp.work.WorkVO;
 import com.musixise.musixisebox.domain.Work;
 import com.musixise.musixisebox.domain.result.ExceptionMsg;
@@ -47,9 +47,9 @@ public class WorkController {
     @ApiOperation(value = "新建作品",notes = "")
     @ApiImplicitParam(name = "uid", value = "用户ID", defaultValue = "", readOnly=true, dataType = "Long")
     @AppMethod(isLogin = true)
-    public MusixiseResponse<Long> create(Long uid, @Valid @RequestBody CreateWork createWork) {
+    public MusixiseResponse<Long> create(Long uid, @Valid @RequestBody WorkMeta workMeta) {
 
-        Work work = WorkTransfter.getWork(createWork);
+        Work work = WorkTransfter.getWork(workMeta);
         work.setUserId(uid);
         workRepository.save(work);
         musixiseService.updateWorkCount(work.getId());
@@ -100,10 +100,10 @@ public class WorkController {
     @ApiOperation(value = "更新作品详细信息",notes = "")
     @ApiImplicitParam(name = "uid", value = "用户ID", defaultValue = "", readOnly=true, dataType = "Long")
     @AppMethod(isLogin = true)
-    public MusixiseResponse<Void> update(Long uid, @PathVariable Long id, @Valid @RequestBody CreateWork createWork) {
+    public MusixiseResponse<Void> update(Long uid, @PathVariable Long id, @Valid @RequestBody WorkMeta workMeta) {
         Work one = workRepository.getOne(id);
         if (one.getUserId().equals(uid)) {
-            CommonUtil.copyPropertiesIgnoreNull(createWork, one);
+            CommonUtil.copyPropertiesIgnoreNull(workMeta, one);
             workRepository.save(one);
             return new MusixiseResponse<>(ExceptionMsg.SUCCESS);
         } else {
