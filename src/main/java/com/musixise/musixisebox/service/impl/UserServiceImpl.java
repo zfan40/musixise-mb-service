@@ -49,6 +49,7 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
+    @Override
     public String auth(Login login) {
         Preconditions.checkNotNull(login, "login 参数为空");
         Optional<User> oneByLogin = userRepository.findByLoginOrEmail(login.getUserName(), login.getUserName());

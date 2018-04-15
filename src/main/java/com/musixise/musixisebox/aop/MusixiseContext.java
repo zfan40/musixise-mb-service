@@ -12,6 +12,7 @@ public class MusixiseContext {
     }
 
     private static final ThreadLocal<Map<String, Object>> threadLocal = new ThreadLocal() {
+        @Override
         protected Map<String, Object> initialValue() {
             return new HashMap(4);
         }

@@ -44,7 +44,9 @@ public class WeixinOAuthServiceImpl extends OAuth20ServiceImpl implements Custom
         request.addQuerystringParameter("appid", config.getApiKey());
         request.addQuerystringParameter("secret", config.getApiSecret());
         request.addQuerystringParameter(OAuthConstants.CODE, verifier.getValue());
-        if(config.hasScope()) request.addQuerystringParameter(OAuthConstants.SCOPE, config.getScope());
+        if(config.hasScope()) {
+            request.addQuerystringParameter(OAuthConstants.SCOPE, config.getScope());
+        }
         Response response = request.send();
         String responceBody = response.getBody();
         log.trace("get accesstoken fail {}", responceBody);

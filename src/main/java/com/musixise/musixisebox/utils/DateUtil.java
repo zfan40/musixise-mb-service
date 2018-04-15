@@ -55,7 +55,7 @@ public class DateUtil {
         if (date == null) {
             return null;
         }
-        long diff = new Date().getTime() - date;
+        long diff = System.currentTimeMillis() - date;
         long r = 0;
         if (diff > year) {
             r = (diff / year);
@@ -107,7 +107,7 @@ public class DateUtil {
      * @return
      */
     public static long getLastMonthTime() {
-        return getDayBegin(getCurrentTime())-86400000l*30;
+        return getDayBegin(getCurrentTime())- 86400000L *30;
     }
 
 
