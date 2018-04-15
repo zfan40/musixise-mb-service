@@ -53,7 +53,7 @@ public class WorkController {
         work.setUserId(uid);
         workRepository.save(work);
         musixiseService.updateWorkCount(work.getId());
-        return new MusixiseResponse<>(ExceptionMsg.SUCCESS);
+        return new MusixiseResponse<>(ExceptionMsg.SUCCESS, work.getId());
     }
 
     @RequestMapping(value = "/getListByUid/{uid}", method = RequestMethod.GET)
