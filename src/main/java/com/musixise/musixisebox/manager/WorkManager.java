@@ -24,7 +24,7 @@ public class WorkManager {
     @Resource FollowService followService;
 
     public WorkVO getWorkVO(Long uid, Work work) {
-        UserVO userVO = userService.getById(work.getUserId());
+        UserVO userVO = userService.getById(work.getUserId(), false);
         Boolean isFavorite = favoriteService.isFavorite(uid, work.getId());
         Boolean isFollow = followService.isFollow(uid, work.getUserId());
         userVO.setFollowStatus(isFollow ? 1 : 0);

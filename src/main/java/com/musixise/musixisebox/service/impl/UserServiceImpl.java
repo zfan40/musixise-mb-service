@@ -135,6 +135,19 @@ public class UserServiceImpl implements UserService {
         }).orElseThrow(() -> new MusixiseException("不存在的用户"));
     }
 
+    @Override
+    public UserVO getById(Long uid, Boolean exception) {
+        if (exception) {
+            return getById(uid);
+        } else {
+            Optional<Musixiser> musixiser = musixiserRepository.findOneByUserId(uid);
+            return musixiser.map(mu -> {
+                User user = userRepository.findById(mu.getUserId()).orElse(new User());
+                return UserTransfter.getUserDetail(mu, user);
+            }).orElse(new UserVO());
+        }
+    }
+
     /**
      * 检测社交账号是否已绑定
      * @param openId
