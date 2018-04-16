@@ -1,6 +1,7 @@
 package com.musixise.musixisebox.controller;
 
 import com.musixise.musixisebox.aop.AppMethod;
+import com.musixise.musixisebox.controller.vo.req.follow.CreateFollowVO;
 import com.musixise.musixisebox.controller.vo.resp.follow.FollowVO;
 import com.musixise.musixisebox.domain.Follow;
 import com.musixise.musixisebox.domain.result.ExceptionMsg;
@@ -20,8 +21,10 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by zhaowei on 2018/4/4.
@@ -105,8 +108,10 @@ public class FollowController {
     @ApiOperation(value = "关注用户")
     @AppMethod(isLogin = true)
     @ApiImplicitParam(name = "status", value = "关注状态 (1=关注，0=解除关注)", defaultValue = "1", allowableValues="0,1", dataType = "Integer")
-    public MusixiseResponse<Void> add(Long uid, @RequestParam(value = "followId", defaultValue = "0") Long followId ,
-                                @RequestParam(value = "status", defaultValue = "1") Integer status) {
+    public MusixiseResponse<Void> add(Long uid, @Valid @RequestBody CreateFollowVO createFollowVO){
+
+        Long followId = createFollowVO.getFollowId();
+        Integer status = Optional.ofNullable(createFollowVO.getStatus()).orElse(1);
 
         if (status == 1) {
             //检查是否已经关注

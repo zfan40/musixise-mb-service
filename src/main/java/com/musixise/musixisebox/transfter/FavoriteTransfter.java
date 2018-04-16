@@ -1,7 +1,7 @@
 package com.musixise.musixisebox.transfter;
 
-import com.musixise.musixisebox.controller.vo.resp.UserVO;
 import com.musixise.musixisebox.controller.vo.resp.favorite.FavoriteVO;
+import com.musixise.musixisebox.controller.vo.resp.work.WorkVO;
 import com.musixise.musixisebox.domain.Favorite;
 import com.musixise.musixisebox.utils.CommonUtil;
 import com.musixise.musixisebox.utils.DateUtil;
@@ -18,11 +18,10 @@ public class FavoriteTransfter {
         return favoriteVO;
     }
 
-    public static FavoriteVO getFavoriteWithUser(Favorite favorite, UserVO userVO) {
+    public static FavoriteVO getFavoriteWithUser(WorkVO workVO) {
         FavoriteVO favoriteVO = new FavoriteVO();
-        CommonUtil.copyPropertiesIgnoreNull(favorite, favoriteVO);
-        favoriteVO.setUser(userVO);
-        favoriteVO.setCreatedDate(DateUtil.asDate(favorite.getCreatedDate()));
+        CommonUtil.copyPropertiesIgnoreNull(workVO, favoriteVO);
+        favoriteVO.setUser(workVO.getUserVO());
         return favoriteVO;
     }
 
