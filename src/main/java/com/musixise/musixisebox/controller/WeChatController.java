@@ -43,7 +43,7 @@ public class WeChatController {
             jsonObject.put("timestamp", ret.get("timestamp"));
             jsonObject.put("url", ret.get("url"));
             jsonObject.put("signature", ret.get("signature"));
-            jsonObject.put("appId", ret.get("weixinAppId"));
+            jsonObject.put("appId", weixinAppId);
 
             return new MusixiseResponse<>(ExceptionMsg.SUCCESS, jsonObject);
         } else {
