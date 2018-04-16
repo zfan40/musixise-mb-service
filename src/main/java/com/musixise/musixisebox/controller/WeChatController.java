@@ -36,7 +36,7 @@ public class WeChatController {
 
         Map<String, String> ret = weChatManager.getJsTicket(weixinAppId, weixinAppSecret, url);
 
-        if (ret != null && ret.containsKey("jsapiTicket")) {
+        if (ret != null && ret.containsKey("jsapi_ticket")) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("noncestr", ret.get("nonceStr"));
             jsonObject.put("jsapiTicket", ret.get("jsapi_ticket"));
