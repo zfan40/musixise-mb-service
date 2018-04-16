@@ -61,8 +61,9 @@ public class FavoriteController {
 
         Long workId = createFavoriteVO.getWorkId();
         Integer status = Optional.ofNullable(createFavoriteVO.getStatus()).orElse(1);
+
         Optional<Work> optional = workRepository.findById(workId);
-        if (optional.isPresent()) {
+        return optional.map(work -> {
             if (status == 1) {
                 favoriteService.create(uid, workId);
             } else if (status == 0) {
@@ -73,9 +74,7 @@ public class FavoriteController {
             //更新收藏数
             workService.updateFavoriteCount(workId);
             return new MusixiseResponse(ExceptionMsg.SUCCESS);
-        } else {
-            return new MusixiseResponse(ExceptionMsg.NOT_EXIST);
-        }
+        }).orElse(new MusixiseResponse(ExceptionMsg.NOT_EXIST));
     }
 
     @RequestMapping(value = "/getWorkList/{uid}", method = RequestMethod.GET)

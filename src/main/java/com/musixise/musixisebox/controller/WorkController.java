@@ -88,26 +88,21 @@ public class WorkController {
     @AppMethod
     public MusixiseResponse<WorkVO> getDetail(@PathVariable Long id) {
         Optional<Work> work = workRepository.findById(id);
-        if (work.isPresent()) {
-            WorkVO workVO = workManager.getWorkVO(MusixiseContext.getCurrentUid(), work.get());
+        return work.map(w -> {
+            WorkVO workVO = workManager.getWorkVO(MusixiseContext.getCurrentUid(), w);
             return new MusixiseResponse<>(ExceptionMsg.SUCCESS, workVO);
-        } else {
-            return new MusixiseResponse<>(ExceptionMsg.NOT_EXIST);
-        }
+        }).orElse( new MusixiseResponse<>(ExceptionMsg.NOT_EXIST));
     }
 
     @RequestMapping(value = "/updateWork/{id}", method = RequestMethod.PUT)
     @ApiOperation(value = "更新作品详细信息",notes = "")
     @ApiImplicitParam(name = "uid", value = "用户ID", defaultValue = "", readOnly=true, dataType = "Long")
     @AppMethod(isLogin = true)
-    public MusixiseResponse<Void> update(Long uid, @PathVariable Long id, @RequestBody WorkMeta workMeta) {
-        Work one = workRepository.getOne(id);
-        if (one.getUserId().equals(uid)) {
-            CommonUtil.copyPropertiesIgnoreNull(workMeta, one);
-            workRepository.save(one);
+    public MusixiseResponse<?> update(Long uid, @PathVariable Long id, @RequestBody WorkMeta workMeta) {
+        return workRepository.findById(id).map(work -> {
+            CommonUtil.copyPropertiesIgnoreNull(workMeta, work);
+            workRepository.save(work);
             return new MusixiseResponse<>(ExceptionMsg.SUCCESS);
-        } else {
-            return new MusixiseResponse<>(ExceptionMsg.FAILED);
-        }
+        }).orElse(new MusixiseResponse<>(ExceptionMsg.FAILED));
     }
 }
