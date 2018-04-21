@@ -127,22 +127,6 @@
 
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
 
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <fork>true</fork>
-                    <includeSystemScope>true</includeSystemScope><!--引入本地JAR包-->
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

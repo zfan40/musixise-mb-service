@@ -7,9 +7,9 @@
 	<artifactId>musixise-box</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<modules>
-		<module>musixise-box-web</module>
-		<module>musixise-box-service</module>
 		<module>musixise-box-api</module>
+		<module>musixise-box-service</module>
+		<module>musixise-box-web</module>
 	</modules>
 	<packaging>pom</packaging>
 
@@ -36,13 +36,6 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-
-			<dependency>
-				<groupId>com.musixise</groupId>
-				<artifactId>musixise-box-api</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
-			</dependency>
-
 
 			<dependency>
 				<groupId>org.hibernate</groupId>
@@ -126,6 +119,7 @@
 		</dependencies>
 
 	</dependencyManagement>
+
 
 
 
