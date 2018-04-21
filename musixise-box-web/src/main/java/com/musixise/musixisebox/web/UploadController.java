@@ -1,0 +1,85 @@
+package com.musixise.musixisebox.web;
+
+import com.musixise.musixisebox.aop.AppMethod;
+import com.musixise.musixisebox.api.enums.ExceptionMsg;
+import com.musixise.musixisebox.domain.result.MusixiseResponse;
+import com.musixise.musixisebox.manager.UploaderManager;
+import com.musixise.musixisebox.service.impl.UploadServiceQiniuImpl;
+import com.musixise.musixisebox.utils.FileUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+
+/**
+ * Created by zhaowei on 2018/4/5.
+ */
+@RestController
+@Api(value = "上传文件", description = "上传文件", tags = "文件存储")
+@RequestMapping("/api/v1")
+public class UploadController {
+
+    @Resource UploaderManager uploaderManager;
+
+    @Resource UploadServiceQiniuImpl uploadServiceQiniu;
+
+    /**
+     * 上传图片
+     * @param file
+     * @return
+     */
+    @RequestMapping(value = "/picture/uploadPic", method = RequestMethod.POST)
+    @ApiOperation(value = "上传图片")
+    @AppMethod
+    public MusixiseResponse uploadPic(@RequestBody @RequestParam("files")MultipartFile file) {
+
+        uploaderManager.setUploadService(new UploadServiceQiniuImpl());
+
+        //生成文件名
+        String fileName = uploaderManager.buildFileName(file.getOriginalFilename());
+        //上传文件
+        if (uploaderManager.upload(file, fileName)) {
+            return new MusixiseResponse<>(ExceptionMsg.SUCCESS, FileUtil.getImageFullName(fileName));
+        } else {
+            return new MusixiseResponse<>(ExceptionMsg.UPLOAD_ERROR);
+        }
+    }
+
+
+    /**
+     * 上传音频
+     * @param data
+     * @param fname
+     * @return
+     */
+    @RequestMapping(value = "uploadAudio", method = RequestMethod.POST)
+    @ApiOperation(value = "上传音频")
+    @AppMethod(isLogin = true)
+    public MusixiseResponse uploadAudio(Long uid, @RequestParam String data,
+                                        @RequestParam String fname) {
+
+        uploaderManager.setUploadService(uploadServiceQiniu);
+
+        byte[] bt = null;
+        try {
+            sun.misc.BASE64Decoder decoder = new sun.misc.BASE64Decoder();
+            //data:;base64,aSBhbSBhIGJsb2I=
+            data = data.replaceAll("data:;base64,", "");
+            bt = decoder.decodeBuffer( data);
+            //value = new String(bt, "UTF-8");
+            //生成文件名
+            String fileName = uploaderManager.buildFileName(fname);
+            //上传文件
+            if (uploaderManager.upload(bt, fileName)) {
+                return new MusixiseResponse<>(ExceptionMsg.SUCCESS, FileUtil.getAudioFullName(fileName));
+            } else {
+                return new MusixiseResponse<>(ExceptionMsg.UPLOAD_ERROR);
+            }
+
+        } catch (Exception e) {
+            return new MusixiseResponse<>(ExceptionMsg.UPLOAD_ERROR);
+        }
+    }
+}
