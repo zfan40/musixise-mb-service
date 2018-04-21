@@ -2,7 +2,7 @@ package com.musixise.musixisebox.config;
 
 import com.musixise.musixisebox.api.enums.ExceptionMsg;
 import com.musixise.musixisebox.api.exception.MusixiseException;
-import com.musixise.musixisebox.domain.result.MusixiseResponse;
+import com.musixise.musixisebox.api.result.MusixiseResponse;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,7 +1,7 @@
 package com.musixise.musixisebox.aop;
 
 import com.musixise.musixisebox.api.enums.ExceptionMsg;
-import com.musixise.musixisebox.domain.result.MusixiseResponse;
+import com.musixise.musixisebox.api.result.MusixiseResponse;
 import com.musixise.musixisebox.service.UserService;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.aspectj.lang.JoinPoint;

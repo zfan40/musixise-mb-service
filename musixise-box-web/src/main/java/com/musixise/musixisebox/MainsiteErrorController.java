@@ -1,7 +1,7 @@
 package com.musixise.musixisebox;
 
 import com.musixise.musixisebox.api.enums.ExceptionMsg;
-import com.musixise.musixisebox.domain.result.MusixiseResponse;
+import com.musixise.musixisebox.api.result.MusixiseResponse;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;

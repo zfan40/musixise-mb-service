@@ -1,9 +1,9 @@
-package com.musixise.musixisebox.web;
+package com.musixise.musixisebox.admin;
 
 import com.musixise.musixisebox.domain.Musixiser;
 import com.musixise.musixisebox.api.enums.ExceptionMsg;
-import com.musixise.musixisebox.domain.result.MusixisePageResponse;
-import com.musixise.musixisebox.domain.result.MusixiseResponse;
+import com.musixise.musixisebox.api.result.MusixisePageResponse;
+import com.musixise.musixisebox.api.result.MusixiseResponse;
 import com.musixise.musixisebox.repository.MusixiserRepository;
 import com.musixise.musixisebox.aop.AppMethod;
 import io.swagger.annotations.Api;

@@ -2,11 +2,12 @@ package com.musixise.musixisebox.web;
 
 import com.musixise.musixisebox.aop.AppMethod;
 import com.musixise.musixisebox.api.enums.ExceptionMsg;
+import com.musixise.musixisebox.api.result.MusixisePageResponse;
+import com.musixise.musixisebox.api.result.MusixiseResponse;
+import com.musixise.musixisebox.api.web.service.FollowApi;
 import com.musixise.musixisebox.api.web.vo.req.follow.CreateFollowVO;
 import com.musixise.musixisebox.api.web.vo.resp.follow.FollowVO;
 import com.musixise.musixisebox.domain.Follow;
-import com.musixise.musixisebox.domain.result.MusixisePageResponse;
-import com.musixise.musixisebox.domain.result.MusixiseResponse;
 import com.musixise.musixisebox.repository.FollowRepository;
 import com.musixise.musixisebox.service.FollowService;
 import com.musixise.musixisebox.service.MusixiseService;
@@ -30,9 +31,8 @@ import java.util.Optional;
  * Created by zhaowei on 2018/4/4.
  */
 @RestController
-@Api(value = "用户关注", description = "用户关注", tags = "用户关注")
 @RequestMapping("/api/v1/follow")
-public class FollowController {
+public class FollowController implements FollowApi {
 
     @Resource FollowRepository followRepository;
 
@@ -48,8 +48,8 @@ public class FollowController {
      * @return
      */
     @RequestMapping(value = "/followings/{uid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "获取关注列表")
     @AppMethod
+    @Override
     public MusixisePageResponse<List<FollowVO>> getFollowingList(@PathVariable Long uid,
                                                                  @RequestParam(value = "page", defaultValue = "1") Integer page,
                                                                  @RequestParam(value = "size", defaultValue = "10") Integer size) {
@@ -78,8 +78,8 @@ public class FollowController {
      * @return
      */
     @RequestMapping(value = "/followers/{uid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "获取粉丝列表")
     @AppMethod
+    @Override
     public MusixisePageResponse<List<FollowVO>> getFollowers(@PathVariable Long uid,
                                          @RequestParam(value = "page", defaultValue = "1") Integer page,
                                          @RequestParam(value = "size", defaultValue = "10") Integer size) {
@@ -105,9 +105,8 @@ public class FollowController {
      * @return
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "关注用户")
     @AppMethod(isLogin = true)
-    @ApiImplicitParam(name = "status", value = "关注状态 (1=关注，0=解除关注)", defaultValue = "1", allowableValues="0,1", dataType = "Integer")
+    @Override
     public MusixiseResponse<Void> add(Long uid, @Valid @RequestBody CreateFollowVO createFollowVO){
 
         Long followId = createFollowVO.getFollowId();

@@ -1,4 +1,4 @@
-package com.musixise.musixisebox.domain.result;
+package com.musixise.musixisebox.api.result;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.musixise.musixisebox.api.enums.ExceptionMsg;

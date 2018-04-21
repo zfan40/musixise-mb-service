@@ -5,6 +5,8 @@ import com.musixise.musixisebox.aop.AppMethod;
 import com.musixise.musixisebox.aop.MusixiseContext;
 import com.musixise.musixisebox.api.enums.ExceptionMsg;
 import com.musixise.musixisebox.api.exception.MusixiseException;
+import com.musixise.musixisebox.api.result.MusixiseResponse;
+import com.musixise.musixisebox.api.web.service.UserApi;
 import com.musixise.musixisebox.api.web.vo.req.user.Login;
 import com.musixise.musixisebox.api.web.vo.req.user.Register;
 import com.musixise.musixisebox.api.web.vo.req.user.Update;
@@ -13,7 +15,6 @@ import com.musixise.musixisebox.api.web.vo.resp.SocialVO;
 import com.musixise.musixisebox.api.web.vo.resp.UserVO;
 import com.musixise.musixisebox.config.SocialConfiguration;
 import com.musixise.musixisebox.domain.User;
-import com.musixise.musixisebox.domain.result.MusixiseResponse;
 import com.musixise.musixisebox.manager.UserManager;
 import com.musixise.musixisebox.repository.UserRepository;
 import com.musixise.musixisebox.service.CustomOAuthService;
@@ -48,7 +49,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/user")
 @Api(value = "用户接口", description = "用户接口描述", tags = "用户常用接口")
-public class UserController {
+public class UserController implements UserApi {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -69,6 +70,7 @@ public class UserController {
     @RequestMapping(value = "/authenticate", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
     @ApiOperation(value = "授权接口",notes = "获取 accesstoken")
     @AppMethod
+    @Override
     public MusixiseResponse<JWTToken> authorize(Model model, @Valid @RequestBody Login login) {
 
         Preconditions.checkArgument(login.getUserName() != null && login.getPassWord() != null, "请输入用户名和密码");
@@ -79,6 +81,7 @@ public class UserController {
     @RequestMapping(value = "/detail/{uid}", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
     @ApiOperation(value = "获取用户详细信息", notes = "通过传入用户ID ")
     @AppMethod
+    @Override
     public MusixiseResponse<UserVO> getInfo(@Valid @PathVariable Long uid) {
         Preconditions.checkArgument( uid != null &&uid > 0, "请填写正确的用户ID");
 
@@ -96,6 +99,7 @@ public class UserController {
     @RequestMapping(value = "/getInfo", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
     @ApiOperation(value = "获取当前用户信息")
     @AppMethod(isLogin = true)
+    @Override
     public MusixiseResponse<UserVO> getCuurentUserInfo(Long uid) {
         UserVO userVO = Optional.ofNullable(userService.getById(uid)).orElseThrow(() -> new MusixiseException("不存在的用户"));
         return new MusixiseResponse<>(userVO);
@@ -104,6 +108,7 @@ public class UserController {
     @RequestMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
     @ApiOperation(value = "注册一个账号", notes = "注册成功，返回用户ID")
     @AppMethod
+    @Override
     public MusixiseResponse<Long> register(@Valid @RequestBody Register register) {
         Preconditions.checkArgument(register.getUsername() != null && register.getPassword() != null,
                 "请填写用户和密码", register.getUsername(), register.getPassword());
@@ -129,6 +134,7 @@ public class UserController {
     @RequestMapping(value = "/updateInfo", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.PUT)
     @ApiOperation(value = "更新用户信息", notes = "需要登录")
     @AppMethod(isLogin = true)
+    @Override
     public MusixiseResponse<Void> updateInfo(Long uid, @Valid @RequestBody Update update) {
         userService.updateInfo(uid, update);
         return new MusixiseResponse<>(ExceptionMsg.SUCCESS);
@@ -136,6 +142,7 @@ public class UserController {
 
     @RequestMapping(value = "/authByAccessToken/{platform}", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
     @AppMethod
+    @Override
     public MusixiseResponse authenticateBySocialToken(@PathVariable String platform,
                                                       @RequestParam(value = "token", defaultValue = "") String token) {
 
@@ -181,6 +188,7 @@ public class UserController {
             @ApiImplicitParam(name = "code", value = "code", required = true, dataTypeClass = String.class)
     })
     @AppMethod
+    @Override
     public MusixiseResponse<JWTToken> authenticateBySocialCode(@PathVariable String platform,
                                                      @RequestParam(value = "code", required = true) String code) {
         Map<String, OAuth2ConnectionFactory> oAuth2ConnectionFactoryMap = socialConfiguration.getoAuth2ConnectionFactoryMap();
