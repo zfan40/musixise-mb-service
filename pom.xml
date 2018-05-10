@@ -6,12 +6,13 @@
 	<groupId>com.musixise</groupId>
 	<artifactId>musixise-box</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
 	<modules>
 		<module>musixise-box-api</module>
 		<module>musixise-box-service</module>
 		<module>musixise-box-web</module>
 	</modules>
-	<packaging>pom</packaging>
 
 	<name>musixise-box</name>
 	<description>Demo project for musixiser box</description>
@@ -61,8 +62,8 @@
 				<groupId>io.springfox</groupId>
 				<artifactId>springfox-swagger2</artifactId>
 				<version>2.8.0</version>
-
 			</dependency>
+
 			<dependency>
 				<groupId>io.springfox</groupId>
 				<artifactId>springfox-swagger-ui</artifactId>
@@ -82,6 +83,11 @@
 				<version>1.9</version>
 			</dependency>
 
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-web</artifactId>
+				<version>2.0.1.RELEASE</version>
+			</dependency>
 
 
 			<dependency>
@@ -96,6 +102,11 @@
 				<version>18.0</version>
 			</dependency>
 
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-security</artifactId>
+				<version>2.0.1.RELEASE</version>
+			</dependency>
 
 			<dependency>
 				<groupId>org.springframework.social</groupId>
@@ -115,10 +126,17 @@
 				<version>1.3.7</version>
 			</dependency>
 
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-data-jpa</artifactId>
+				<version>2.0.1.RELEASE</version>
+			</dependency>
+
 
 		</dependencies>
 
 	</dependencyManagement>
+
 
 
 

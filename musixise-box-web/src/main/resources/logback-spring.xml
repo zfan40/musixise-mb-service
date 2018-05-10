@@ -33,7 +33,7 @@
     <!-- logback为java中的包 -->
     <logger name="com.musixise.musixisebox.controller"/>
     <!--logback.LogbackDemo：类的全路径 -->
-    <logger name="com.musixise.musixisebox.web.UserController" level="WARN" additivity="false">
+    <logger name="com.musixise.musixisebox.rest.web.UserController" level="WARN" additivity="false">
         <appender-ref ref="console"/>
     </logger>
 

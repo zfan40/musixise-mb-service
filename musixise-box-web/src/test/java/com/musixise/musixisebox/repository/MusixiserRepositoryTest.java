@@ -1,7 +1,8 @@
 package com.musixise.musixisebox.repository;
 
 import com.musixise.musixisebox.MusixiseBoxApplication;
-import com.musixise.musixisebox.domain.Musixiser;
+import com.musixise.musixisebox.server.domain.Musixiser;
+import com.musixise.musixisebox.server.repository.MusixiserRepository;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

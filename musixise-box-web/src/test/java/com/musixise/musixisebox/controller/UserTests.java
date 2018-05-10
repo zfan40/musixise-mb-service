@@ -1,6 +1,6 @@
 package com.musixise.musixisebox.controller;
 
-import com.musixise.musixisebox.web.UserController;
+import com.musixise.musixisebox.rest.web.UserController;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,9 +1,9 @@
 package com.musixise.musixisebox.controller;
 
 import com.musixise.musixisebox.MusixiseBoxApplication;
-import com.musixise.musixisebox.domain.Musixiser;
-import com.musixise.musixisebox.repository.MusixiserRepository;
-import com.musixise.musixisebox.admin.MusixiserController;
+import com.musixise.musixisebox.server.domain.Musixiser;
+import com.musixise.musixisebox.server.repository.MusixiserRepository;
+import com.musixise.musixisebox.rest.admin.MusixiserController;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

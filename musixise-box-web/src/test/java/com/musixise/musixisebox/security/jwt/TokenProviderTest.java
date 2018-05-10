@@ -1,6 +1,7 @@
 package com.musixise.musixisebox.security.jwt;
 
 import com.alibaba.fastjson.JSON;
+import com.musixise.musixisebox.server.security.jwt.TokenProvider;
 import io.jsonwebtoken.Claims;
 import org.junit.Test;
 import org.junit.runner.RunWith;

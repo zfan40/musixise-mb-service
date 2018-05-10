@@ -18,6 +18,7 @@ target/
 
 ### NetBeans ###
 nbproject/private/
+.DS_Store
 build/
 nbbuild/
 dist/
