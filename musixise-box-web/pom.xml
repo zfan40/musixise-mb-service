@@ -106,7 +106,6 @@
             </resource>
         </resources>
         <!-- 为jar包取名 -->
-        <finalName>musixise-box</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
