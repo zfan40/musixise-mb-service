@@ -3,7 +3,7 @@ package com.musixise.musixisebox.controller;
 import com.musixise.musixisebox.MusixiseBoxApplication;
 import com.musixise.musixisebox.server.domain.Musixiser;
 import com.musixise.musixisebox.server.repository.MusixiserRepository;
-import com.musixise.musixisebox.rest.admin.MusixiserController;
+import com.musixise.musixisebox.rest.admin.MusixiserAdminController;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +34,7 @@ public class MusixiserControllerTest {
 
     @Before
     public void setUp() {
-        MusixiserController musixiserController = new MusixiserController();
+        MusixiserAdminController musixiserController = new MusixiserAdminController();
         ReflectionTestUtils.setField(musixiserController, "musixiserRepository", musixiserRepository);
         mvc = MockMvcBuilders.standaloneSetup(musixiserController).build();
     }

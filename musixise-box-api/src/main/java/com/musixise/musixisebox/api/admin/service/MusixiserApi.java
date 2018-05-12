@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by zhaowei on 2018/5/10.
  */
-@Api(value = "用户基本信息", description = "用户基本信息管理", tags = {"后台接口"})
+@Api(value = "用户基本信息", description = "用户基本信息管理")
 public interface MusixiserApi {
 
     @ApiOperation(value = "获取基本信息列表")
