@@ -9,6 +9,9 @@ import com.musixise.musixisebox.server.utils.DateUtil;
 import com.musixise.musixisebox.server.utils.FileUtil;
 import com.musixise.musixisebox.server.utils.StringUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by zhaowei on 2018/4/5.
  */
@@ -20,6 +23,23 @@ public class WorkTransfter {
 
         return work;
     }
+
+    public static Work getWork(WorkVO workVO) {
+        Work work = new Work();
+        CommonUtil.copyPropertiesIgnoreNull(workVO, work);
+
+        return work;
+
+    }
+
+    public static List<WorkVO> getWorkVOs(List<Work> workList) {
+        List<WorkVO> workVOList = new ArrayList<>();
+        for (Work work : workList) {
+            workVOList.add(getWorkVO(work));
+        }
+        return workVOList;
+    }
+
 
     public static WorkVO getWorkVO(Work work) {
         WorkVO workVO = new WorkVO();

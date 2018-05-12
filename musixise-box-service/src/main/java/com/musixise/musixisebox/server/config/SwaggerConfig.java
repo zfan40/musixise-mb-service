@@ -65,7 +65,11 @@ public class SwaggerConfig {
         aParameters.add(getParameterBuilder().build());
 
         return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("admin").select()
+                .groupName("admin")
+                .genericModelSubstitutes(DeferredResult.class)
+                .useDefaultResponseMessages(true)
+                .forCodeGeneration(true)
+                .select()
                 .apis(RequestHandlerSelectors.basePackage("com.musixise.musixisebox"))
                 .paths(PathSelectors.ant("/api/v1/admin/**")).build()
                 .apiInfo(apiAdminInfo())
