@@ -7,6 +7,7 @@ import com.musixise.musixisebox.api.web.vo.resp.favorite.FavoriteVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -24,7 +25,7 @@ public interface FavoriteApi {
     MusixiseResponse create(Long uid, @RequestBody @Valid CreateFavoriteVO createFavoriteVO);
 
     @ApiOperation(value = "获取收藏列表")
-    MusixisePageResponse<List<FavoriteVO>> getList(@RequestParam(value = "uid", defaultValue = "0") Long uid,
+    MusixisePageResponse<List<FavoriteVO>> getList(@PathVariable Long uid,
                                                           @RequestParam(value = "page", defaultValue = "1") Integer page,
                                                           @RequestParam(value = "size", defaultValue = "10") Integer size);
 }

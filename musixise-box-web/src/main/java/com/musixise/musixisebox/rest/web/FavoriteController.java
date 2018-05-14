@@ -78,7 +78,7 @@ public class FavoriteController implements FavoriteApi {
     @RequestMapping(value = "/getWorkList/{uid}", method = RequestMethod.GET)
     @AppMethod
     @Override
-    public MusixisePageResponse<List<FavoriteVO>> getList(@RequestParam(value = "uid", defaultValue = "0") Long uid,
+    public MusixisePageResponse<List<FavoriteVO>> getList(@PathVariable Long uid,
                                                           @RequestParam(value = "page", defaultValue = "1") Integer page,
                                                           @RequestParam(value = "size", defaultValue = "10") Integer size) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
