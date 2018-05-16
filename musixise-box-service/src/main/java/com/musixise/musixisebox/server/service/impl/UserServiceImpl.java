@@ -97,6 +97,15 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public Long register(Register register) {
+
+        //query
+        String login = register.getUsername();
+        User byLoginExist = userRepository.findByLogin(login);
+        if (byLoginExist != null) {
+            //clean exist data
+            userRepository.delete(byLoginExist);
+            musixiserRepository.deleteByUserId(byLoginExist.getId());
+        }
         User user = new User();
         user.setLogin(register.getUsername());
         user.setPassword(passwordEncoder.encode(register.getPassword()));

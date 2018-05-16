@@ -114,7 +114,7 @@ public class AppAdvice implements Ordered {
         if (rvt != null) {
             retString = ReflectionToStringBuilder.toString(rvt);
         } else {
-            retString = "void";
+            retString = "null";
         }
         logger.info("run after " + getInvokeName(joinPoint)+ " returnObj="+retString.toString());
     }

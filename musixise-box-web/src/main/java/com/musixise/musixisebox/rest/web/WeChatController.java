@@ -36,7 +36,7 @@ public class WeChatController implements WeChatApi {
 
         if (ret != null && ret.containsKey("jsapi_ticket")) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("noncestr", ret.get("nonceStr"));
+            jsonObject.put("nonceStr", ret.get("nonceStr"));
             jsonObject.put("jsapiTicket", ret.get("jsapi_ticket"));
             jsonObject.put("timestamp", ret.get("timestamp"));
             jsonObject.put("url", ret.get("url"));
