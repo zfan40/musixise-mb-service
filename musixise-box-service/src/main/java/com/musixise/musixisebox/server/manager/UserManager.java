@@ -3,7 +3,9 @@ package com.musixise.musixisebox.server.manager;
 import com.musixise.musixisebox.api.web.vo.req.user.Register;
 import com.musixise.musixisebox.api.web.vo.resp.SocialVO;
 import com.musixise.musixisebox.server.config.OAuthTypesConstants;
+import com.musixise.musixisebox.server.domain.User;
 import com.musixise.musixisebox.server.domain.UserBind;
+import com.musixise.musixisebox.server.repository.MusixiserRepository;
 import com.musixise.musixisebox.server.repository.UserBindRepository;
 import com.musixise.musixisebox.server.repository.UserRepository;
 import com.musixise.musixisebox.server.service.UserService;
@@ -25,6 +27,8 @@ public class UserManager {
 
     @Resource UserBindRepository userBindRepository;
 
+    @Resource MusixiserRepository musixiserRepository;
+
     @Resource PasswordEncoder passwordEncoder;
 
     final private static String DEFAULT_PASSWORD="CHANGE_YOU_PASSWORD";
@@ -45,13 +49,16 @@ public class UserManager {
         register.setUsername(login);
         register.setPassword(DEFAULT_PASSWORD);
         register.setEmail(email);
+        register.setRealname(socialVO.getNickName());
         register.setSmallAvatar(socialVO.getAvatar());
         register.setLargeAvatar(socialVO.getAvatar());
-        register.setBirth("0000-00-00");
+        register.setBirth("2000-01-01");
         register.setNation("");
         register.setTel("");
         register.setGender("");
-        Long userId = userService.register(register);
+
+        Long register1 = userService.register(register);
+        Long userId = register1;
         if (userId > 0) {
             //bind
             bindThird(openId, login, provider, socialVO.getAccessToken(),
@@ -59,6 +66,17 @@ public class UserManager {
         }
 
         return login;
+    }
+
+    @Transactional
+    public void cleanAccount(String login) {
+        //query
+        User byLoginExist = userRepository.findByLogin(login);
+        if (byLoginExist != null) {
+            //clean exist data
+            musixiserRepository.deleteByUserId(byLoginExist.getId());
+            userRepository.deleteById(byLoginExist.getId());
+        }
     }
 
     public Boolean bindThird(String openId, String login, String provider, String accessToken, String refreshToken, Integer expiresIn) {

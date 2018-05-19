@@ -3,7 +3,6 @@ package com.musixise.musixisebox.server.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -35,10 +34,9 @@ public class User extends AbstractEntity implements Serializable {
     @Column(nullable = false)
     private boolean activated = false;
 
-    @NotNull
     @Size(max = 100)
+    @NotNull
     @Column(length = 100, unique = true)
-    @Email
     private String email;
 
     public Long getId() {

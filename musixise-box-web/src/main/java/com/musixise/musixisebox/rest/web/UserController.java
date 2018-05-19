@@ -190,6 +190,7 @@ public class UserController implements UserApi {
         if (userService.isUserBindThis(socialVO.getOpenId(), socialVO.getProvider()) == null) {
             //需要初始化
             try {
+                userManager.cleanAccount(login);
                 login = userManager.createByOauth(socialVO);
             } catch (Exception e) {
                 throw new MusixiseException("授权异常，请联系客服解决");
