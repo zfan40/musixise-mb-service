@@ -5,6 +5,6 @@ package com.musixise.musixisebox.server.config;
  */
 public class Constants {
 
-    public static final String QINIU_IMG_DOMAIN = "http://oaeyej2ty.bkt.clouddn.com/%s";
-    public static final String QINIU_AUDIO_DOMAIN = "http://oiqvdjk3s.bkt.clouddn.com/%s";
+    public static final String QINIU_IMG_DOMAIN = "http://img.musixise.com/%s";
+    public static final String QINIU_AUDIO_DOMAIN = "http://audio.musixise.com/%s";
 }
