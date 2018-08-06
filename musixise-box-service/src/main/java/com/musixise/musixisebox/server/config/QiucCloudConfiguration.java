@@ -1,5 +1,6 @@
 package com.musixise.musixisebox.server.config;
 
+import com.qiniu.common.Zone;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
 import org.slf4j.Logger;
@@ -26,7 +27,8 @@ public class QiucCloudConfiguration {
     @Bean
     public UploadManager uploadManager() {
         log.info("Configuring qiucloud provider");
-        return   new UploadManager();
+        com.qiniu.storage.Configuration cfg = new com.qiniu.storage.Configuration(Zone.zone0());
+        return  new UploadManager(cfg);
     }
 
     @Bean
