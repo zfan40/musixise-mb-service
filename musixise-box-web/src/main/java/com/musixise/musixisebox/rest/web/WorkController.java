@@ -49,7 +49,7 @@ public class WorkController implements WorkApi {
         Work work = WorkTransfter.getWork(workMeta);
         work.setUserId(uid);
         workRepository.save(work);
-        musixiseService.updateWorkCount(work.getId());
+        musixiseService.updateWorkCount(uid);
         return new MusixiseResponse<>(ExceptionMsg.SUCCESS, work.getId());
     }
 
