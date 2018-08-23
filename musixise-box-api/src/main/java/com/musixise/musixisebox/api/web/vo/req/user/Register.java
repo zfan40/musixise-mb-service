@@ -2,8 +2,8 @@ package com.musixise.musixisebox.api.web.vo.req.user;
 
 
 import io.swagger.annotations.ApiModelProperty;
+import org.hibernate.validator.constraints.Email;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
