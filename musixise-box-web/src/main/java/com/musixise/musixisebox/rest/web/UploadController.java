@@ -1,11 +1,11 @@
 package com.musixise.musixisebox.rest.web;
 
-import com.musixise.musixisebox.server.aop.AppMethod;
 import com.musixise.musixisebox.api.enums.ExceptionMsg;
 import com.musixise.musixisebox.api.result.MusixiseResponse;
 import com.musixise.musixisebox.api.web.service.UploadApi;
+import com.musixise.musixisebox.server.aop.AppMethod;
 import com.musixise.musixisebox.server.manager.UploaderManager;
-import com.musixise.musixisebox.server.service.impl.UploadServiceQiniuImpl;
+import com.musixise.musixisebox.server.service.UploadService;
 import com.musixise.musixisebox.server.utils.FileUtil;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,7 +21,8 @@ public class UploadController implements UploadApi {
 
     @Resource UploaderManager uploaderManager;
 
-    @Resource UploadServiceQiniuImpl uploadServiceQiniu;
+    @Resource
+    UploadService uploadServiceQiniuImpl;
 
     /**
      * 上传图片
@@ -33,7 +34,7 @@ public class UploadController implements UploadApi {
     @Override
     public MusixiseResponse uploadPic(@RequestBody @RequestParam("files")MultipartFile file) {
 
-        uploaderManager.setUploadService(new UploadServiceQiniuImpl());
+        uploaderManager.setUploadService(uploadServiceQiniuImpl);
 
         //生成文件名
         String fileName = uploaderManager.buildFileName(file.getOriginalFilename());
@@ -58,7 +59,7 @@ public class UploadController implements UploadApi {
     public MusixiseResponse uploadAudio(Long uid, @RequestParam String data,
                                         @RequestParam String fname) {
 
-        uploaderManager.setUploadService(uploadServiceQiniu);
+        uploaderManager.setUploadService(uploadServiceQiniuImpl);
 
         byte[] bt = null;
         try {

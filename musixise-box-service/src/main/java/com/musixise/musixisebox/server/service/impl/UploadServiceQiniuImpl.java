@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
+import javax.inject.Inject;
 import java.io.IOException;
 
 /**
@@ -21,9 +21,11 @@ import java.io.IOException;
 @Component("uploadServiceQiniuImpl")
 public class UploadServiceQiniuImpl extends UploadService {
 
-    @Resource UploadManager uploadManager;
+    @Inject
+    UploadManager uploadManager;
 
-    @Resource Auth auth;
+    @Inject
+    Auth auth;
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
