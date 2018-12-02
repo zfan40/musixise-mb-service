@@ -136,6 +136,14 @@
             <systemPath>${basedir}/../lib/spring-social-wechat-1.0.RELEASE.jar</systemPath>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.wxpay</groupId>
+            <artifactId>wxpay-sdk</artifactId>
+            <version>3.0.9</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/../lib/wxpay-sdk-3.0.9.jar</systemPath>
+        </dependency>
+
 
     </dependencies>
 

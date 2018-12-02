@@ -10,6 +10,7 @@
          </filter>-->
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %contextName [%thread] %-5level %logger %logger{36} - %msg%n</pattern>
+            <charset>UTF-8</charset> <!-- 此处设置字符集 -->
         </encoder>
     </appender>
 
@@ -17,11 +18,17 @@
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${log.path}/logback.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>30</maxHistory>
+            <maxHistory>15</maxHistory>
             <totalSizeCap>1GB</totalSizeCap>
+            <!--<timeBasedFileNamingAndTriggeringPolicy-->
+                    <!--class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">-->
+                <!--&lt;!&ndash;文件达到 最大8MB时会被压缩和切割 &ndash;&gt;-->
+                <!--<maxFileSize>8MB</maxFileSize>-->
+            <!--</timeBasedFileNamingAndTriggeringPolicy>-->
         </rollingPolicy>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %contextName [%thread] %-5level %logger %logger{36} - %msg%n</pattern>
+            <charset>UTF-8</charset> <!-- 此处设置字符集 -->
         </encoder>
     </appender>
 
