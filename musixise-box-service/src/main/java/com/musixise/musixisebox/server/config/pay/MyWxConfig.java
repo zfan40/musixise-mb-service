@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 
 @Configuration
@@ -21,10 +19,12 @@ public class MyWxConfig extends WXPayConfig {
     private byte[] certData;
 
     public MyWxConfig() throws Exception {
-        String certPath = "./apiclient_cert.p12";
-        File file = new File(certPath);
-        InputStream certStream = new FileInputStream(file);
-        this.certData = new byte[(int) file.length()];
+
+        InputStream certStream = getClass()
+                .getClassLoader()
+                .getResourceAsStream("apiclient_cert.p12");
+
+        this.certData = new byte[(int) certStream.available()];
         certStream.read(this.certData);
         certStream.close();
     }
