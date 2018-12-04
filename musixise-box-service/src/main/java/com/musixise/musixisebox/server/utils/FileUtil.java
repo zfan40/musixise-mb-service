@@ -32,7 +32,7 @@ public class FileUtil {
                 }
             }
         }
-        return fileName;
+        return fileName.replaceAll("https?:", "");
     }
 
     public static String getImageFullName(String name) {
