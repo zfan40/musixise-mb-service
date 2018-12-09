@@ -3,6 +3,7 @@ package com.musixise.musixisebox.server.service.impl;
 import com.github.wxpay.sdk.WXPay;
 import com.github.wxpay.sdk.WXPayUtil;
 import com.musixise.musixisebox.api.web.vo.resp.wechat.WCPayRequestVO;
+import com.musixise.musixisebox.server.aop.MusixiseContext;
 import com.musixise.musixisebox.server.config.pay.MyWxConfig;
 import com.musixise.musixisebox.server.service.PayService;
 import org.apache.commons.lang.StringUtils;
@@ -144,6 +145,8 @@ public class PayServiceImpl implements PayService {
     @Override
     public String getPrepayId(Long productId) throws Exception {
 
+        Long currentUid = MusixiseContext.getCurrentUid();
+
         WXPay wxpay = new WXPay(config);
 
         Map<String, String> data = new HashMap<>();
@@ -151,10 +154,10 @@ public class PayServiceImpl implements PayService {
         data.put("out_trade_no", "2016090910595900000012"+productId);
         data.put("device_info", "");
         data.put("fee_type", "CNY");
-        data.put("total_fee", "1");
+        data.put("total_fee", "0.001");
         data.put("spbill_create_ip", "123.12.12.123");
         data.put("notify_url", "http://api.octave-love.com/api/v1/wechat/notify");
-        data.put("trade_type", "NATIVE");  // 此处指定为扫码支付
+        data.put("trade_type", "JSAPI");  // 此处指定为扫码支付
         data.put("product_id", productId.toString());
 
         try {
@@ -162,12 +165,12 @@ public class PayServiceImpl implements PayService {
             if (resp.get("return_code").equals("FAIL")) {
                 logger.error("Exception do unifiedorder action: "+ resp.toString());
             } else {
-
+                return resp.getOrDefault("prepay_id", "");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return "prePayId";
+        return null;
     }
 }

@@ -23,6 +23,11 @@
 
         <dependency>
             <groupId>com.musixise</groupId>
+            <artifactId>musixise-box-shop</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.musixise</groupId>
             <artifactId>musixise-box-service</artifactId>
         </dependency>
 
