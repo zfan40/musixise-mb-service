@@ -12,7 +12,7 @@ import javax.validation.Valid
 
 
 @RestController
-@RequestMapping("/api/v1/admin/shop")
+@RequestMapping("/api/v1/admin/shop/products")
 class ProductController {
 
     @Resource
@@ -21,20 +21,29 @@ class ProductController {
     @Resource
     lateinit var productRepository: ProductRepository
 
-    @GetMapping("/products")
+    @GetMapping("")
     @AppMethod
     fun queryProductList() : MusixiseResponse<List<Product>> {
-       return MusixiseResponse(productService.queryProductList());
+       return MusixiseResponse(productService.queryProductList())
     }
 
-    @PostMapping("/product")
+    @PostMapping("")
     fun create(@Valid @RequestBody product: Product) : MusixiseResponse<Long> {
-        productRepository.save(product);
-        return MusixiseResponse<Long>(ExceptionMsg.SUCCESS, product.id);
+        productRepository.save(product)
+        return MusixiseResponse<Long>(ExceptionMsg.SUCCESS, product.id)
     }
 
+    @PutMapping("")
+    fun update(@Valid @RequestBody product: Product) : MusixiseResponse<String> {
+        productRepository.save(product)
+        return MusixiseResponse(ExceptionMsg.SUCCESS)
+    }
 
-
+    @DeleteMapping("/{id}")
+    fun delete(@PathVariable id: Long) : MusixiseResponse<String> {
+        productRepository.deleteById(id);
+        return MusixiseResponse(ExceptionMsg.SUCCESS)
+    }
 
 
 }
