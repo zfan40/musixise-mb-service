@@ -5,7 +5,7 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "mu_order ")
+@Table(name = "mu_order")
 data class Order(@Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long,
                  val price : BigDecimal,
                  val status: Long,
