@@ -26,7 +26,7 @@ class PayController {
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @ApiOperation(value = "下单", notes = "")
-    @AppMethod(isLogin = false)
+    @AppMethod(isLogin = true)
     @PostMapping("/unifiedorder")
     fun unifiedorder(uid: Long?, unifiedorderVO: UnifiedorderVO): MusixiseResponse<WCPayRequestVO> {
 
