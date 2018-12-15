@@ -5,6 +5,7 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.commons.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -20,7 +21,7 @@ import java.util.Map;
 @Component
 public class TokenProvider {
 
-    private String secretKey;
+    @Value("${spring.jwt.secretKey}") String secretKey;
 
     @PostConstruct
     public void init() {
@@ -60,10 +61,9 @@ public class TokenProvider {
     }
 
     public SecretKey generalKey(){
-        String stringKey = "f787daaa188bc08be9417fd59c9b7423a5012ef0";
-        byte[] encodedKey = Base64.decodeBase64(stringKey);
-        System.out.println(encodedKey);//[B@152f6e2
-        System.out.println(Base64.encodeBase64URLSafeString(encodedKey));
+        byte[] encodedKey = Base64.decodeBase64(secretKey);
+        //System.out.println(encodedKey);//[B@152f6e2
+        //System.out.println(Base64.encodeBase64URLSafeString(encodedKey));
         SecretKey key = new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
         return key;
     }
