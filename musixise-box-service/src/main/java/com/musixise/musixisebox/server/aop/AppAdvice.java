@@ -3,7 +3,9 @@ package com.musixise.musixisebox.server.aop;
 import com.musixise.musixisebox.api.enums.ExceptionMsg;
 import com.musixise.musixisebox.api.result.MusixiseResponse;
 import com.musixise.musixisebox.server.service.UserService;
+import com.musixise.musixisebox.server.utils.IpUtil;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -50,6 +52,8 @@ public class AppAdvice implements Ordered {
         RequestAttributes ra = RequestContextHolder.getRequestAttributes();
         ServletRequestAttributes sra = (ServletRequestAttributes) ra;
         HttpServletRequest request = sra.getRequest();
+
+        MusixiseContext.set("remoteip", IpUtil.getIpAddr(request));
 
         Object result = null;
         //需要检测登录
@@ -112,11 +116,15 @@ public class AppAdvice implements Ordered {
         StringBuffer param = new StringBuffer("get params[{}] ");
         String retString = "";
         if (rvt != null) {
-            retString = ReflectionToStringBuilder.toString(rvt);
+            if (rvt instanceof String) {
+                retString = rvt.toString();
+            } else {
+                retString = ReflectionToStringBuilder.toString(rvt, ToStringStyle.SIMPLE_STYLE);
+            }
         } else {
             retString = "null";
         }
-        logger.info("run after " + getInvokeName(joinPoint)+ " returnObj="+retString.toString());
+        logger.info("run after " + getInvokeName(joinPoint)+ " returnObj="+retString);
     }
 
     @AfterThrowing(pointcut = "within(com.musixise.musixisebox..*) && @annotation(appMethod)", throwing = "ex")
