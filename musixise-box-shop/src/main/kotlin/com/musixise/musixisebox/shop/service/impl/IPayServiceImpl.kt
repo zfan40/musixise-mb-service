@@ -1,15 +1,20 @@
 package com.musixise.musixisebox.shop.service.impl
 
+import com.alibaba.fastjson.JSON
 import com.github.wxpay.sdk.WXPay
 import com.github.wxpay.sdk.WXPayUtil
 import com.musixise.musixisebox.server.aop.MusixiseContext
 import com.musixise.musixisebox.server.config.pay.MyWxConfig
+import com.musixise.musixisebox.shop.domain.BoxInfo
+import com.musixise.musixisebox.shop.domain.Order
 import com.musixise.musixisebox.shop.rest.web.vo.resp.pay.WCPayRequestVO
+import com.musixise.musixisebox.shop.service.IOrderService
 import com.musixise.musixisebox.shop.service.IPayService
 import org.apache.commons.lang.StringUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.io.IOException
+import java.math.BigDecimal
 import java.util.*
 import javax.annotation.Resource
 import javax.servlet.http.HttpServletRequest
@@ -20,15 +25,18 @@ class IPayServiceImpl : IPayService {
     @Resource
     internal var config: MyWxConfig? = null
 
+    @Resource
+    private lateinit var iOrderService: IOrderService;
+
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @Throws(Exception::class)
-    override fun getPayInfo(productId: Long?): WCPayRequestVO {
+    override fun getPayInfo(orderId: Long): WCPayRequestVO {
 
         //参数需要重新进行签名计算，参与签名的参数为：appId、timeStamp、nonceStr、package、signType，参数区分大小写。
 
         val wxpay = WXPay(config)
-        val prepayId = getPrepayId(productId)
+        val prepayId = getPrepayId(orderId)
 
         val reqData = HashMap<String, String>()
         reqData["appId"] = config!!.appID
@@ -143,22 +151,31 @@ class IPayServiceImpl : IPayService {
     }
 
     @Throws(Exception::class)
-    override fun getPrepayId(productId: Long?): String? {
+    override fun getPrepayId(orderId: Long): String? {
 
         val currentUid = MusixiseContext.getCurrentUid()
 
         val wxpay = WXPay(config)
 
+        //获取订单
+        val order = iOrderService.get(orderId)
+
+        //TODO: 判断订单是否属于当前用户
+
+        val boxInfo = getBoxInfo(order);
+
         val data = HashMap<String, String>()
-        data["body"] = "腾讯充值中心-QQ会员充值"
-        data["out_trade_no"] = "2016090910595900000012" + productId!!
+        data["body"] = boxInfo.product.name + " " + boxInfo.title
+        data["out_trade_no"] = orderId.toString()
         data["device_info"] = ""
         data["fee_type"] = "CNY"
-        data["total_fee"] = "0.001"
-        data["spbill_create_ip"] = "123.12.12.123"
+        //微信支付不允许出现小数点，金额单位是分
+        data["total_fee"] = Math.round(order.price.multiply(BigDecimal(100)).toDouble()).toString()
+        data["spbill_create_ip"] = MusixiseContext.getRemoteIp();
         data["notify_url"] = "http://api.octave-love.com/api/v1/wechat/notify"
         data["trade_type"] = "JSAPI"  // 此处指定为扫码支付
-        data["product_id"] = productId.toString()
+        data["product_id"] = orderId.toString()
+        data["openid"] = "ocAsI1L1M7L-tp7OFnFMqbUAItPs"
 
         try {
             val resp = wxpay.unifiedOrder(data)
@@ -172,5 +189,15 @@ class IPayServiceImpl : IPayService {
         }
 
         return null
+    }
+
+    fun getBoxInfo(order: Order) : BoxInfo {
+        return JSON.parseObject(order.content, BoxInfo::class.java)
+    }
+
+    fun getOpenId() : String {
+        val currentUid = MusixiseContext.getCurrentUid()
+        return ""
+
     }
 }

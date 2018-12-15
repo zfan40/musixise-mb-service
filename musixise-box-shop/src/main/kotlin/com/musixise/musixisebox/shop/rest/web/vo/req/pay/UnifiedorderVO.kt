@@ -6,6 +6,6 @@ import javax.validation.constraints.Size
 class UnifiedorderVO {
 
     @Size(min = 1, max = 50)
-    @ApiModelProperty(value = "商品ID", example = "商品ID")
-    var productId: Long? = null
+    @ApiModelProperty(value = "支付订单ID", example = "123")
+    var orderId: Long = 0
 }

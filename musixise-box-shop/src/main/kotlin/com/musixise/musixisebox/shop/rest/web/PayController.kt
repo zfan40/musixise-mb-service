@@ -32,7 +32,7 @@ class PayController {
 
         try {
 
-            val payInfo = PayServiceImpl!!.getPayInfo(unifiedorderVO.productId)
+            val payInfo = PayServiceImpl!!.getPayInfo(unifiedorderVO.orderId)
             return MusixiseResponse(ExceptionMsg.SUCCESS, payInfo)
         } catch (e: Exception) {
             logger.error("Exception do unifiedorder action: ", e)

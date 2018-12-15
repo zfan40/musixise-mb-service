@@ -73,4 +73,8 @@ class IOrderServiceImpl : IOrderService {
 
         throw MusixiseException("未找到作品信息");
     }
+
+    override fun get(ordrId: Long): Order {
+        return orderRepository.findById(ordrId).orElseGet(null)
+    }
 }
