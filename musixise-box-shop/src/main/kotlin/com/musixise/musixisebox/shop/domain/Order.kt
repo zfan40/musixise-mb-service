@@ -13,5 +13,6 @@ data class Order(@Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id:
                  var shipTime: Date?=null,
                  var confirmTime: Date?=null,
                  val userId: Long,
+                 val amount: Long,
                  val content: String,
                  val address: Long = 0) : AbstractEntity()

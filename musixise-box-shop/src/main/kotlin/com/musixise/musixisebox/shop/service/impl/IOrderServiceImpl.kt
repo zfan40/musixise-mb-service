@@ -13,6 +13,7 @@ import com.musixise.musixisebox.shop.rest.web.vo.req.OrderVO
 import com.musixise.musixisebox.shop.rest.web.vo.req.PayVO
 import com.musixise.musixisebox.shop.service.IOrderService
 import org.springframework.stereotype.Component
+import java.math.BigDecimal
 import javax.annotation.Resource
 
 @Component
@@ -41,12 +42,17 @@ class IOrderServiceImpl : IOrderService {
 
         var currentUid = MusixiseContext.getCurrentUid()
 
-        val order = Order(price = product.get().price,
-            userId = currentUid, status = 1, content = getProductContent(orderVO.wid, product.get()))
+        val order = Order(price = totalPrice(product.get().price, orderVO.amount),
+            userId = currentUid, status = 1, content = getProductContent(orderVO.wid, product.get()),
+            amount = orderVO.amount)
         orderRepository.save(order);
 
         return order.id
 
+    }
+
+    fun totalPrice(price: BigDecimal, amount: Long) : BigDecimal {
+        return price.multiply(BigDecimal(amount));
     }
 
     override fun pay(payVO: PayVO): Boolean {
