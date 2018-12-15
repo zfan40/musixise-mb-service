@@ -61,7 +61,7 @@ public class UserManager {
         Long userId = register1;
         if (userId > 0) {
             //bind
-            bindThird(openId, login, provider, socialVO.getAccessToken(),
+            bindThird(userId, openId, login, provider, socialVO.getAccessToken(),
                     socialVO.getRefreshToken(), socialVO.getExpiresIn());
         }
 
@@ -79,11 +79,12 @@ public class UserManager {
         }
     }
 
-    public Boolean bindThird(String openId, String login, String provider, String accessToken, String refreshToken, Integer expiresIn) {
+    public Boolean bindThird(Long userId, String openId, String login, String provider, String accessToken, String refreshToken, Integer expiresIn) {
         UserBind userBind = new UserBind();
         userBind.setOpenId(openId);
         userBind.setLogin(login);
         userBind.setProvider(provider);
+        userBind.setUserId(userId);
         if (accessToken != null) {
             userBind.setAccessToken(accessToken);
         } else {

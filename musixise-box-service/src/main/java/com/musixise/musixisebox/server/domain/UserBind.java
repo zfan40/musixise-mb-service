@@ -20,6 +20,10 @@ public class UserBind extends AbstractEntity implements Serializable {
     private String openId;
 
     @NotNull
+    @Column(name = "user_id", length = 100)
+    private Long userId;
+
+    @NotNull
     @Column(name = "login", length = 100)
     private String login;
 
@@ -90,5 +94,13 @@ public class UserBind extends AbstractEntity implements Serializable {
 
     public void setExpiresIn(int expiresIn) {
         this.expiresIn = expiresIn;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }
