@@ -69,7 +69,7 @@ class SwaggerShopConfig {
     private fun apiInfo(): ApiInfo {
         return ApiInfoBuilder()
             .title("MUSIXISE.COM RESTful APIs")
-            .description("前台接口")
+            .description("购物接口")
             .termsOfServiceUrl("github-url")
             .contact(Contact("zhaowei, zfan40", "http://www.musixise.com", "developer@musixise.com"))
             .version("1.0.0")
