@@ -30,15 +30,8 @@ class PayController {
     @PostMapping("/unifiedorder")
     fun unifiedorder(uid: Long?, unifiedorderVO: UnifiedorderVO): MusixiseResponse<WCPayRequestVO> {
 
-        try {
-
-            val payInfo = PayServiceImpl!!.getPayInfo(unifiedorderVO.orderId)
-            return MusixiseResponse(ExceptionMsg.SUCCESS, payInfo)
-        } catch (e: Exception) {
-            logger.error("Exception do unifiedorder action: ", e)
-            return MusixiseResponse(ExceptionMsg.FAILED)
-        }
-
+        val payInfo = PayServiceImpl!!.getPayInfo(unifiedorderVO.orderId)
+        return MusixiseResponse(ExceptionMsg.SUCCESS, payInfo)
     }
 
     @ApiOperation(value = "支付通知", notes = "")

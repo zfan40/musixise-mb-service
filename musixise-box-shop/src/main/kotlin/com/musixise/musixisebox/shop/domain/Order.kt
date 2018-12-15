@@ -9,7 +9,7 @@ import javax.persistence.*
 @Table(name = "mu_order")
 data class Order(@Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long?=null,
                  val price : BigDecimal,
-                 val status: Long,
+                 var status: Long,
                  var shipTime: Date?=null,
                  var confirmTime: Date?=null,
                  val userId: Long,

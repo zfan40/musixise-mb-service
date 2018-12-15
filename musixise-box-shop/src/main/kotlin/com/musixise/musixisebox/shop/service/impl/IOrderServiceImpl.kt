@@ -43,7 +43,7 @@ class IOrderServiceImpl : IOrderService {
         var currentUid = MusixiseContext.getCurrentUid()
 
         val order = Order(price = totalPrice(product.get().price, orderVO.amount),
-            userId = currentUid, status = 1, content = getProductContent(orderVO.wid, product.get()),
+            userId = currentUid, status = 0, content = getProductContent(orderVO.wid, product.get()),
             amount = orderVO.amount)
         orderRepository.save(order);
 
@@ -74,7 +74,9 @@ class IOrderServiceImpl : IOrderService {
         throw MusixiseException("未找到作品信息");
     }
 
-    override fun get(ordrId: Long): Order {
-        return orderRepository.findById(ordrId).orElseGet(null)
+    override fun get(orderId: Long): Order {
+        return orderRepository.findById(orderId).orElseThrow {
+            throw MusixiseException("不存在的订单号 ${orderId}");
+        }
     }
 }

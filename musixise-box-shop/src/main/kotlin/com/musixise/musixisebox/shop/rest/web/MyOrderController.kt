@@ -23,8 +23,8 @@ class MyOrderController {
 //    @RequestMapping("/create", consumes=arrayOf(MediaType.APPLICATION_JSON_VALUE)
 //        , produces =  arrayOf(MediaType.APPLICATION_JSON_VALUE), method = arrayOf(RequestMethod.POST))
     @PostMapping("/create")
-    @AppMethod(isLogin = false)
-    fun create( @Valid @RequestBody orderVO: OrderVO) : MusixiseResponse<Long> {
+    @AppMethod(isLogin = true)
+    fun create(userId: Long, @Valid @RequestBody orderVO: OrderVO) : MusixiseResponse<Long> {
 
         val orderId = iOrderService.create(orderVO)
         return MusixiseResponse<Long>(ExceptionMsg.SUCCESS, orderId)
