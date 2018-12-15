@@ -184,7 +184,7 @@ class IPayServiceImpl : IPayService {
         //微信支付不允许出现小数点，金额单位是分
         data["total_fee"] = Math.round(order.price.multiply(BigDecimal(100)).toDouble()).toString()
         data["spbill_create_ip"] = MusixiseContext.getRemoteIp();
-        data["notify_url"] = "http://api.octave-love.com/api/v1/wechat/notify"
+        data["notify_url"] = "http://api.octave-love.com/api/v1/shop/pay/notify"
         data["trade_type"] = "JSAPI"  // 此处指定为扫码支付
         data["product_id"] = orderId.toString()
         data["openid"] = getOpenId()
