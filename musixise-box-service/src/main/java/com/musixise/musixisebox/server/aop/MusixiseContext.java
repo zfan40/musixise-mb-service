@@ -11,6 +11,10 @@ public class MusixiseContext {
         return get("_uid", 0L);
     }
 
+    public static String getRemoteIp() {
+        return get("remoteip", "127.0.0.1");
+    }
+
     private static final ThreadLocal<Map<String, Object>> threadLocal = new ThreadLocal() {
         @Override
         protected Map<String, Object> initialValue() {
