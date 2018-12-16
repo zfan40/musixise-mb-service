@@ -1,9 +1,11 @@
 package com.musixise.musixisebox.shop.rest.admin
 
 import com.musixise.musixisebox.api.enums.ExceptionMsg
+import com.musixise.musixisebox.api.exception.MusixiseException
 import com.musixise.musixisebox.api.result.MusixisePageResponse
 import com.musixise.musixisebox.api.result.MusixiseResponse
 import com.musixise.musixisebox.server.aop.AppMethod
+import com.musixise.musixisebox.server.utils.CommonUtil
 import com.musixise.musixisebox.shop.domain.Product
 import com.musixise.musixisebox.shop.repository.ProductRepository
 import com.musixise.musixisebox.shop.service.IProductService
@@ -41,7 +43,12 @@ class ProductController {
 
     @PutMapping("")
     fun update(@Valid @RequestBody product: Product) : MusixiseResponse<String> {
-        productRepository.save(product)
+        productRepository.findById(product.id).map {
+            CommonUtil.copyPropertiesIgnoreNull(product, it)
+          productRepository.save(product)
+        }.orElseThrow {
+            throw MusixiseException("产品不存在");
+        }
         return MusixiseResponse(ExceptionMsg.SUCCESS)
     }
 
