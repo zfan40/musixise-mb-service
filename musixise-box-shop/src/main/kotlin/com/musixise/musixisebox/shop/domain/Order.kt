@@ -8,11 +8,11 @@ import javax.persistence.*
 @Entity
 @Table(name = "mu_order")
 data class Order(@Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long?=null,
-                 val price : BigDecimal,
+                 var price : BigDecimal,
                  var status: Long,
                  var shipTime: Date?=null,
                  var confirmTime: Date?=null,
                  val userId: Long,
-                 val amount: Long,
-                 val content: String,
-                 val address: Long = 0) : AbstractEntity()
+                 var amount: Long,
+                 var content: String?=null,
+                 var address: Long = 0) : AbstractEntity()

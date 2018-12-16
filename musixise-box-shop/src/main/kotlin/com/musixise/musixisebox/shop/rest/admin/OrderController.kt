@@ -1,8 +1,10 @@
 package com.musixise.musixisebox.shop.rest.admin
 
 import com.musixise.musixisebox.api.enums.ExceptionMsg
+import com.musixise.musixisebox.api.exception.MusixiseException
 import com.musixise.musixisebox.api.result.MusixisePageResponse
 import com.musixise.musixisebox.api.result.MusixiseResponse
+import com.musixise.musixisebox.server.utils.CommonUtil
 import com.musixise.musixisebox.shop.domain.Order
 import com.musixise.musixisebox.shop.repository.OrderRepository
 import org.springframework.data.domain.PageRequest
@@ -38,7 +40,13 @@ class OrderController {
 
     @PutMapping("")
     fun update(@Valid @RequestBody order: Order) : MusixiseResponse<String> {
-        orderRepository.save(order);
+        orderRepository.findById(order.id).map {
+            CommonUtil.copyPropertiesIgnoreNull(order, it)
+            orderRepository.save(it);
+        }.orElseThrow {
+            throw MusixiseException("订单不存在");
+        }
+
         return MusixiseResponse(ExceptionMsg.SUCCESS)
     }
 
