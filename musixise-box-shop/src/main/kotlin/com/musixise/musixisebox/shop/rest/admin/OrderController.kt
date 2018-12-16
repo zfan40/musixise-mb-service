@@ -1,9 +1,12 @@
 package com.musixise.musixisebox.shop.rest.admin
 
 import com.musixise.musixisebox.api.enums.ExceptionMsg
+import com.musixise.musixisebox.api.result.MusixisePageResponse
 import com.musixise.musixisebox.api.result.MusixiseResponse
 import com.musixise.musixisebox.shop.domain.Order
 import com.musixise.musixisebox.shop.repository.OrderRepository
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.web.bind.annotation.*
 import java.util.*
 import javax.annotation.Resource
@@ -18,9 +21,12 @@ class OrderController {
     private lateinit var orderRepository: OrderRepository
 
     @GetMapping("")
-    fun getList() : MusixiseResponse<List<Order>> {
-        val findAll = orderRepository.findAll()
-        return MusixiseResponse(findAll)
+    fun getList(@RequestParam(defaultValue = "1") page: Int, @RequestParam(defaultValue = "10") size: Int) : MusixisePageResponse<List<Order>> {
+        val sort = Sort(Sort.Direction.DESC, "id")
+        val pageable = PageRequest.of(page - 1, size, sort)
+
+        val order = orderRepository.findAll(pageable)
+        return MusixisePageResponse(order.content, order.totalElements, size, page)
     }
 
     @PostMapping("")
