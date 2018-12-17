@@ -45,7 +45,7 @@ class IPayServiceImpl : IPayService {
 
         //参数需要重新进行签名计算，参与签名的参数为：appId、timeStamp、nonceStr、package、signType，参数区分大小写。
 
-        val wxpay = WXPay(config)
+        val wxpay = WXPay(config, false, true)
         val prepayId = getPrepayId(orderId)
 
         val reqData = HashMap<String, String>()
