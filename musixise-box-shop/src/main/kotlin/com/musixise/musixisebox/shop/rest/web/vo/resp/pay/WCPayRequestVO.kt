@@ -1,5 +1,6 @@
 package com.musixise.musixisebox.shop.rest.web.vo.resp.pay
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.annotations.ApiModelProperty
 
 class WCPayRequestVO {
@@ -14,6 +15,7 @@ class WCPayRequestVO {
     var nonceStr: String? = null
 
     @ApiModelProperty(value = "预付单字符串", example = "prepay_id=u802345jgfjsdfgsdg888")
+    @JsonProperty("package")
     var packageStr: String? = null
 
     @ApiModelProperty(value = "微信签名方式", example = "MD5")

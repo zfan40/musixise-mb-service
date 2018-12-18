@@ -73,7 +73,9 @@ public class AppAdvice implements Ordered {
                     return  new MusixiseResponse(ExceptionMsg.NEED_LOGIN);
                 } else {
                     Object[] args = point.getArgs();
-                    args[0] = userService.getUserIdByToken(accessToken);;
+                    if (args[0] instanceof Long) {
+                        args[0] = userService.getUserIdByToken(accessToken);;
+                    }
                     return point.proceed(args);
                 }
             }

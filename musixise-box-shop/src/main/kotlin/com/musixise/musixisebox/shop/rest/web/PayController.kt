@@ -28,7 +28,7 @@ class PayController {
     @ApiOperation(value = "下单", notes = "")
     @AppMethod(isLogin = true)
     @PostMapping("/unifiedorder")
-    fun unifiedorder(uid: Long?, unifiedorderVO: UnifiedorderVO): MusixiseResponse<WCPayRequestVO> {
+    fun unifiedorder(unifiedorderVO: UnifiedorderVO): MusixiseResponse<WCPayRequestVO> {
 
         val payInfo = PayServiceImpl!!.getPayInfo(unifiedorderVO.orderId)
         return MusixiseResponse(ExceptionMsg.SUCCESS, payInfo)

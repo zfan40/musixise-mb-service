@@ -24,7 +24,7 @@ class MyOrderController {
 //        , produces =  arrayOf(MediaType.APPLICATION_JSON_VALUE), method = arrayOf(RequestMethod.POST))
     @PostMapping("/create")
     @AppMethod(isLogin = true)
-    fun create(userId: Long, @Valid @RequestBody orderVO: OrderVO) : MusixiseResponse<Long> {
+    fun create(@Valid @RequestBody orderVO: OrderVO) : MusixiseResponse<Long> {
 
         val orderId = iOrderService.create(orderVO)
         return MusixiseResponse<Long>(ExceptionMsg.SUCCESS, orderId)
@@ -32,7 +32,7 @@ class MyOrderController {
 
     @PostMapping("/pay")
     @AppMethod(isLogin = true)
-    fun pay(userId: Long, @Valid @RequestBody payVO: PayVO) : MusixiseResponse<Boolean> {
+    fun pay(@Valid @RequestBody payVO: PayVO) : MusixiseResponse<Boolean> {
 
         val pay = iOrderService.pay(payVO)
         return MusixiseResponse<Boolean>(ExceptionMsg.SUCCESS, pay);
