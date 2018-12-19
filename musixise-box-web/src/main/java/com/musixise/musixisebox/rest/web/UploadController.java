@@ -4,6 +4,7 @@ import com.musixise.musixisebox.api.enums.ExceptionMsg;
 import com.musixise.musixisebox.api.result.MusixiseResponse;
 import com.musixise.musixisebox.api.web.service.UploadApi;
 import com.musixise.musixisebox.server.aop.AppMethod;
+import com.musixise.musixisebox.server.aop.MusixiseContext;
 import com.musixise.musixisebox.server.manager.UploaderManager;
 import com.musixise.musixisebox.server.service.UploadService;
 import com.musixise.musixisebox.server.utils.FileUtil;
@@ -59,6 +60,7 @@ public class UploadController implements UploadApi {
     public MusixiseResponse uploadAudio(Long uid, @RequestParam String data,
                                         @RequestParam String fname) {
 
+        uid = MusixiseContext.getCurrentUid();
         uploaderManager.setUploadService(uploadServiceQiniuImpl);
 
         byte[] bt = null;

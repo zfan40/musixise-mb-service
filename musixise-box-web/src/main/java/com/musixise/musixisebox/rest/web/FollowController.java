@@ -7,6 +7,7 @@ import com.musixise.musixisebox.api.result.MusixiseResponse;
 import com.musixise.musixisebox.api.web.service.FollowApi;
 import com.musixise.musixisebox.api.web.vo.req.follow.CreateFollowVO;
 import com.musixise.musixisebox.api.web.vo.resp.follow.FollowVO;
+import com.musixise.musixisebox.server.aop.MusixiseContext;
 import com.musixise.musixisebox.server.domain.Follow;
 import com.musixise.musixisebox.server.repository.FollowRepository;
 import com.musixise.musixisebox.server.service.FollowService;
@@ -106,6 +107,7 @@ public class FollowController implements FollowApi {
     @Override
     public MusixiseResponse<Void> add(Long uid, @Valid @RequestBody CreateFollowVO createFollowVO){
 
+        uid = MusixiseContext.getCurrentUid();
         Long followId = createFollowVO.getFollowId();
         Integer status = Optional.ofNullable(createFollowVO.getStatus()).orElse(1);
 

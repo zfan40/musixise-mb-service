@@ -55,8 +55,9 @@ public class FavoriteController implements FavoriteApi {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @AppMethod(isLogin = true)
     @Override
-    public MusixiseResponse create(Long uid, @RequestBody @Valid CreateFavoriteVO createFavoriteVO) {
+    public MusixiseResponse create(@RequestBody @Valid CreateFavoriteVO createFavoriteVO) {
 
+        Long uid = MusixiseContext.getCurrentUid();
         Long workId = createFavoriteVO.getWorkId();
         Integer status = Optional.ofNullable(createFavoriteVO.getStatus()).orElse(1);
 

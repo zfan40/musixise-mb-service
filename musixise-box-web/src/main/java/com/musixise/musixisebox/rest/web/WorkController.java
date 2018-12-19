@@ -46,6 +46,7 @@ public class WorkController implements WorkApi {
     @Override
     public MusixiseResponse<Long> create(Long uid, @Valid @RequestBody WorkMeta workMeta) {
 
+        uid = MusixiseContext.getCurrentUid();
         Work work = WorkTransfter.getWork(workMeta);
         work.setUserId(uid);
         workRepository.save(work);
@@ -95,6 +96,7 @@ public class WorkController implements WorkApi {
     @AppMethod(isLogin = true)
     @Override
     public MusixiseResponse<?> update(Long uid, @PathVariable Long id, @RequestBody WorkMeta workMeta) {
+        uid = MusixiseContext.getCurrentUid();
         return workRepository.findById(id).map(work -> {
             CommonUtil.copyPropertiesIgnoreNull(workMeta, work);
             workRepository.save(work);

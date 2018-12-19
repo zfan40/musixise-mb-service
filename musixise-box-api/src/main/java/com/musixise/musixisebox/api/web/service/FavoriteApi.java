@@ -22,7 +22,7 @@ public interface FavoriteApi {
 
     @ApiOperation(value = "添加收藏")
     @ApiImplicitParam(name = "status", value = "操作收藏 (1=收藏，0=取消收藏)", defaultValue = "1", allowableValues="0,1", dataType = "Integer")
-    MusixiseResponse create(Long uid, @RequestBody @Valid CreateFavoriteVO createFavoriteVO);
+    MusixiseResponse create(@RequestBody @Valid CreateFavoriteVO createFavoriteVO);
 
     @ApiOperation(value = "获取收藏列表")
     MusixisePageResponse<List<FavoriteVO>> getList(@PathVariable Long uid,

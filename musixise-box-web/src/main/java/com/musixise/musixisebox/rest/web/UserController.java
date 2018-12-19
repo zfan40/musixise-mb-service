@@ -93,7 +93,7 @@ public class UserController implements UserApi {
     @AppMethod(isLogin = true)
     @Override
     public MusixiseResponse<UserVO> getCuurentUserInfo(Long uid) {
-        UserVO userVO = Optional.ofNullable(userService.getById(uid)).orElseThrow(() -> new MusixiseException("不存在的用户"));
+        UserVO userVO = Optional.ofNullable(userService.getById(MusixiseContext.getCurrentUid())).orElseThrow(() -> new MusixiseException("不存在的用户"));
         return new MusixiseResponse<>(userVO);
     }
 
@@ -126,7 +126,7 @@ public class UserController implements UserApi {
     @AppMethod(isLogin = true)
     @Override
     public MusixiseResponse<Void> updateInfo(Long uid, @Valid @RequestBody Update update) {
-        userService.updateInfo(uid, update);
+        userService.updateInfo(MusixiseContext.getCurrentUid(), update);
         return new MusixiseResponse<>(ExceptionMsg.SUCCESS);
     }
 
