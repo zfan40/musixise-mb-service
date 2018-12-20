@@ -6,7 +6,9 @@ import com.musixise.musixisebox.api.result.MusixisePageResponse
 import com.musixise.musixisebox.api.result.MusixiseResponse
 import com.musixise.musixisebox.server.utils.CommonUtil
 import com.musixise.musixisebox.shop.domain.Order
+import com.musixise.musixisebox.shop.domain.QOrder
 import com.musixise.musixisebox.shop.repository.OrderRepository
+import com.querydsl.core.BooleanBuilder
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.web.bind.annotation.*
@@ -23,11 +25,22 @@ class OrderController {
     private lateinit var orderRepository: OrderRepository
 
     @GetMapping("")
-    fun getList(@RequestParam(defaultValue = "1") page: Int, @RequestParam(defaultValue = "10") size: Int) : MusixisePageResponse<List<Order>> {
-        val sort = Sort(Sort.Direction.DESC, "id")
+    fun getList(@RequestParam(required = false) status: Long?,
+                @RequestParam(defaultValue = "1") page: Int,
+                @RequestParam(defaultValue = "10") size: Int) : MusixisePageResponse<List<Order>> {
+
+        val orderQ = QOrder.order
+        val builder = BooleanBuilder()
+        builder.and(orderQ.id.longValue().gt(0))
+        status?.let {
+            builder.and(orderQ.status.eq(it))
+        }
+
+        val sort = Sort(Sort.Order(Sort.Direction.DESC, "id"))
         val pageable = PageRequest.of(page - 1, size, sort)
 
-        val order = orderRepository.findAll(pageable)
+        val order = orderRepository.findAll(builder, pageable)
+
         return MusixisePageResponse(order.content, order.totalElements, size, page)
     }
 
