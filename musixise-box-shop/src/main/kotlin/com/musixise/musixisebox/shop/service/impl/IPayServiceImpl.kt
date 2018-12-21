@@ -224,7 +224,7 @@ class IPayServiceImpl : IPayService {
         data["spbill_create_ip"] = MusixiseContext.getRemoteIp();
         data["notify_url"] = "http://api.octave-love.com/api/v1/shop/pay/notify"
         data["trade_type"] = "JSAPI"  // 此处指定为扫码支付
-        data["product_id"] = orderId.toString()
+        //data["product_id"] = orderId.toString()
         data["openid"] = getOpenId()
 
         val resp = wxpay.unifiedOrder(data)
