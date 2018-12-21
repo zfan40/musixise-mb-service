@@ -164,7 +164,7 @@ class IPayServiceImpl : IPayService {
     @Throws(Exception::class)
     override fun getPrepayId(orderId: Long): String? {
 
-        val wxpay = WXPay(config)
+        val wxpay = WXPay(config, false, true)
 
         //获取订单
         val order = iOrderService.get(orderId)
