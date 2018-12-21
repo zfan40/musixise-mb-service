@@ -95,6 +95,7 @@ class IPayServiceImpl : IPayService {
             if (StringUtils.isBlank(strXML)) {
                 return null
             }
+            logger.info("strXML ${strXML}")
             val result = WXPayUtil.xmlToMap(strXML)
             logger.info("retrieveSandboxSignKey:$result")
             return if ("SUCCESS" == result["return_code"]) {
