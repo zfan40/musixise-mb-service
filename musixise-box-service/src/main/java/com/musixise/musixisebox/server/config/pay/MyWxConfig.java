@@ -44,6 +44,10 @@ public class MyWxConfig extends WXPayConfig {
         return key;
     }
 
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     @Override
     public InputStream getCertStream() {
         ByteArrayInputStream certBis = new ByteArrayInputStream(this.certData);

@@ -2,6 +2,7 @@ package com.musixise.musixisebox.shop.service.impl
 
 import com.alibaba.fastjson.JSON
 import com.github.wxpay.sdk.WXPay
+import com.github.wxpay.sdk.WXPayConstants
 import com.github.wxpay.sdk.WXPayUtil
 import com.musixise.musixisebox.api.exception.MusixiseException
 import com.musixise.musixisebox.server.aop.MusixiseContext
@@ -40,12 +41,23 @@ class IPayServiceImpl : IPayService {
 
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
+    companion object {
+        val inSandbox = true;
+    }
+
+
     @Throws(Exception::class)
     override fun getPayInfo(orderId: Long): WCPayRequestVO {
 
         //参数需要重新进行签名计算，参与签名的参数为：appId、timeStamp、nonceStr、package、signType，参数区分大小写。
 
-        val wxpay = WXPay(config, false, true)
+        val wxpay = WXPay(config, false, inSandbox)
+
+        if (inSandbox) {
+            //计算签名
+            config?.key = retrieveSandboxSignKey(wxpay) ?: throw MusixiseException("获取沙箱密钥失败")
+        }
+
         val prepayId = getPrepayId(orderId)
 
         val reqData = HashMap<String, String>()
@@ -55,8 +67,7 @@ class IPayServiceImpl : IPayService {
         reqData["timeStamp"] = System.currentTimeMillis().toString()
         reqData["package"] = "prepay_id=" + prepayId!!
 
-        //计算签名
-        val signature = WXPayUtil.generateSignature(reqData, config!!.key)
+        val signature = WXPayUtil.generateSignature(reqData, config?.key, WXPayConstants.SignType.MD5)
 
         val wcPayRequestVO = WCPayRequestVO()
 
@@ -68,6 +79,32 @@ class IPayServiceImpl : IPayService {
         wcPayRequestVO.paySign = signature
 
         return wcPayRequestVO
+    }
+
+    fun retrieveSandboxSignKey(wxPay: WXPay): String? {
+
+        try {
+            val params = HashMap<String, String>()
+            params["mch_id"] = config!!.getMchID()
+            params["nonce_str"] = WXPayUtil.generateNonceStr()
+            params["sign"] = WXPayUtil.generateSignature(params, config!!.getKey())
+            val strXML = wxPay.requestWithoutCert(
+                "/sandboxnew/pay/getsignkey",
+                params, config!!.getHttpConnectTimeoutMs(), config!!.getHttpReadTimeoutMs()
+            )
+            if (StringUtils.isBlank(strXML)) {
+                return null
+            }
+            val result = WXPayUtil.xmlToMap(strXML)
+            logger.info("retrieveSandboxSignKey:$result")
+            return if ("SUCCESS" == result["return_code"]) {
+                result["sandbox_signkey"]
+            } else null
+        } catch (e: Exception) {
+            logger.error("获取sandbox_signkey异常", e)
+            return null
+        }
+
     }
 
     override fun getPayNotify(request: HttpServletRequest): String? {
@@ -164,7 +201,7 @@ class IPayServiceImpl : IPayService {
     @Throws(Exception::class)
     override fun getPrepayId(orderId: Long): String? {
 
-        val wxpay = WXPay(config, false, true)
+        val wxpay = WXPay(config, false, inSandbox)
 
         //获取订单
         val order = iOrderService.get(orderId)
