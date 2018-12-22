@@ -43,7 +43,7 @@ class IPayServiceImpl : IPayService {
 
     companion object {
         val inSandbox = true;
-        var signType = WXPayConstants.SignType.HMACSHA256
+        var signType = WXPayConstants.SignType.MD5
     }
 
 
@@ -58,7 +58,6 @@ class IPayServiceImpl : IPayService {
         if (inSandbox) {
             //计算签名
             config?.key = retrieveSandboxSignKey(wxpay) ?: throw MusixiseException("获取沙箱密钥失败")
-            signType = WXPayConstants.SignType.MD5
         }
 
         val prepayId = getPrepayId(orderId)
@@ -66,7 +65,7 @@ class IPayServiceImpl : IPayService {
         val reqData = HashMap<String, String>()
         reqData["appId"] = config!!.appID
         reqData["nonceStr"] = WXPayUtil.generateNonceStr()
-        reqData["signType"] = signType.name
+        reqData["signType"] = "MD5"
         reqData["timeStamp"] = WXPayUtil.getCurrentTimestamp().toString()
         reqData["package"] = "prepay_id=" + prepayId!!
 
