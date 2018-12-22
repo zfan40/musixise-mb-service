@@ -217,7 +217,7 @@ class IPayServiceImpl : IPayService {
         val data = HashMap<String, String>()
         data["body"] = boxInfo.product.name + " " + boxInfo.title
         data["out_trade_no"] = orderId.toString()
-        data["device_info"] = ""
+        //data["device_info"] = ""
         data["fee_type"] = "CNY"
         //微信支付不允许出现小数点，金额单位是分
         data["total_fee"] = Math.round(order.price.multiply(BigDecimal(100)).toDouble()).toString()
@@ -227,6 +227,7 @@ class IPayServiceImpl : IPayService {
         //data["product_id"] = orderId.toString()
         data["openid"] = getOpenId()
 
+        logger.info("unifiedOrder prepare:"+data.toString())
         val resp = wxpay.unifiedOrder(data)
         if ("FAIL".equals(resp["return_code"]) || "FAIL".equals(resp["result_code"])) {
             logger.error("Exception do unifiedorder action: " + resp.toString())
