@@ -64,7 +64,7 @@ class IPayServiceImpl : IPayService {
         reqData["appId"] = config!!.appID
         reqData["nonceStr"] = WXPayUtil.generateNonceStr()
         reqData["signType"] = "MD5"
-        reqData["timeStamp"] = System.currentTimeMillis().toString()
+        reqData["timeStamp"] = WXPayUtil.getCurrentTimestamp().toString()
         reqData["package"] = "prepay_id=" + prepayId!!
 
         val signature = WXPayUtil.generateSignature(reqData, config?.key, WXPayConstants.SignType.MD5)
