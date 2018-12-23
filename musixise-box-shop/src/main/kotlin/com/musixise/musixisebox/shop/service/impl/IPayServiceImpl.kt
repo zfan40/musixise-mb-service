@@ -42,7 +42,7 @@ class IPayServiceImpl : IPayService {
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     companion object {
-        val inSandbox = true;
+        val inSandbox = false;
         var signType = WXPayConstants.SignType.MD5
     }
 
