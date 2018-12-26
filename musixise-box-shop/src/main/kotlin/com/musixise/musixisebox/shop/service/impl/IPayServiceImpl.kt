@@ -112,6 +112,7 @@ class IPayServiceImpl : IPayService {
 
     override fun getPayNotify(request: HttpServletRequest): String? {
 
+        logger.info("getPayNotify request {}", request)
         var result: String? = null
         var inlength: String
         var notifyXml = ""
