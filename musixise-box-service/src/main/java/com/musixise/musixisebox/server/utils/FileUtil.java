@@ -24,7 +24,7 @@ public class FileUtil {
     public static String getFullFilePath(String fileName, FileTypeEnum fileType) {
 
         if (StringUtils.isNotBlank(fileName)) {
-            if (fileName.indexOf("http") == -1) {
+            if (fileName.indexOf("http") == -1 && fileName.indexOf("//") == -1) {
                 if (fileType.equals(FileTypeEnum.IMAGE)) {
                     return String.format(Constants.QINIU_IMG_DOMAIN, fileName);
                 } else if (fileType.equals(FileTypeEnum.AUDIO)) {
