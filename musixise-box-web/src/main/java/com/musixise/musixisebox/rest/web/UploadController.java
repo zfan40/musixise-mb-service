@@ -67,7 +67,8 @@ public class UploadController implements UploadApi {
         try {
             sun.misc.BASE64Decoder decoder = new sun.misc.BASE64Decoder();
             //data:;base64,aSBhbSBhIGJsb2I=
-            data = data.replaceAll("data:;base64,", "");
+            //data:audio/midi;charset=binary;base64,
+            data = data.replaceAll("data:audio/midi;charset=binary;base64,", "");
             bt = decoder.decodeBuffer( data);
             //value = new String(bt, "UTF-8");
             //生成文件名
