@@ -57,7 +57,7 @@ public class MusixiserAdminController implements MusixiserApi {
     @Override
     public MusixiseResponse<MusixiserVO> getMusixiser(@PathVariable Long id) {
 
-        return musixiserRepository.findById(id).map(musixiser -> {
+        return musixiserRepository.findOneByUserId(id).map(musixiser -> {
             return new MusixiseResponse<>(ExceptionMsg.SUCCESS, MusixiserTransfter.getMusixiserVO(musixiser));
         }).orElse(new MusixiseResponse<>(ExceptionMsg.FAILED));
     }
