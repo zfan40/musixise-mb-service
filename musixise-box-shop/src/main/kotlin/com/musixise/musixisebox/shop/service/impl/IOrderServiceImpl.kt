@@ -7,6 +7,7 @@ import com.musixise.musixisebox.server.repository.WorkRepository
 import com.musixise.musixisebox.shop.domain.BoxInfo
 import com.musixise.musixisebox.shop.domain.Order
 import com.musixise.musixisebox.shop.domain.Product
+import com.musixise.musixisebox.shop.repository.AddressRepository
 import com.musixise.musixisebox.shop.repository.OrderRepository
 import com.musixise.musixisebox.shop.repository.ProductRepository
 import com.musixise.musixisebox.shop.rest.web.vo.req.OrderVO
@@ -28,6 +29,9 @@ class IOrderServiceImpl : IOrderService {
     @Resource
     lateinit var workRepository: WorkRepository
 
+    @Resource
+    lateinit var addressRepository: AddressRepository
+
     /**
      * 下单
      */
@@ -42,9 +46,20 @@ class IOrderServiceImpl : IOrderService {
 
         var currentUid = MusixiseContext.getCurrentUid()
 
+        //地址是否存在
+        addressRepository.findById(orderVO.addressId).map {
+
+            if (!it.userId.equals(currentUid)) {
+                throw MusixiseException("地址不存在02");
+            }
+
+        }.orElseThrow {
+            throw MusixiseException("地址不存在01");
+        }
+
         val order = Order(price = totalPrice(product.get().price, orderVO.amount),
             userId = currentUid, status = 0, content = getProductContent(orderVO.wid, product.get()),
-            amount = orderVO.amount)
+            amount = orderVO.amount, address = orderVO.addressId)
         orderRepository.save(order);
 
         return order.id
