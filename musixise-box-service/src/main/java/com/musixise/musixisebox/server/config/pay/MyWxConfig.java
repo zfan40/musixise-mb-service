@@ -15,6 +15,7 @@ public class MyWxConfig extends WXPayConfig {
     @Value("${spring.wechat.pay.appId}") String appId;
     @Value("${spring.wechat.pay.mchId}") String mchId;
     @Value("${spring.wechat.pay.key}") String key;
+    @Value("${spring.wechat.pay.payNotifyUrl}") String payNotifyUrl;
 
     private byte[] certData;
 
@@ -67,6 +68,14 @@ public class MyWxConfig extends WXPayConfig {
     @Override
     public int getHttpReadTimeoutMs() {
         return 10000;
+    }
+
+    public String getPayNotifyUrl() {
+        return payNotifyUrl;
+    }
+
+    public void setPayNotifyUrl(String payNotifyUrl) {
+        this.payNotifyUrl = payNotifyUrl;
     }
 }
 
