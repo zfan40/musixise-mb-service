@@ -1,13 +1,17 @@
 package com.musixise.musixisebox.shop.rest.admin
 
+import com.alibaba.fastjson.JSON
 import com.musixise.musixisebox.api.enums.ExceptionMsg
 import com.musixise.musixisebox.api.exception.MusixiseException
 import com.musixise.musixisebox.api.result.MusixisePageResponse
 import com.musixise.musixisebox.api.result.MusixiseResponse
 import com.musixise.musixisebox.server.utils.CommonUtil
+import com.musixise.musixisebox.shop.domain.BoxInfo
 import com.musixise.musixisebox.shop.domain.Order
 import com.musixise.musixisebox.shop.domain.QOrder
+import com.musixise.musixisebox.shop.repository.AddressRepository
 import com.musixise.musixisebox.shop.repository.OrderRepository
+import com.musixise.musixisebox.shop.rest.admin.vo.OrderVO
 import com.querydsl.core.BooleanBuilder
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -24,10 +28,13 @@ class OrderController {
     @Resource
     private lateinit var orderRepository: OrderRepository
 
+    @Resource
+    private lateinit var addressRepository: AddressRepository
+
     @GetMapping("")
     fun getList(@RequestParam(required = false) status: Long?,
                 @RequestParam(defaultValue = "1") page: Int,
-                @RequestParam(defaultValue = "10") size: Int) : MusixisePageResponse<List<Order>> {
+                @RequestParam(defaultValue = "10") size: Int) : MusixisePageResponse<List<OrderVO>> {
 
         val orderQ = QOrder.order
         val builder = BooleanBuilder()
@@ -39,9 +46,22 @@ class OrderController {
         val sort = Sort(Sort.Order(Sort.Direction.DESC, "id"))
         val pageable = PageRequest.of(page - 1, size, sort)
 
-        val order = orderRepository.findAll(builder, pageable)
+        val orderVOList = arrayListOf<OrderVO>()
 
-        return MusixisePageResponse(order.content, order.totalElements, size, page)
+        val order = orderRepository.findAll(builder, pageable);
+
+        order.content.forEach {
+            val orderVO = OrderVO()
+            CommonUtil.copyPropertiesIgnoreNull(it, orderVO)
+            orderVO.product = JSON.parseObject(it.content.toString(), BoxInfo::class.java)
+            if (it.address > 0) {
+                orderVO.address = addressRepository.getOne(it.address)
+            }
+
+            orderVOList.add(orderVO)
+        }
+
+        return MusixisePageResponse(orderVOList, order.totalElements, size, page)
     }
 
     @PostMapping("")
