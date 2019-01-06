@@ -35,6 +35,7 @@ class PayController {
 
     @ApiOperation(value = "支付通知", notes = "")
     @PostMapping("/notify")
+    @AppMethod
     fun payNotify(@RequestBody xmlData: String): String? {
         return PayServiceImpl?.getPayNotify(xmlData)
     }

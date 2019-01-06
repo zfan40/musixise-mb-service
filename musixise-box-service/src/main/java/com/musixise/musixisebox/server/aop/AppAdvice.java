@@ -3,7 +3,6 @@ package com.musixise.musixisebox.server.aop;
 import com.musixise.musixisebox.api.enums.ExceptionMsg;
 import com.musixise.musixisebox.api.result.MusixiseResponse;
 import com.musixise.musixisebox.server.service.UserService;
-import com.musixise.musixisebox.server.utils.IpUtil;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.aspectj.lang.JoinPoint;
@@ -12,6 +11,7 @@ import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -34,6 +34,8 @@ public class AppAdvice implements Ordered {
 
     public final static String AUTHORIZATION_TOKEN = "access_token";
 
+    private final static String TRACK_USER_ID = "userId";
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
@@ -53,7 +55,7 @@ public class AppAdvice implements Ordered {
         ServletRequestAttributes sra = (ServletRequestAttributes) ra;
         HttpServletRequest request = sra.getRequest();
 
-        MusixiseContext.set("remoteip", IpUtil.getIpAddr(request));
+        MDC.put(TRACK_USER_ID, "0");
 
         Object result = null;
         //需要检测登录
@@ -101,11 +103,13 @@ public class AppAdvice implements Ordered {
         Long userId = userService.getUserIdByToken(accessToken);
         //写入用户ID
         MusixiseContext.set("_uid", userId);
+
         return userId > 0;
     }
 
     @Before("within(com.musixise.musixisebox..*)")
     public void addBeforeLogger(JoinPoint joinPoint) {
+        MDC.put(TRACK_USER_ID, MusixiseContext.getCurrentUid().toString());
         logger.info("run before " + getInvokeName(joinPoint));
         logger.info(joinPoint.getSignature().toString());
         logger.info(parseParames(joinPoint.getArgs()));
@@ -123,6 +127,8 @@ public class AppAdvice implements Ordered {
             }
             logger.info("run after " + getInvokeName(joinPoint)+ " returnObj="+retString);
         }
+
+        MDC.remove(TRACK_USER_ID);
     }
 
     @AfterThrowing(pointcut = "within(com.musixise.musixisebox..*) && @annotation(appMethod)", throwing = "ex")
