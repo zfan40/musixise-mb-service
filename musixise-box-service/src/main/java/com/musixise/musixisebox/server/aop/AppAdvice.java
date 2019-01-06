@@ -121,26 +121,20 @@ public class AppAdvice implements Ordered {
             } else {
                 retString = ReflectionToStringBuilder.toString(rvt, ToStringStyle.SIMPLE_STYLE);
             }
-        } else {
-            retString = "null";
+            logger.info("run after " + getInvokeName(joinPoint)+ " returnObj="+retString);
         }
-        logger.info("run after " + getInvokeName(joinPoint)+ " returnObj="+retString);
     }
 
     @AfterThrowing(pointcut = "within(com.musixise.musixisebox..*) && @annotation(appMethod)", throwing = "ex")
     public void addAfterThrowingLogger(JoinPoint joinPoint, AppMethod appMethod, Exception ex) {
-        logger.error("run exception " + getInvokeName(joinPoint) + " Params "+ ReflectionToStringBuilder.toString(joinPoint.getArgs()) + "  EXCEPTION", ex);
+        logger.error("run exception " + getInvokeName(joinPoint) + " Params "+ ReflectionToStringBuilder.toString(joinPoint.getArgs(), ToStringStyle.SIMPLE_STYLE) + "  EXCEPTION", ex);
     }
 
     private String parseParames(Object[] parames) {
         if (null == parames || parames.length <= 0) {
             return "";
         }
-        StringBuffer param = new StringBuffer("get params[{}] ");
-        for (Object obj : parames) {
-            param.append(ReflectionToStringBuilder.toString(obj)).append("  ");
-        }
-        return param.toString();
+        return "get params: "+ReflectionToStringBuilder.toString(parames, ToStringStyle.SIMPLE_STYLE);
     }
 
 
