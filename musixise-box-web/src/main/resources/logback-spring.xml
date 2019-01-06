@@ -3,6 +3,10 @@
     <contextName>logback</contextName>
     <property resource="application.properties" />
     <property name="log.path" value="${logging.path}" />
+    <!--动态读取applition.properties中的配置-->
+    <springProperty scope="context" name="DATASOURCE.USERNAME" source="spring.datasource.username"/>
+    <springProperty scope="context" name="DATASOURCE.PASSWORD" source="spring.datasource.password"/>
+
 
     <!--配置规则类的位置-->
     <conversionRule conversionWord="ip" converterClass="com.musixise.musixisebox.server.config.IPLogConfig" />
@@ -36,9 +40,21 @@
         </encoder>
     </appender>
 
+    <appender name="DBAPPENDER" class="ch.qos.logback.classic.db.DBAppender">
+        <connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
+            <dataSource class="org.apache.commons.dbcp.BasicDataSource">
+                <driverClassName>com.mysql.jdbc.Driver</driverClassName>
+                <url>jdbc:mysql://localhost:3306/musixise_logback</url>
+                <username>${DATASOURCE.USERNAME}</username>
+                <password>${DATASOURCE.PASSWORD}</password>
+            </dataSource>
+        </connectionSource>
+    </appender>
+
     <root level="info">
         <appender-ref ref="console" />
         <appender-ref ref="file" />
+        <appender-ref ref="DBAPPENDER" />
     </root>
 
     <!-- logback为java中的包 -->
