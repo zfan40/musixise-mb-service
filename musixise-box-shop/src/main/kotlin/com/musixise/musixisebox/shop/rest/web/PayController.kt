@@ -8,12 +8,11 @@ import com.musixise.musixisebox.shop.rest.web.vo.resp.pay.WCPayRequestVO
 import com.musixise.musixisebox.shop.service.IPayService
 import io.swagger.annotations.ApiOperation
 import org.slf4j.LoggerFactory
-import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import javax.annotation.Resource
-import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping("/api/v1/shop/pay")
@@ -35,8 +34,8 @@ class PayController {
     }
 
     @ApiOperation(value = "支付通知", notes = "")
-    @GetMapping("/notify")
-    fun payNotify(request: HttpServletRequest): String? {
-        return PayServiceImpl?.getPayNotify(request)
+    @PostMapping("/notify")
+    fun payNotify(@RequestBody xmlData: String): String? {
+        return PayServiceImpl?.getPayNotify(xmlData)
     }
 }

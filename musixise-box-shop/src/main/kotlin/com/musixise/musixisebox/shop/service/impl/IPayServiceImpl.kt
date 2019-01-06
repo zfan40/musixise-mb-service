@@ -18,17 +18,15 @@ import com.musixise.musixisebox.shop.service.IPayService
 import org.apache.commons.lang.StringUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-import java.io.IOException
 import java.math.BigDecimal
 import java.util.*
 import javax.annotation.Resource
-import javax.servlet.http.HttpServletRequest
 
 @Component("ipayServiceImpl")
 class IPayServiceImpl : IPayService {
 
     @Resource
-    internal var config: MyWxConfig? = null
+    lateinit var config: MyWxConfig
 
     @Resource
     private lateinit var iOrderService: IOrderService;
@@ -110,24 +108,12 @@ class IPayServiceImpl : IPayService {
 
     }
 
-    override fun getPayNotify(request: HttpServletRequest): String? {
+    override fun getPayNotify(xmlData: String): String? {
 
-        logger.info("getPayNotify request {}", request)
+        logger.info("getPayNotify request {}", xmlData)
         var result: String? = null
-        var inlength: String
-        var notifyXml = ""
-        try {
 
-            request.reader.forEachLine {
-                notifyXml += it
-            }
-
-        } catch (e: IOException) {
-            //获取XML错误
-            logger.error("Exception parse wechat notify data: " + request.toString())
-        }
-
-        if (StringUtils.isEmpty(notifyXml)) {
+        if (StringUtils.isEmpty(xmlData)) {
             //xml为空
             logger.warn("xml of wechat pay is empty")
             return null
@@ -135,25 +121,25 @@ class IPayServiceImpl : IPayService {
 
         try {
 
-            val map = WXPayUtil.xmlToMap(notifyXml)
+            val map = WXPayUtil.xmlToMap(xmlData)
             logger.info("getPayNotify {}", map)
-            val appid = map["appid"]
-            val bank_type = map["bank_type"]
-            val cash_fee = map["cash_fee"]
-            val device_info = map["device_info"]
-            val fee_type = map["fee_type"]
-            val is_subscribe = map["is_subscribe"]
-            val mch_id = map["mch_id"]
-            val nonce_str = map["nonce_str"]
-            val openid = map["openid"]
-            val out_trade_no = map["out_trade_no"]
-            val result_code = map["result_code"]
-            val return_code = map["return_code"]
-            val sign = map["sign"]
-            val time_end = map["time_end"]
-            val total_fee = map["total_fee"]
-            val trade_type = map["trade_type"]
-            val transaction_id = map["transaction_id"]
+            val appid = map.getOrDefault("appid", "")
+            val bank_type = map.getOrDefault("bank_type", "")
+            val cash_fee = map.getOrDefault("cash_fee", "")
+            val device_info = map.getOrDefault("device_info", "")
+            val fee_type = map.getOrDefault("fee_type", "")
+            val is_subscribe = map.getOrDefault("is_subscribe", "")
+            val mch_id = map.getOrDefault("mch_id", "")
+            val nonce_str = map.getOrDefault("nonce_str", "")
+            val openid = map.getOrDefault("openid", "")
+            val out_trade_no = map.getOrDefault("out_trade_no", "")
+            val result_code = map.getOrDefault("result_code", "")
+            val return_code = map.getOrDefault("return_code", "")
+            val sign = map.getOrDefault("sign", "")
+            val time_end = map.getOrDefault("time_end", "")
+            val total_fee = map.getOrDefault("total_fee", "")
+            val trade_type = map.getOrDefault("trade_type", "")
+            val transaction_id = map.getOrDefault("transaction_id", "")
 
             val date = HashMap<String, String?>()
             date["appid"] = appid
@@ -176,16 +162,30 @@ class IPayServiceImpl : IPayService {
             var localSign: String? = null
             localSign = WXPayUtil.generateSignature(date, config!!.key)
 
-            if (localSign == sign) {
+            if (localSign.equals(sign)) {
                 if (result_code == "SUCCESS" && return_code == "SUCCESS") {
                     //业务模块处理点
                     logger.info("wechat notify done. " + date.toString())
 
+                    payDone(out_trade_no.toLong())
+
+                    //正确的结果要分上面几个不一样返回，不能这样只返回一个
+                    result = ("<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
+                            + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ")
+
+                    return result
+
                 } else {
-                    //签名失败
-                    logger.error("wechat notify sign error: " + date.toString())
+                    //返回不是SUCCESS
+                    logger.error("wechat notify reponse error: " + date.toString())
                     return null
                 }
+            } else {
+
+                //签名失败
+                logger.error("wechat notify sign error: " + date.toString())
+                return null
+
             }
 
         } catch (e: Exception) {
@@ -195,11 +195,24 @@ class IPayServiceImpl : IPayService {
             return null
         }
 
-        //正确的结果要分上面几个不一样返回，不能这样只返回一个
-        result = ("<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
-                + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ")
 
-        return result
+    }
+
+    fun payDone(orderId: Long) : Boolean {
+        val order = iOrderService.get(orderId)
+        when(order.status) {
+            OrderEnum.PEDDING_PAY.status -> {
+                //已支付，待发货
+                order.status = OrderEnum.WAIT_DELIVER_GOODS.status
+                order.confirmTime = Date()
+                iOrderService.update(order)
+            }
+
+            OrderEnum.DONE.status -> return true
+            else -> return true
+        }
+
+        return true
     }
 
     @Throws(Exception::class)

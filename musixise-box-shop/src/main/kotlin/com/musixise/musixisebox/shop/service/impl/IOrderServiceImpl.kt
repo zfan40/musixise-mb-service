@@ -94,4 +94,8 @@ class IOrderServiceImpl : IOrderService {
             throw MusixiseException("不存在的订单号 ${orderId}");
         }
     }
+
+    override fun update(order: Order) {
+       orderRepository.save(order)
+    }
 }

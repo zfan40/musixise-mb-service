@@ -11,4 +11,6 @@ interface IOrderService {
     fun pay(payVO: PayVO) : Boolean
 
     fun get(ordrId: Long) : Order
+
+    fun update(order: Order)
 }
