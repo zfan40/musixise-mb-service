@@ -35,7 +35,7 @@ class IOrderServiceImpl : IOrderService {
     /**
      * 下单
      */
-    override fun create(orderVO: OrderVO): Long? {
+    override fun create(orderVO: OrderVO): Long {
 
         //获取产品信息
         val product = productRepository.findById(orderVO.pid)

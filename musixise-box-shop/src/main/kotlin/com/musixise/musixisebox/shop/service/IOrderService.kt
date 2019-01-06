@@ -6,7 +6,7 @@ import com.musixise.musixisebox.shop.rest.web.vo.req.PayVO
 
 interface IOrderService {
 
-    fun create(orderVO: OrderVO) : Long?
+    fun create(orderVO: OrderVO) : Long
 
     fun pay(payVO: PayVO) : Boolean
 

@@ -15,6 +15,7 @@ import com.musixise.musixisebox.shop.repository.OrderRepository
 import com.musixise.musixisebox.shop.rest.web.vo.resp.pay.WCPayRequestVO
 import com.musixise.musixisebox.shop.service.IOrderService
 import com.musixise.musixisebox.shop.service.IPayService
+import com.musixise.musixisebox.shop.utils.OrderUtil
 import org.apache.commons.lang.StringUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -167,7 +168,8 @@ class IPayServiceImpl : IPayService {
                     //业务模块处理点
                     logger.info("wechat notify done. " + date.toString())
 
-                    payDone(out_trade_no.toLong())
+                    val orderId = OrderUtil.getOrderId(out_trade_no)
+                    payDone(orderId)
 
                     //正确的结果要分上面几个不一样返回，不能这样只返回一个
                     result = ("<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
@@ -232,7 +234,7 @@ class IPayServiceImpl : IPayService {
 
         val data = HashMap<String, String>()
         data["body"] = boxInfo.product.name + " " + boxInfo.title
-        data["out_trade_no"] = orderId.toString()
+        data["out_trade_no"] = OrderUtil.genOrderId(MusixiseContext.getCurrentUid(), orderId)
         //data["device_info"] = ""
         data["fee_type"] = "CNY"
         //微信支付不允许出现小数点，金额单位是分

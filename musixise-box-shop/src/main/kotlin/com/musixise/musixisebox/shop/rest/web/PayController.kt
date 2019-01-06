@@ -6,6 +6,7 @@ import com.musixise.musixisebox.server.aop.AppMethod
 import com.musixise.musixisebox.shop.rest.web.vo.req.pay.UnifiedorderVO
 import com.musixise.musixisebox.shop.rest.web.vo.resp.pay.WCPayRequestVO
 import com.musixise.musixisebox.shop.service.IPayService
+import com.musixise.musixisebox.shop.utils.OrderUtil
 import io.swagger.annotations.ApiOperation
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.PostMapping
@@ -29,7 +30,8 @@ class PayController {
     @PostMapping("/unifiedorder")
     fun unifiedorder(unifiedorderVO: UnifiedorderVO): MusixiseResponse<WCPayRequestVO> {
 
-        val payInfo = PayServiceImpl!!.getPayInfo(unifiedorderVO.orderId)
+        val orderId = OrderUtil.getOrderId(unifiedorderVO.orderId)
+        val payInfo = PayServiceImpl!!.getPayInfo(orderId)
         return MusixiseResponse(ExceptionMsg.SUCCESS, payInfo)
     }
 

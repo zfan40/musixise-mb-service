@@ -7,7 +7,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "mu_order")
-data class Order(@Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long?=null,
+data class Order(@Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long=0,
                  var price : BigDecimal,
                  var status: Long,
                  var shipTime: Date?=null,
