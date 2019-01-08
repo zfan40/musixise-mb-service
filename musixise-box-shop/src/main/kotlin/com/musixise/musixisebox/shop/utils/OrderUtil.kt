@@ -13,7 +13,7 @@ object OrderUtil {
      */
     fun genOrderId(userId: Long, orderId: Long): String {
 
-        val sdf = SimpleDateFormat("yyyyMMddHHmmss")
+        val sdf = SimpleDateFormat("yyyyMMddHH")
         val format = sdf.format(Date())
         val userIdHex  = StringUtils.leftPad(java.lang.Long.toHexString(userId), 10, "0")
         val orderIdHex = StringUtils.leftPad(java.lang.Long.toHexString(orderId), 10, "0")
@@ -24,14 +24,14 @@ object OrderUtil {
      * 解析订单号
      */
     fun getOrderId(orderId: String): Long {
-        return java.lang.Long.parseLong(orderId.substring(24).replaceFirst("^0*", ""), 16)
+        return java.lang.Long.parseLong(orderId.substring(20).replaceFirst("^0*", ""), 16)
     }
 
     /**
      * 解析出用户ID
      */
     fun getUserId(orderId: String): Long {
-        return java.lang.Long.parseLong(orderId.substring(14, 24).replaceFirst("^0*", ""), 16)
+        return java.lang.Long.parseLong(orderId.substring(10, 20).replaceFirst("^0*", ""), 16)
     }
 
 }
