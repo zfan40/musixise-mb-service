@@ -30,10 +30,30 @@ class AddressController {
     @AppMethod(isLogin = true)
     fun create(@Valid @RequestBody addressVO: AddressVO) : MusixiseResponse<Long> {
 
+        val addressCheck = QAddress.address
+        val builder = BooleanBuilder()
+        builder.and(addressCheck.userId.eq(MusixiseContext.getCurrentUid()))
+        builder.and(addressCheck.telNumber.eq(addressVO.telNumber))
+        return addressRepository.findOne(builder).map {
+            //the same address detailInfo
+            if (it.detailInfo.equals(addressVO.detailInfo)) {
+                MusixiseResponse<Long>(ExceptionMsg.SUCCESS, it.id)
+            } else {
+                //the same telnumber but different address detailinfo
+                val address = createAddress(addressVO)
+                MusixiseResponse<Long>(ExceptionMsg.SUCCESS, address.id)
+            }
+        }.orElseGet {
+            val address = createAddress(addressVO)
+            MusixiseResponse<Long>(ExceptionMsg.SUCCESS, address.id)
+        }
+
+    }
+
+    fun createAddress(addressVO: AddressVO): Address {
         val address = Address(userId = MusixiseContext.getCurrentUid())
         CommonUtil.copyPropertiesIgnoreNull(addressVO, address)
-        val save = addressRepository.save(address)
-        return MusixiseResponse<Long>(ExceptionMsg.SUCCESS, save.id)
+        return addressRepository.save(address)
     }
 
     @GetMapping("/get/{id}")
