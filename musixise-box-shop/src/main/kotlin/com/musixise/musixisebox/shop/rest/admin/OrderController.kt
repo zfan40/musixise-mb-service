@@ -11,7 +11,7 @@ import com.musixise.musixisebox.shop.domain.Order
 import com.musixise.musixisebox.shop.domain.QOrder
 import com.musixise.musixisebox.shop.repository.AddressRepository
 import com.musixise.musixisebox.shop.repository.OrderRepository
-import com.musixise.musixisebox.shop.rest.admin.vo.OrderVO
+import com.musixise.musixisebox.shop.rest.admin.vo.OrderDetailVO
 import com.querydsl.core.BooleanBuilder
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -34,7 +34,7 @@ class OrderController {
     @GetMapping("")
     fun getList(@RequestParam(required = false) status: Long?,
                 @RequestParam(defaultValue = "1") page: Int,
-                @RequestParam(defaultValue = "10") size: Int) : MusixisePageResponse<List<OrderVO>> {
+                @RequestParam(defaultValue = "10") size: Int) : MusixisePageResponse<List<OrderDetailVO>> {
 
         val orderQ = QOrder.order
         val builder = BooleanBuilder()
@@ -46,12 +46,12 @@ class OrderController {
         val sort = Sort(Sort.Order(Sort.Direction.DESC, "id"))
         val pageable = PageRequest.of(page - 1, size, sort)
 
-        val orderVOList = arrayListOf<OrderVO>()
+        val orderVOList = arrayListOf<OrderDetailVO>()
 
         val order = orderRepository.findAll(builder, pageable);
 
         order.content.forEach {
-            val orderVO = OrderVO()
+            val orderVO = OrderDetailVO()
             CommonUtil.copyPropertiesIgnoreNull(it, orderVO)
             orderVO.product = JSON.parseObject(it.content.toString(), BoxInfo::class.java)
             if (it.address > 0) {
