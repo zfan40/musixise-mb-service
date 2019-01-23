@@ -11,4 +11,6 @@ data class Product(@Id @GeneratedValue(strategy = GenerationType.IDENTITY) val i
                    var name: String,
                    var intro: String,
                    var price: BigDecimal,
+                   var previewPic: String,
+                   var previewVideo: String,
                    var status: Long) : AbstractEntity()
