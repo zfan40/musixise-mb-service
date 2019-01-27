@@ -18,7 +18,7 @@
              <level>ERROR</level>
          </filter>-->
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{trackId}] [%X{userId}] %contextName %ip [%X{trackClientIp}] [%thread] %-5level %logger %logger{36} - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{trackId}] [%X{userId}] %contextName %ip [%X{trackClientIp}] [%thread] %-5level %logger %logger{36} - %msg [%X{costTs}]%n</pattern>
             <charset>UTF-8</charset> <!-- 此处设置字符集 -->
         </encoder>
     </appender>
@@ -36,7 +36,7 @@
             <!--</timeBasedFileNamingAndTriggeringPolicy>-->
         </rollingPolicy>
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{trackId}] [%X{userId}] %contextName %ip [%X{trackClientIp}] [%thread] %-5level %logger %logger{36} - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{trackId}] [%X{userId}] %contextName %ip [%X{trackClientIp}] [%thread] %-5level %logger %logger{36} - %msg [%X{costTs}]%n</pattern>
             <charset>UTF-8</charset> <!-- 此处设置字符集 -->
         </encoder>
     </appender>
@@ -71,7 +71,7 @@
 
     <!-- 测试环境+开发环境. 多个使用逗号隔开. -->
     <springProfile name="test,dev">
-        <logger name="com.musixise.controller" level="trace" />
+        <logger name="com.musixise.controller" level="info" />
     </springProfile>
     <!-- 生产环境. -->
     <springProfile name="prod">

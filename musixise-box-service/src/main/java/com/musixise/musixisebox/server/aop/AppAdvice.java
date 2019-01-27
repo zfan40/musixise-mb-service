@@ -35,6 +35,7 @@ public class AppAdvice implements Ordered {
     public final static String AUTHORIZATION_TOKEN = "access_token";
 
     private final static String TRACK_USER_ID = "userId";
+    private final static String TRACK_COST_TS = "costTs";
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -51,11 +52,13 @@ public class AppAdvice implements Ordered {
     @Around("loginMethodPointcut() && @annotation(appMethod)")
     public Object Interception(ProceedingJoinPoint point, AppMethod appMethod) throws Throwable {
 
+        long start = System.currentTimeMillis();
         RequestAttributes ra = RequestContextHolder.getRequestAttributes();
         ServletRequestAttributes sra = (ServletRequestAttributes) ra;
         HttpServletRequest request = sra.getRequest();
 
         MDC.put(TRACK_USER_ID, "0");
+        MDC.put(TRACK_COST_TS, "0");
 
         Object result = null;
         //需要检测登录
@@ -76,7 +79,9 @@ public class AppAdvice implements Ordered {
                 } else {
                     Object[] args = point.getArgs();
                     //args[0] = userService.getUserIdByToken(accessToken);;
-                    return point.proceed(args);
+                    result = point.proceed(args);
+
+
                 }
             }
         } else {
@@ -90,7 +95,13 @@ public class AppAdvice implements Ordered {
         if (result == null) {
             result = point.proceed();
         }
+        long costTime = System.currentTimeMillis() - start;
+        MDC.put(TRACK_COST_TS, String.valueOf(costTime));
 
+        MethodSignature signature = (MethodSignature) point.getSignature();
+        String methodName = signature.getDeclaringTypeName() + "." + signature.getName();
+
+        logger.info("access request: {}", methodName);
         return result;
     }
 
@@ -129,6 +140,8 @@ public class AppAdvice implements Ordered {
         }
 
         MDC.remove(TRACK_USER_ID);
+        MDC.remove(TRACK_COST_TS);
+
     }
 
     @AfterThrowing(pointcut = "within(com.musixise.musixisebox..*) && @annotation(appMethod)", throwing = "ex")
