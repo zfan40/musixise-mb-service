@@ -1,6 +1,7 @@
 package com.musixise.musixisebox.rest.admin;
 
 import com.musixise.musixisebox.api.admin.service.WorkAdminApi;
+import com.musixise.musixisebox.api.admin.vo.common.AddWorkVO;
 import com.musixise.musixisebox.api.enums.ExceptionMsg;
 import com.musixise.musixisebox.api.result.MusixisePageResponse;
 import com.musixise.musixisebox.api.result.MusixiseResponse;
@@ -9,6 +10,7 @@ import com.musixise.musixisebox.server.aop.AppMethod;
 import com.musixise.musixisebox.server.domain.Work;
 import com.musixise.musixisebox.server.repository.WorkRepository;
 import com.musixise.musixisebox.server.transfter.WorkTransfter;
+import com.musixise.musixisebox.server.utils.CommonUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +47,16 @@ public class WorkAdminController implements WorkAdminApi {
     @Override
     public MusixiseResponse update(@Valid @RequestBody WorkVO workVO) {
         workRepository.save(WorkTransfter.getWork(workVO));
+        return new MusixiseResponse(ExceptionMsg.SUCCESS);
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    @AppMethod(isAdmin = true)
+    @Override
+    public MusixiseResponse create(@Valid AddWorkVO addWorkVO) {
+        Work work = new Work();
+        CommonUtil.copyPropertiesIgnoreNull(addWorkVO, work);
+        workRepository.save(work);
         return new MusixiseResponse(ExceptionMsg.SUCCESS);
     }
 

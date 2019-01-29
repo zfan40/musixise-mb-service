@@ -1,5 +1,6 @@
 package com.musixise.musixisebox.api.admin.service;
 
+import com.musixise.musixisebox.api.admin.vo.common.AddWorkVO;
 import com.musixise.musixisebox.api.result.MusixisePageResponse;
 import com.musixise.musixisebox.api.result.MusixiseResponse;
 import com.musixise.musixisebox.api.web.vo.resp.work.WorkVO;
@@ -21,6 +22,8 @@ public interface WorkAdminApi {
     @ApiOperation(value = "获取列表")
     MusixisePageResponse<List<WorkVO>> list(@RequestParam(value = "page", defaultValue = "0") Integer page,
                                                    @RequestParam(value = "size", defaultValue = "10") Integer size);
+    @ApiOperation(value = "创建作品")
+    MusixiseResponse create(@Valid @RequestBody AddWorkVO addWorkVO);
 
     @ApiOperation(value = "更新信息一条")
     MusixiseResponse update(@Valid @RequestBody WorkVO workVO);

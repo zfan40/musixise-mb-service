@@ -32,6 +32,9 @@ public interface WorkApi {
     @ApiOperation(value = "获取作品详细信息",notes = "")
     MusixiseResponse<WorkVO> getDetail(@PathVariable Long id);
 
+    @ApiOperation(value = "删除一个作品",notes = "")
+    MusixiseResponse<Boolean> delete(@PathVariable Long id);
+
     @ApiOperation(value = "更新作品详细信息",notes = "")
     @ApiImplicitParam(name = "uid", value = "用户ID", defaultValue = "", readOnly=true, dataType = "Long")
     MusixiseResponse<?> update(Long uid, @PathVariable Long id, @RequestBody WorkMeta workMeta);

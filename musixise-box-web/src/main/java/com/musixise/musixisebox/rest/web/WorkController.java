@@ -92,6 +92,24 @@ public class WorkController implements WorkApi {
         }).orElse( new MusixiseResponse<>(ExceptionMsg.NOT_EXIST));
     }
 
+    @Override
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+    @AppMethod(isLogin = true)
+    public MusixiseResponse<Boolean> delete(Long id) {
+        Optional<Work> work = workRepository.findById(id);
+        return work.map( t -> {
+
+            if (t.getUserId().equals(MusixiseContext.getCurrentUid())) {
+                workRepository.deleteById(id);
+                return new MusixiseResponse<>(ExceptionMsg.SUCCESS, true);
+            } else {
+                //无权限
+                return new MusixiseResponse<>(ExceptionMsg.FAILED, false);
+            }
+
+        }).orElse(new MusixiseResponse<>(ExceptionMsg.NOT_EXIST));
+    }
+
     @RequestMapping(value = "/updateWork/{id}", method = RequestMethod.PUT)
     @AppMethod(isLogin = true)
     @Override
