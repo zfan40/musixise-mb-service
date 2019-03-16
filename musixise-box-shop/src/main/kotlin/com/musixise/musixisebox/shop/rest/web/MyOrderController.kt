@@ -1,17 +1,17 @@
 package com.musixise.musixisebox.shop.rest.web
 
 import com.musixise.musixisebox.api.enums.ExceptionMsg
+import com.musixise.musixisebox.api.result.MusixisePageResponse
 import com.musixise.musixisebox.api.result.MusixiseResponse
 import com.musixise.musixisebox.server.aop.AppMethod
 import com.musixise.musixisebox.server.aop.MusixiseContext
+import com.musixise.musixisebox.shop.domain.Order
+import com.musixise.musixisebox.shop.rest.web.vo.req.OrderListQueryVO
 import com.musixise.musixisebox.shop.rest.web.vo.req.OrderVO
 import com.musixise.musixisebox.shop.rest.web.vo.req.PayVO
 import com.musixise.musixisebox.shop.service.IOrderService
 import com.musixise.musixisebox.shop.utils.OrderUtil
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import javax.annotation.Resource
 import javax.validation.Valid
 
@@ -39,5 +39,15 @@ class MyOrderController {
 
         val pay = iOrderService.pay(payVO)
         return MusixiseResponse<Boolean>(ExceptionMsg.SUCCESS, pay);
+    }
+
+    @GetMapping("/myOrderList")
+    @AppMethod(isLogin = true)
+    fun myOrderList(@Valid orderListQueryVO: OrderListQueryVO) : MusixisePageResponse<List<Order>> {
+
+        val myOrderList = iOrderService.myOrderList(orderListQueryVO)
+
+        return MusixisePageResponse(myOrderList.content, myOrderList.totalElements, orderListQueryVO.size, orderListQueryVO.page)
+
     }
 }

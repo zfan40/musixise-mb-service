@@ -7,12 +7,18 @@ import com.musixise.musixisebox.server.repository.WorkRepository
 import com.musixise.musixisebox.shop.domain.BoxInfo
 import com.musixise.musixisebox.shop.domain.Order
 import com.musixise.musixisebox.shop.domain.Product
+import com.musixise.musixisebox.shop.domain.QOrder
 import com.musixise.musixisebox.shop.repository.AddressRepository
 import com.musixise.musixisebox.shop.repository.OrderRepository
 import com.musixise.musixisebox.shop.repository.ProductRepository
+import com.musixise.musixisebox.shop.rest.web.vo.req.OrderListQueryVO
 import com.musixise.musixisebox.shop.rest.web.vo.req.OrderVO
 import com.musixise.musixisebox.shop.rest.web.vo.req.PayVO
 import com.musixise.musixisebox.shop.service.IOrderService
+import com.querydsl.core.BooleanBuilder
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import javax.annotation.Resource
@@ -64,6 +70,28 @@ class IOrderServiceImpl : IOrderService {
 
         return order.id
 
+    }
+
+    /**
+     * 获取当前用户订单列表
+     */
+    override fun myOrderList(orderListQueryVO: OrderListQueryVO) : Page<Order> {
+
+        val sort = Sort(Sort.Direction.DESC, "id")
+        val pageable = PageRequest.of(orderListQueryVO.page - 1, orderListQueryVO.size, sort)
+
+        var currentUid = MusixiseContext.getCurrentUid()
+
+        val qOrder = QOrder.order
+        val builder = BooleanBuilder()
+
+
+        builder.and(qOrder.userId.eq(currentUid))
+        if (orderListQueryVO != null && orderListQueryVO.status != null) {
+            builder.and(qOrder.status.eq(orderListQueryVO.status))
+        }
+
+        return orderRepository.findAll(builder, pageable)
     }
 
     fun totalPrice(price: BigDecimal, amount: Long) : BigDecimal {
