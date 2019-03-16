@@ -1,6 +1,7 @@
 package com.musixise.musixisebox.server.aop;
 
 import com.musixise.musixisebox.api.enums.ExceptionMsg;
+import com.musixise.musixisebox.api.result.MusixisePageResponse;
 import com.musixise.musixisebox.api.result.MusixiseResponse;
 import com.musixise.musixisebox.server.service.UserService;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
@@ -75,7 +76,11 @@ public class AppAdvice implements Ordered {
             if (appMethod.isLogin()) {
                 //check
                 if (!islogin) {
-                    return  new MusixiseResponse(ExceptionMsg.NEED_LOGIN);
+                    if (point.getSignature().toString().indexOf("MusixisePageResponse") > 0) {
+                        return  new MusixisePageResponse(ExceptionMsg.NEED_LOGIN);
+                    } else {
+                        return  new MusixiseResponse(ExceptionMsg.NEED_LOGIN);
+                    }
                 } else {
                     Object[] args = point.getArgs();
                     //args[0] = userService.getUserIdByToken(accessToken);;
@@ -86,7 +91,11 @@ public class AppAdvice implements Ordered {
             }
         } else {
             if (appMethod.isLogin()) {
-                return  new MusixiseResponse(ExceptionMsg.NEED_LOGIN);
+                if (point.getSignature().toString().indexOf("MusixisePageResponse") != -1) {
+                    return  new MusixisePageResponse(ExceptionMsg.NEED_LOGIN);
+                } else {
+                    return  new MusixiseResponse(ExceptionMsg.NEED_LOGIN);
+                }
             } else {
                 MusixiseContext.set("_uid", 0L);
             }
