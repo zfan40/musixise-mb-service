@@ -38,7 +38,7 @@ public class FavoriteVO {
     private String fileHash;
 
     @ApiModelProperty(value = "用户信息", example = "")
-    private UserVO user;
+    private UserVO userVO;
 
     public Long getId() {
         return id;
@@ -120,11 +120,11 @@ public class FavoriteVO {
         this.fileHash = fileHash;
     }
 
-    public UserVO getUser() {
-        return user;
+    public UserVO getUserVO() {
+        return userVO;
     }
 
-    public void setUser(UserVO user) {
-        this.user = user;
+    public void setUserVO(UserVO userVO) {
+        this.userVO = userVO;
     }
 }

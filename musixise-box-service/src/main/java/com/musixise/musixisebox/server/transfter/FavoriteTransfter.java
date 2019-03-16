@@ -21,7 +21,7 @@ public class FavoriteTransfter {
     public static FavoriteVO getFavoriteWithUser(WorkVO workVO) {
         FavoriteVO favoriteVO = new FavoriteVO();
         CommonUtil.copyPropertiesIgnoreNull(workVO, favoriteVO);
-        favoriteVO.setUser(workVO.getUserVO());
+        favoriteVO.setUserVO(workVO.getUserVO());
         return favoriteVO;
     }
 
