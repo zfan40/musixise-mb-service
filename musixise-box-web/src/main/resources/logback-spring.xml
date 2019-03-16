@@ -52,17 +52,17 @@
         </connectionSource>
     </appender>
 
-    <root level="info">
+    <root level="WARN">
         <appender-ref ref="console" />
-        <appender-ref ref="file" />
-        <appender-ref ref="DBAPPENDER" />
+        <!--<appender-ref ref="file" />-->
+        <!--<appender-ref ref="DBAPPENDER" />-->
     </root>
 
     <!-- logback为java中的包 -->
     <logger name="com.musixise.musixisebox.controller"/>
     <!--logback.LogbackDemo：类的全路径 -->
-    <logger name="com.musixise.musixisebox.rest.web.UserController" level="WARN" additivity="false">
-        <appender-ref ref="console"/>
+    <logger name="com.musixise.musixisebox" level="INFO" additivity="true">
+        <appender-ref ref="file"/>
     </logger>
 
     <logger name="com.musixise.musixisebox.repository" level="WARN" additivity="fales">
@@ -71,11 +71,11 @@
 
     <!-- 测试环境+开发环境. 多个使用逗号隔开. -->
     <springProfile name="test,dev">
-        <logger name="com.musixise.controller" level="info" />
+        <logger name="com.musixise.controller" level="trace" />
     </springProfile>
     <!-- 生产环境. -->
     <springProfile name="prod">
-        <logger name="com.musixise.controller" level="trace" />
+        <logger name="com.musixise.controller" level="info" />
     </springProfile>
 
 </configuration>
