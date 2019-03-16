@@ -46,11 +46,11 @@ public class UploaderManager {
 
     /**
      * 上传图片
-     * @param inputStream
+     * @param content
      * @param fileName
      * @return
      */
-    public Boolean upload(String content, String fileName) {
+    public Boolean upload(InputStream content, String fileName) {
         return uploadService.upload(content, fileName);
     }
 

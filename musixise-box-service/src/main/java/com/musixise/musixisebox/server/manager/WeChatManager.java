@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Formatter;
@@ -34,14 +36,14 @@ public class WeChatManager {
     private static Logger logger = LoggerFactory.getLogger(WeChatManager.class);
 
 
-    public String getMedia(String mediaId) {
+    public InputStream getMedia(String mediaId) {
 
         String accessToken = getAccessToken(weixinAppId, weixinAppSecret);
 
         if (accessToken != null) {
 
             try {
-                String mediaStream = getMediaStream(accessToken, mediaId);
+                InputStream mediaStream = getMediaStream(accessToken, mediaId);
 
                 if (mediaStream != null) {
 
@@ -63,7 +65,7 @@ public class WeChatManager {
 
     }
 
-    private static String getMediaStream(String accessToken, String mediaId)throws IOException {
+    private static InputStream getMediaStream(String accessToken, String mediaId)throws IOException {
         String url = "https://api.weixin.qq.com/cgi-bin/media/get";
 
         String params = "access_token=" + accessToken + "&media_id=" + mediaId;
@@ -72,17 +74,28 @@ public class WeChatManager {
         try {
             String urlNameString = url + "?" + params;
 
-            OAuthRequest oAuthRequest = new OAuthRequest(Verb.GET, String.format(urlNameString, accessToken));
-            Response response = oAuthRequest.send();
-            String responceBody = response.getBody();
+            HttpURLConnection connection = (HttpURLConnection) new URL(urlNameString).openConnection();
+            connection.setReadTimeout(5000);
+            connection.setConnectTimeout(5000);
+            connection.setRequestMethod("GET");
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                InputStream inputStream = connection.getInputStream();
+                //获取 body 内容
+                byte[] data1 = new byte[inputStream.available()];
+                connection.getInputStream().read(data1);
+                // 转成字符串
+                String response = new String(data1);
 
-            logger.info("getMedia {}", responceBody);
+                logger.info("getMedia {}", response);
 
-            if (responceBody.indexOf("errcode") != -1) {
-                throw new MusixiseException("get media fails");
+                if (response.indexOf("errcode") != -1) {
+                    throw new MusixiseException("get media fails");
 
+                } else {
+                    return inputStream;
+                }
             } else {
-                return responceBody;
+                throw new MusixiseException("get media fails, http code not 200");
             }
 
 
@@ -93,6 +106,7 @@ public class WeChatManager {
             throw new MusixiseException("get media exception");
 
         }
+
     }
 
 
