@@ -13,6 +13,10 @@ public class MusixisePageResponse<T> extends Response {
         this.data = new MusixisePage<>(data, total, size, current);
     }
 
+    public MusixisePageResponse(T data) {
+        this.data = new MusixisePage<>(data);
+    }
+
     public MusixisePage getData() {
         return data;
     }
