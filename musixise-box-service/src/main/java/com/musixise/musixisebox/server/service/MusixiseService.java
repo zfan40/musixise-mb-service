@@ -1,5 +1,10 @@
 package com.musixise.musixisebox.server.service;
 
+import com.musixise.musixisebox.server.domain.Musixiser;
+
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by zhaowei on 2018/4/2.
  */
@@ -16,4 +21,11 @@ public interface MusixiseService {
      * @param uid
      */
     public void updateWorkCount(Long uid);
+
+    /**
+     * 批量获取用户信息
+     * @param userId
+     * @return
+     */
+    public Map<Long, Musixiser> getMusixiserMap(List<Long> userId);
 }

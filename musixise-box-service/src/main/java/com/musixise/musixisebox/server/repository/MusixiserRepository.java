@@ -1,10 +1,10 @@
 package com.musixise.musixisebox.server.repository;
 
 import com.musixise.musixisebox.server.domain.Musixiser;
-import com.musixise.musixisebox.server.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.Optional;
 /**
  * Created by zhaowei on 2018/4/1.
  */
-public interface MusixiserRepository extends JpaRepository<Musixiser, Long> {
+public interface MusixiserRepository extends JpaRepository<Musixiser, Long>, QuerydslPredicateExecutor<Musixiser> {
     Optional<Musixiser> findOneByUserId(Long userId);
 
     int deleteByUserId(Long userId);

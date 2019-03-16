@@ -1,17 +1,18 @@
 package com.musixise.musixisebox.rest.web;
 
-import com.musixise.musixisebox.server.aop.AppMethod;
-import com.musixise.musixisebox.server.aop.MusixiseContext;
 import com.musixise.musixisebox.api.enums.ExceptionMsg;
 import com.musixise.musixisebox.api.result.MusixisePageResponse;
 import com.musixise.musixisebox.api.result.MusixiseResponse;
 import com.musixise.musixisebox.api.web.service.WorkApi;
 import com.musixise.musixisebox.api.web.vo.req.work.WorkMeta;
 import com.musixise.musixisebox.api.web.vo.resp.work.WorkVO;
+import com.musixise.musixisebox.server.aop.AppMethod;
+import com.musixise.musixisebox.server.aop.MusixiseContext;
 import com.musixise.musixisebox.server.domain.Work;
 import com.musixise.musixisebox.server.manager.WorkManager;
 import com.musixise.musixisebox.server.repository.WorkRepository;
 import com.musixise.musixisebox.server.service.MusixiseService;
+import com.musixise.musixisebox.server.service.WorkService;
 import com.musixise.musixisebox.server.transfter.WorkTransfter;
 import com.musixise.musixisebox.server.utils.CommonUtil;
 import org.springframework.data.domain.Page;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +40,8 @@ public class WorkController implements WorkApi {
     @Resource MusixiseService musixiseService;
 
     @Resource WorkManager workManager;
+
+    @Resource WorkService workService;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @AppMethod(isLogin = true)
@@ -70,13 +72,9 @@ public class WorkController implements WorkApi {
             workList = workRepository.findAllByUserIdOrderByIdDesc(uid, pageable);
         } else {
             workList = workRepository.findAllByUserIdAndTitleLikeOrderByIdDesc(uid, "%"+title+"%", pageable);
-
         }
-        List<WorkVO> workVOList = new ArrayList<>();
-        workList.forEach(work -> {
-            WorkVO workVO = workManager.getWorkVO(MusixiseContext.getCurrentUid(), work);
-            workVOList.add(workVO);
-        });
+
+        List<WorkVO> workVOList = workService.getWorkList(workList.getContent());
 
         return new MusixisePageResponse<>(workVOList, workList.getTotalElements(), size, page);
     }

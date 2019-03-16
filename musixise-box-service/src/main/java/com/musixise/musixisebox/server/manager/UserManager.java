@@ -3,17 +3,24 @@ package com.musixise.musixisebox.server.manager;
 import com.musixise.musixisebox.api.web.vo.req.user.Register;
 import com.musixise.musixisebox.api.web.vo.resp.SocialVO;
 import com.musixise.musixisebox.server.config.OAuthTypesConstants;
+import com.musixise.musixisebox.server.domain.Musixiser;
+import com.musixise.musixisebox.server.domain.QMusixiser;
 import com.musixise.musixisebox.server.domain.User;
 import com.musixise.musixisebox.server.domain.UserBind;
 import com.musixise.musixisebox.server.repository.MusixiserRepository;
 import com.musixise.musixisebox.server.repository.UserBindRepository;
 import com.musixise.musixisebox.server.repository.UserRepository;
 import com.musixise.musixisebox.server.service.UserService;
+import com.querydsl.core.BooleanBuilder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by zhaowei on 2018/4/5.
@@ -104,5 +111,14 @@ public class UserManager {
         } else {
             return false;
         }
+    }
+
+
+    public Map<Long, Musixiser> getMusixiserMap(List<Long> userIds) {
+        QMusixiser musixiser = QMusixiser.musixiser;
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder.and(musixiser.userId.in(userIds));
+        Iterable<Musixiser> musixisersIt = musixiserRepository.findAll(booleanBuilder);
+        return StreamSupport.stream(musixisersIt.spliterator(), false).collect(Collectors.toMap(Musixiser::getUserId, m -> m));
     }
 }
