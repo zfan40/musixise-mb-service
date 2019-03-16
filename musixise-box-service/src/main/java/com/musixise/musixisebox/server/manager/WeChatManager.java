@@ -9,8 +9,11 @@ import org.scribe.model.Response;
 import org.scribe.model.Verb;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -25,7 +28,73 @@ import java.util.UUID;
 @Component
 public class WeChatManager {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Value("${spring.social.wechat.clientId}") private String weixinAppId;
+    @Value("${spring.social.wechat.clientSecret}") private String weixinAppSecret;
+
+    private static Logger logger = LoggerFactory.getLogger(WeChatManager.class);
+
+
+    public String getMedia(String mediaId) {
+
+        String accessToken = getAccessToken(weixinAppId, weixinAppSecret);
+
+        if (accessToken != null) {
+
+            try {
+                String mediaStream = getMediaStream(accessToken, mediaId);
+
+                if (mediaStream != null) {
+
+                    return mediaStream;
+
+                } else {
+                    throw new MusixiseException("get media id fails");
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            throw new MusixiseException("get accessToken fails");
+        }
+
+        return null;
+
+    }
+
+    private static String getMediaStream(String accessToken, String mediaId)throws IOException {
+        String url = "https://api.weixin.qq.com/cgi-bin/media/get";
+
+        String params = "access_token=" + accessToken + "&media_id=" + mediaId;
+
+        InputStream is = null;
+        try {
+            String urlNameString = url + "?" + params;
+
+            OAuthRequest oAuthRequest = new OAuthRequest(Verb.GET, String.format(urlNameString, accessToken));
+            Response response = oAuthRequest.send();
+            String responceBody = response.getBody();
+
+            logger.info("getMedia {}", responceBody);
+
+            if (responceBody.indexOf("errcode") != -1) {
+                throw new MusixiseException("get media fails");
+
+            } else {
+                return responceBody;
+            }
+
+
+        } catch (MusixiseException e) {
+            throw new MusixiseException(e.getMessage());
+        } catch (Exception e) {
+            logger.error("get meidia excpetion", e);
+            throw new MusixiseException("get media exception");
+
+        }
+    }
+
 
     public Map<String, String> getJsTicket(String weixinAppId, String weixinAppSecret, String url) {
         String accessToken = getAccessToken(weixinAppId, weixinAppSecret);

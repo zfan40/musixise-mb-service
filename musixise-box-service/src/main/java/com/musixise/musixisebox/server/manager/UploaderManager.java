@@ -4,6 +4,8 @@ import com.musixise.musixisebox.server.service.UploadService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
+
 /**
  * 第三方/异常/缓存处理
  * Created by zhaowei on 2018/4/5.
@@ -40,6 +42,16 @@ public class UploaderManager {
      */
     public Boolean upload(byte[] bt, String fileName) {
         return uploadService.upload(bt, fileName);
+    }
+
+    /**
+     * 上传图片
+     * @param inputStream
+     * @param fileName
+     * @return
+     */
+    public Boolean upload(String content, String fileName) {
+        return uploadService.upload(content, fileName);
     }
 
     public void setUploadService(UploadService uploadService) {

@@ -9,13 +9,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * Created by zhaowei on 2018/4/21.
  */
-@Api(value = "微信 JsTicket", description = "获取微信 JsTicket", tags = "微信相关")
+@Api(value = "微信接口", description = "获取微信 JsTicket", tags = "微信相关")
 public interface WeChatApi {
 
     /** 获取 JsTicket
      * @param url
      * @return
      */
-    @ApiOperation(value = "获取 JsTicket",notes = "")
+    @ApiOperation(value= "获取 JsTicket",notes = "")
     MusixiseResponse<JSONObject> getJsTicket(@RequestParam(value = "url", defaultValue = "") String url);
+
+    /**
+     * 保存临时素材接口
+     * @param mediaId
+     * @return
+     */
+    @ApiOperation(value= "保存临时素材接口",notes = "")
+    MusixiseResponse<String> saveMedia(@RequestParam(value = "media_id", defaultValue = "") String mediaId);
+
 }

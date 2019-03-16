@@ -5,7 +5,10 @@ import com.musixise.musixisebox.api.enums.ExceptionMsg;
 import com.musixise.musixisebox.api.result.MusixiseResponse;
 import com.musixise.musixisebox.api.web.service.WeChatApi;
 import com.musixise.musixisebox.server.aop.AppMethod;
+import com.musixise.musixisebox.server.manager.UploaderManager;
 import com.musixise.musixisebox.server.manager.WeChatManager;
+import com.musixise.musixisebox.server.service.UploadService;
+import com.musixise.musixisebox.server.utils.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +30,12 @@ public class WeChatController implements WeChatApi {
     private @Resource WeChatManager weChatManager;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Resource
+    UploaderManager uploaderManager;
+
+    @Resource
+    UploadService uploadServiceQiniuImpl;
 
     @Value("${spring.social.wechat.clientId}") String weixinAppId;
     @Value("${spring.social.wechat.clientSecret}") String weixinAppSecret;
@@ -51,5 +60,26 @@ public class WeChatController implements WeChatApi {
         } else {
             return new MusixiseResponse<>(ExceptionMsg.FAILED);
         }
+    }
+
+    @RequestMapping(value = "/saveMedia", method = RequestMethod.POST)
+    @AppMethod
+    @Override
+    public MusixiseResponse<String> saveMedia(@RequestParam(value = "media_id", defaultValue = "") String mediaId) {
+
+        uploaderManager.setUploadService(uploadServiceQiniuImpl);
+
+        String media = weChatManager.getMedia(mediaId);
+
+        //生成文件名
+        String fileName = uploaderManager.buildFileName(mediaId + ".jpg");
+        //上传文件
+        if (uploaderManager.upload(media, fileName)) {
+            return new MusixiseResponse<>(ExceptionMsg.SUCCESS, FileUtil.getImageFullName(fileName));
+        } else {
+            return new MusixiseResponse<>(ExceptionMsg.UPLOAD_ERROR);
+        }
+
+
     }
 }

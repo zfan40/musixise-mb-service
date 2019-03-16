@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.inject.Inject;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 /**
@@ -68,4 +69,20 @@ public class UploadServiceQiniuImpl extends UploadService {
         return false;
     }
 
+    @Override
+    public Boolean upload(String reponse, String saveFileName) {
+        try {
+
+           byte[] uploadBytes = reponse.getBytes("utf-8");
+            ByteArrayInputStream byteInputStream=new ByteArrayInputStream(uploadBytes);
+            Response res = uploadManager.put(byteInputStream, saveFileName, auth.uploadToken(IMG_BUCKET_NAME),null, null);
+            logger.info(JSON.toJSONString(res));
+            return true;
+        } catch (QiniuException e) {
+            logger.warn("upload exception", e.toString());
+        } catch (IOException e) {
+            logger.warn("upload exception", e.toString());
+        }
+        return false;
+    }
 }
