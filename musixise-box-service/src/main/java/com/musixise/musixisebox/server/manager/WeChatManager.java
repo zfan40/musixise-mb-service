@@ -188,7 +188,7 @@ public class WeChatManager {
                 file_name =tmp.substring(index+1, tmp.length()-1);
             }
             //生成不同文件名称
-            String filePath = System.getProperty("user.dir") + "/data/tmp/";
+            String filePath = System.getProperty("user.dir") + "/tmp/";
             File file = new File(filePath + file_name);
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
             byte[] buf = new byte[2048];
