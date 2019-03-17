@@ -8,6 +8,7 @@ import com.musixise.musixisebox.api.result.MusixiseResponse
 import com.musixise.musixisebox.server.utils.CommonUtil
 import com.musixise.musixisebox.shop.domain.Order
 import com.musixise.musixisebox.shop.domain.QOrder
+import com.musixise.musixisebox.shop.manager.AddressManager
 import com.musixise.musixisebox.shop.repository.AddressRepository
 import com.musixise.musixisebox.shop.repository.OrderRepository
 import com.musixise.musixisebox.shop.rest.admin.vo.OrderDetailVO
@@ -17,6 +18,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.web.bind.annotation.*
 import java.util.*
+import java.util.stream.Collectors
 import javax.annotation.Resource
 import javax.validation.Valid
 
@@ -30,6 +32,9 @@ class OrderController {
 
     @Resource
     private lateinit var addressRepository: AddressRepository
+
+    @Resource
+    private lateinit var addressManager: AddressManager
 
     @GetMapping("")
     fun getList(@RequestParam(required = false) status: Long?,
@@ -50,6 +55,10 @@ class OrderController {
 
         val order = orderRepository.findAll(builder, pageable);
 
+        val addressIds = order.stream().map(Order::address).collect(Collectors.toList())
+
+        val addressMap = addressManager.getAddressMap(addressIds)
+
         order.content.forEach {
             val orderVO = OrderDetailVO()
             CommonUtil.copyPropertiesIgnoreNull(it, orderVO)
@@ -60,8 +69,9 @@ class OrderController {
 
             }
 
-            if (it.address > 0) {
-                orderVO.address = addressRepository.getOne(it.address)
+            //assign address
+            if (it.address > 0 && addressMap.containsKey(it.address)) {
+                orderVO.address = addressMap.get(it.address)
             }
 
             orderVOList.add(orderVO)
