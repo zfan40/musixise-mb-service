@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.io.InputStream;
+import java.io.File;
 import java.util.Map;
 
 /**
@@ -70,7 +70,7 @@ public class WeChatController implements WeChatApi {
 
         uploaderManager.setUploadService(uploadServiceQiniuImpl);
 
-        InputStream media = weChatManager.getMedia(mediaId);
+        File media = weChatManager.getMedia(mediaId);
 
         //生成文件名
         String fileName = uploaderManager.buildFileName(mediaId + ".jpg");

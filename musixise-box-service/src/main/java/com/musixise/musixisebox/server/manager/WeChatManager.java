@@ -12,10 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -35,80 +34,15 @@ public class WeChatManager {
 
     private static Logger logger = LoggerFactory.getLogger(WeChatManager.class);
 
+    //获取临时素材(视频不能使用https协议)
+    public static final String GET_TMP_MATERIAL = "https://api.weixin.qq.com/cgi-bin/media/get?access_token=%s&media_id=%s";
+    //获取临时素材(视频)
+    public static final String GET_TMP_MATERIAL_VIDEO = "http://api.weixin.qq.com/cgi-bin/media/get?access_token=%s&media_id=%s";
 
-    public InputStream getMedia(String mediaId) {
 
-        String accessToken = getAccessToken(weixinAppId, weixinAppSecret);
-
-        if (accessToken != null) {
-
-            try {
-                InputStream mediaStream = getMediaStream(accessToken, mediaId);
-
-                if (mediaStream != null) {
-
-                    return mediaStream;
-
-                } else {
-                    throw new MusixiseException("get media id fails");
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        } else {
-            throw new MusixiseException("get accessToken fails");
-        }
-
-        return null;
-
+    public File getMedia(String mediaId) {
+        return fetchTmpFile(mediaId, "image");
     }
-
-    private static InputStream getMediaStream(String accessToken, String mediaId)throws IOException {
-        String url = "https://api.weixin.qq.com/cgi-bin/media/get";
-
-        String params = "access_token=" + accessToken + "&media_id=" + mediaId;
-
-        InputStream is = null;
-        try {
-            String urlNameString = url + "?" + params;
-
-            HttpURLConnection connection = (HttpURLConnection) new URL(urlNameString).openConnection();
-            connection.setReadTimeout(5000);
-            connection.setConnectTimeout(5000);
-            connection.setRequestMethod("GET");
-            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                InputStream inputStream = connection.getInputStream();
-                //获取 body 内容
-                byte[] data1 = new byte[inputStream.available()];
-                connection.getInputStream().read(data1);
-                // 转成字符串
-                String response = new String(data1);
-
-                logger.info("getMedia {}", response);
-
-                if (response.indexOf("errcode") != -1) {
-                    throw new MusixiseException("get media fails");
-
-                } else {
-                    return inputStream;
-                }
-            } else {
-                throw new MusixiseException("get media fails, http code not 200");
-            }
-
-
-        } catch (MusixiseException e) {
-            throw new MusixiseException(e.getMessage());
-        } catch (Exception e) {
-            logger.error("get meidia excpetion", e);
-            throw new MusixiseException("get media exception");
-
-        }
-
-    }
-
 
     public Map<String, String> getJsTicket(String weixinAppId, String weixinAppSecret, String url) {
         String accessToken = getAccessToken(weixinAppId, weixinAppSecret);
@@ -218,5 +152,60 @@ public class WeChatManager {
         return Long.toString(System.currentTimeMillis() / 1000);
     }
 
+    protected File fetchTmpFile(String media_id, String type){
+        try {
+            String token = getAccessToken(weixinAppId, weixinAppSecret);
+            String url = null;
+            //视频是http协议
+            if("video".equalsIgnoreCase(type)){
+                url = String.format(GET_TMP_MATERIAL_VIDEO, token, media_id);
+            }else{
+                url = String.format(GET_TMP_MATERIAL, token, media_id);;
+            }
+            URL u = new URL(url);
+            HttpURLConnection  conn = (HttpURLConnection) u.openConnection();
+            conn.setRequestMethod("POST");
+            conn.connect();
+            BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
+            String content_disposition = conn.getHeaderField("content-disposition");
+
+            if (content_disposition == null) {
+                //获取 body 内容
+                byte[] data1 = new byte[conn.getInputStream().available()];
+                conn.getInputStream().read(data1);
+                // 转成字符串
+                String response = new String(data1);
+                logger.info("getMedia {}", response);
+                throw new MusixiseException("get media fails");
+            }
+
+            //微信服务器生成的文件名称
+            String file_name ="";
+            String[] content_arr = content_disposition.split(";");
+            if(content_arr.length  == 2){
+                String tmp = content_arr[1];
+                int index = tmp.indexOf("\"");
+                file_name =tmp.substring(index+1, tmp.length()-1);
+            }
+            //生成不同文件名称
+            String filePath = System.getProperty("user.dir") + "/data/tmp/";
+            File file = new File(filePath + file_name);
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
+            byte[] buf = new byte[2048];
+            int length = bis.read(buf);
+            while(length != -1){
+                bos.write(buf, 0, length);
+                length = bis.read(buf);
+            }
+            bos.close();
+            bis.close();
+            return file;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 }

@@ -4,6 +4,7 @@ import com.musixise.musixisebox.server.service.UploadService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.InputStream;
 
 /**
@@ -31,6 +32,10 @@ public class UploaderManager {
      * @return
      */
     public Boolean upload(MultipartFile file, String fileName) {
+        return uploadService.upload(file, fileName);
+    }
+
+    public Boolean upload(File file, String fileName) {
         return uploadService.upload(file, fileName);
     }
 
