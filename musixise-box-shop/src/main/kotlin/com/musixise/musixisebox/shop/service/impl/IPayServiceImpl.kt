@@ -8,10 +8,10 @@ import com.musixise.musixisebox.api.exception.MusixiseException
 import com.musixise.musixisebox.server.aop.MusixiseContext
 import com.musixise.musixisebox.server.config.pay.MyWxConfig
 import com.musixise.musixisebox.server.repository.UserBindRepository
-import com.musixise.musixisebox.shop.domain.BoxInfo
 import com.musixise.musixisebox.shop.domain.Order
 import com.musixise.musixisebox.shop.enums.OrderEnum
 import com.musixise.musixisebox.shop.repository.OrderRepository
+import com.musixise.musixisebox.shop.rest.web.vo.resp.BoxInfoVO
 import com.musixise.musixisebox.shop.rest.web.vo.resp.pay.WCPayRequestVO
 import com.musixise.musixisebox.shop.service.IOrderService
 import com.musixise.musixisebox.shop.service.IPayService
@@ -233,7 +233,7 @@ class IPayServiceImpl : IPayService {
         val boxInfo = getBoxInfo(order);
 
         val data = HashMap<String, String>()
-        data["body"] = boxInfo.product.name + " " + boxInfo.title
+        data["body"] = boxInfo.product?.name + " " + boxInfo.title
         data["out_trade_no"] = OrderUtil.genOrderId(MusixiseContext.getCurrentUid(), orderId)
         //data["device_info"] = ""
         data["fee_type"] = "CNY"
@@ -260,8 +260,8 @@ class IPayServiceImpl : IPayService {
 
     }
 
-    fun getBoxInfo(order: Order) : BoxInfo {
-        return JSON.parseObject(order.content, BoxInfo::class.java)
+    fun getBoxInfo(order: Order) : BoxInfoVO {
+        return JSON.parseObject(order.content, BoxInfoVO::class.java)
     }
 
     fun getOpenId() : String {

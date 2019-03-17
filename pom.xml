@@ -190,6 +190,12 @@
 				<!-- dbcp需要用到 -->
 			</dependency>
 
+			<dependency>
+				<groupId>com.github.salomonbrys.kotson</groupId>
+				<artifactId>kotson</artifactId>
+				<version>2.5.0</version>
+			</dependency>
+
 			<!--<dependency>-->
 				<!--<groupId>org.hibernate</groupId>-->
 				<!--<artifactId>hibernate-entitymanager</artifactId>-->

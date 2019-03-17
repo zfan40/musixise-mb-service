@@ -1,17 +1,17 @@
 package com.musixise.musixisebox.shop.rest.admin
 
-import com.alibaba.fastjson.JSON
+import com.google.gson.Gson
 import com.musixise.musixisebox.api.enums.ExceptionMsg
 import com.musixise.musixisebox.api.exception.MusixiseException
 import com.musixise.musixisebox.api.result.MusixisePageResponse
 import com.musixise.musixisebox.api.result.MusixiseResponse
 import com.musixise.musixisebox.server.utils.CommonUtil
-import com.musixise.musixisebox.shop.domain.BoxInfo
 import com.musixise.musixisebox.shop.domain.Order
 import com.musixise.musixisebox.shop.domain.QOrder
 import com.musixise.musixisebox.shop.repository.AddressRepository
 import com.musixise.musixisebox.shop.repository.OrderRepository
 import com.musixise.musixisebox.shop.rest.admin.vo.OrderDetailVO
+import com.musixise.musixisebox.shop.rest.web.vo.resp.BoxInfoVO
 import com.querydsl.core.BooleanBuilder
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -53,7 +53,13 @@ class OrderController {
         order.content.forEach {
             val orderVO = OrderDetailVO()
             CommonUtil.copyPropertiesIgnoreNull(it, orderVO)
-            orderVO.product = JSON.parseObject(it.content.toString(), BoxInfo::class.java)
+
+            try {
+                orderVO.product = Gson().fromJson(it.content.toString(), BoxInfoVO::class.java)
+            } catch (e: Exception) {
+
+            }
+
             if (it.address > 0) {
                 orderVO.address = addressRepository.getOne(it.address)
             }
