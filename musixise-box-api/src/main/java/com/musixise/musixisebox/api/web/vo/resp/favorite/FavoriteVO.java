@@ -23,7 +23,7 @@ public class FavoriteVO {
     private String url;
 
     @ApiModelProperty(value = "关注收藏(0=未收藏,1=已收藏)", example = "0")
-    private Integer followStatus;
+    private Integer favStatus;
 
     @ApiModelProperty(value = "收藏时间", example = "2018-04-06 17:00:17")
     private String createdDate;
@@ -83,12 +83,12 @@ public class FavoriteVO {
         this.url = url;
     }
 
-    public Integer getFollowStatus() {
-        return followStatus;
+    public Integer getFavStatus() {
+        return favStatus;
     }
 
-    public void setFollowStatus(Integer followStatus) {
-        this.followStatus = followStatus;
+    public void setFavStatus(Integer favStatus) {
+        this.favStatus = favStatus;
     }
 
     public String getCreatedDate() {
