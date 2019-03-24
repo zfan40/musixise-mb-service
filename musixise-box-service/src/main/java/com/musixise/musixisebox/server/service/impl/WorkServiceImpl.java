@@ -2,23 +2,27 @@ package com.musixise.musixisebox.server.service.impl;
 
 import com.musixise.musixisebox.api.web.vo.resp.UserVO;
 import com.musixise.musixisebox.api.web.vo.resp.work.WorkVO;
-import com.musixise.musixisebox.server.domain.Favorite;
-import com.musixise.musixisebox.server.domain.Follow;
-import com.musixise.musixisebox.server.domain.Musixiser;
-import com.musixise.musixisebox.server.domain.Work;
+import com.musixise.musixisebox.server.domain.*;
 import com.musixise.musixisebox.server.manager.FavoriteManager;
 import com.musixise.musixisebox.server.manager.FollowManager;
 import com.musixise.musixisebox.server.manager.UserManager;
 import com.musixise.musixisebox.server.repository.FavoriteRepository;
+import com.musixise.musixisebox.server.repository.MidiFileRepository;
 import com.musixise.musixisebox.server.repository.WorkRepository;
 import com.musixise.musixisebox.server.service.WorkService;
 import com.musixise.musixisebox.server.transfter.UserTransfter;
 import com.musixise.musixisebox.server.transfter.WorkTransfter;
+import com.musixise.musixisebox.server.utils.MidiUtil;
+import com.musixise.musixisebox.server.utils.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +34,8 @@ import java.util.stream.Collectors;
 @Component
 public class WorkServiceImpl implements WorkService {
 
+    Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Resource WorkRepository workRepository;
 
     @Resource FavoriteRepository favoriteRepository;
@@ -39,6 +45,8 @@ public class WorkServiceImpl implements WorkService {
     @Resource FollowManager followManager;
 
     @Resource FavoriteManager favoriteManager;
+
+    @Resource MidiFileRepository midiFileRepository;
 
     @Override
     public WorkVO getListByUid(Long uid) {
@@ -91,5 +99,33 @@ public class WorkServiceImpl implements WorkService {
 
     }
 
+    private Integer getMachineNum(InputStream inputStream) {
+
+        try {
+            List<MidiUtil.MidiTrack> tracks = MidiUtil.getTracks(inputStream);
+            List<Long> machines = MidiUtil.getMachines(tracks);
+            return machines.size();
+        } catch (Exception e) {
+            logger.error("getMachineNum fail", e);
+        }
+        return -1;
+    }
+
+    @Override
+    public Boolean saveMidiFile(byte[] bt, String file) {
+
+        try {
+            InputStream input = new ByteArrayInputStream(bt);
+            MidiFile midiFile = new MidiFile();
+            midiFile.setFile(file);
+            midiFile.setMd5(StringUtil.getMD5(file));
+            midiFile.setMachineNum(getMachineNum(input));
+            midiFileRepository.save(midiFile);
+        } catch (Exception e) {
+            logger.error("saveMidiFile fail", e);
+        }
+
+        return true;
+    }
 
 }

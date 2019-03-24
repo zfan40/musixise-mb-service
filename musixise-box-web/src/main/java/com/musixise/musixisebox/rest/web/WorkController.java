@@ -8,13 +8,16 @@ import com.musixise.musixisebox.api.web.vo.req.work.WorkMeta;
 import com.musixise.musixisebox.api.web.vo.resp.work.WorkVO;
 import com.musixise.musixisebox.server.aop.AppMethod;
 import com.musixise.musixisebox.server.aop.MusixiseContext;
+import com.musixise.musixisebox.server.domain.MidiFile;
 import com.musixise.musixisebox.server.domain.Work;
 import com.musixise.musixisebox.server.manager.WorkManager;
+import com.musixise.musixisebox.server.repository.MidiFileRepository;
 import com.musixise.musixisebox.server.repository.WorkRepository;
 import com.musixise.musixisebox.server.service.MusixiseService;
 import com.musixise.musixisebox.server.service.WorkService;
 import com.musixise.musixisebox.server.transfter.WorkTransfter;
 import com.musixise.musixisebox.server.utils.CommonUtil;
+import com.musixise.musixisebox.server.utils.StringUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -43,6 +46,8 @@ public class WorkController implements WorkApi {
 
     @Resource WorkService workService;
 
+    @Resource MidiFileRepository midiFileRepository;
+
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @AppMethod(isLogin = true)
     @Override
@@ -51,6 +56,12 @@ public class WorkController implements WorkApi {
         uid = MusixiseContext.getCurrentUid();
         Work work = WorkTransfter.getWork(workMeta);
         work.setUserId(uid);
+
+        //get machine num
+        Optional<MidiFile> midiFile = midiFileRepository.findByMd5(StringUtil.getMD5(work.getUrl()));
+        Integer MatchineNum = midiFile.map(MidiFile::getMachineNum).orElse(0);
+        work.setMachineNum(MatchineNum);
+
         workRepository.save(work);
         musixiseService.updateWorkCount(uid);
         return new MusixiseResponse<>(ExceptionMsg.SUCCESS, work.getId());

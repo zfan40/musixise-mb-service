@@ -7,6 +7,7 @@ import com.musixise.musixisebox.server.aop.AppMethod;
 import com.musixise.musixisebox.server.aop.MusixiseContext;
 import com.musixise.musixisebox.server.manager.UploaderManager;
 import com.musixise.musixisebox.server.service.UploadService;
+import com.musixise.musixisebox.server.service.WorkService;
 import com.musixise.musixisebox.server.utils.FileUtil;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,8 +23,9 @@ public class UploadController implements UploadApi {
 
     @Resource UploaderManager uploaderManager;
 
-    @Resource
-    UploadService uploadServiceQiniuImpl;
+    @Resource UploadService uploadServiceQiniuImpl;
+
+    @Resource WorkService workService;
 
     /**
      * 上传图片
@@ -75,7 +77,11 @@ public class UploadController implements UploadApi {
             String fileName = uploaderManager.buildFileName(fname);
             //上传文件
             if (uploaderManager.upload(bt, fileName)) {
-                return new MusixiseResponse<>(ExceptionMsg.SUCCESS, FileUtil.getAudioFullName(fileName));
+                String audioFullName = FileUtil.getAudioFullName(fileName);
+                //分析midi 并保存
+                workService.saveMidiFile(bt, audioFullName);
+
+                return new MusixiseResponse<>(ExceptionMsg.SUCCESS, audioFullName);
             } else {
                 return new MusixiseResponse<>(ExceptionMsg.UPLOAD_ERROR);
             }

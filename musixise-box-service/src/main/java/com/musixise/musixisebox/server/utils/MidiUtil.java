@@ -1,8 +1,8 @@
 package com.musixise.musixisebox.server.utils;
 
 import javax.sound.midi.*;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,9 +30,9 @@ public class MidiUtil {
         return pow * 440;
     }
 
-    public static List<MidiTrack> getTracks(String fileName) throws InvalidMidiDataException, IOException {
+    public static List<MidiTrack> getTracks(InputStream inputStream) throws InvalidMidiDataException, IOException {
 
-        Sequence sequence = MidiSystem.getSequence(new File("/Users/zhaowei/Downloads/sSTU3GEx_output.mid"));
+        Sequence sequence = MidiSystem.getSequence(inputStream);
 
 
         int key = 0;
@@ -97,7 +97,7 @@ public class MidiUtil {
 //        System.out.println(tracks);
 //    }
 
-    static class MidiTrack {
+    public static class MidiTrack {
 
         /**
          * 音名

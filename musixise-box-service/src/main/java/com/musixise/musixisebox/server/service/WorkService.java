@@ -17,4 +17,6 @@ public interface WorkService {
 
     List<WorkVO> getWorkList(List<Work> workList);
 
+    Boolean saveMidiFile(byte[] bt, String file);
+
 }

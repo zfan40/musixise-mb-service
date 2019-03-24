@@ -43,6 +43,9 @@ public class FavoriteVO {
     @ApiModelProperty(value = "用户信息", example = "")
     private UserVO userVO;
 
+    @ApiModelProperty(value = "音片数量", example = "超过18个就不能制作八音盒")
+    private Integer machineNum;
+
     public Long getId() {
         return id;
     }
@@ -137,5 +140,13 @@ public class FavoriteVO {
 
     public void setLastModifiedDate(String lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public Integer getMachineNum() {
+        return machineNum;
+    }
+
+    public void setMachineNum(Integer machineNum) {
+        this.machineNum = machineNum;
     }
 }
