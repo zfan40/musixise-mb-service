@@ -15,4 +15,5 @@ data class Order(@Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id:
                  val userId: Long,
                  var amount: Long,
                  var content: String?=null,
+                 var message: String?=null,
                  var address: Long = 0) : AbstractEntity()

@@ -64,8 +64,11 @@ class IOrderServiceImpl : IOrderService {
         }
 
         val order = Order(price = totalPrice(product.get().price, orderVO.amount),
-            userId = currentUid, status = 0, content = getProductContent(orderVO.wid, product.get()),
-            amount = orderVO.amount, address = orderVO.addressId)
+            userId = currentUid, status = 0,
+            content = getProductContent(orderVO.wid, product.get()),
+            amount = orderVO.amount,
+            message = orderVO.message,
+            address = orderVO.addressId)
         orderRepository.save(order);
 
         return order.id
