@@ -144,7 +144,7 @@ public class WorkController implements WorkApi {
         all.forEach( work -> {
             try {
                 String url = work.getUrl();
-                if (url.indexOf("midi") != -1) {
+                if (url.indexOf("mid") != -1) {
                     URL u = new URL(work.getUrl().replace("//", "https://"));
                     List<MidiUtil.MidiTrack> tracks = MidiUtil.getTracks(u);
                     MidiFile midiFile = new MidiFile();
