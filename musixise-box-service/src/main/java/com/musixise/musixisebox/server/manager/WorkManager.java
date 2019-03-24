@@ -53,4 +53,7 @@ public class WorkManager {
         return StreamSupport.stream(worksIt.spliterator(), false).collect(Collectors.toMap(Work::getId, m -> m));
     }
 
+    public List<Work> getWorkList(List<Long> workIds) {
+        return workRepository.findAllById(workIds);
+    }
 }

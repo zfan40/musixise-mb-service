@@ -28,6 +28,9 @@ public class FavoriteVO {
     @ApiModelProperty(value = "收藏时间", example = "2018-04-06 17:00:17")
     private String createdDate;
 
+    @ApiModelProperty(value = "更新时间", example = "2018-04-06 18:00:00")
+    private String lastModifiedDate;
+
     @ApiModelProperty(value = "作者ID", example = "7")
     private Long userId;
 
@@ -126,5 +129,13 @@ public class FavoriteVO {
 
     public void setUserVO(UserVO userVO) {
         this.userVO = userVO;
+    }
+
+    public String getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(String lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
     }
 }

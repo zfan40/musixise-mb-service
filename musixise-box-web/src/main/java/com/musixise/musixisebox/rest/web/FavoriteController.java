@@ -1,7 +1,5 @@
 package com.musixise.musixisebox.rest.web;
 
-import com.musixise.musixisebox.server.aop.AppMethod;
-import com.musixise.musixisebox.server.aop.MusixiseContext;
 import com.musixise.musixisebox.api.enums.ExceptionMsg;
 import com.musixise.musixisebox.api.result.MusixisePageResponse;
 import com.musixise.musixisebox.api.result.MusixiseResponse;
@@ -9,8 +7,11 @@ import com.musixise.musixisebox.api.web.service.FavoriteApi;
 import com.musixise.musixisebox.api.web.vo.req.favorite.CreateFavoriteVO;
 import com.musixise.musixisebox.api.web.vo.resp.favorite.FavoriteVO;
 import com.musixise.musixisebox.api.web.vo.resp.work.WorkVO;
+import com.musixise.musixisebox.server.aop.AppMethod;
+import com.musixise.musixisebox.server.aop.MusixiseContext;
 import com.musixise.musixisebox.server.domain.Favorite;
 import com.musixise.musixisebox.server.domain.Work;
+import com.musixise.musixisebox.server.manager.FavoriteManager;
 import com.musixise.musixisebox.server.manager.WorkManager;
 import com.musixise.musixisebox.server.repository.FavoriteRepository;
 import com.musixise.musixisebox.server.repository.WorkRepository;
@@ -28,7 +29,10 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 
 /**
  * Created by zhaowei on 2018/4/5.
@@ -49,8 +53,9 @@ public class FavoriteController implements FavoriteApi {
 
     @Resource UserService userService;
 
-    @Resource
-    WorkManager workManager;
+    @Resource WorkManager workManager;
+
+    @Resource FavoriteManager favoriteManager;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @AppMethod(isLogin = true)
@@ -82,17 +87,27 @@ public class FavoriteController implements FavoriteApi {
     public MusixisePageResponse<List<FavoriteVO>> getList(@PathVariable Long uid,
                                                           @RequestParam(value = "page", defaultValue = "1") Integer page,
                                                           @RequestParam(value = "size", defaultValue = "10") Integer size) {
+
+        //get favorite list
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         Pageable pageable = PageRequest.of(page-1, size, sort);
 
         Page<Favorite> favorites = favoriteRepository.findAllByUserIdOrderByIdDesc(uid, pageable);
 
+        //get work list po
+        List<Long> workIds = favorites.stream().map(Favorite::getWorkId).collect(Collectors.toList());
+        List<Work> workList = workManager.getWorkList(workIds);
+
+
+        List<WorkVO> workListVO = workService.getWorkList(workList);
+        Map<Long, WorkVO> workVOMap = workListVO.stream().collect(Collectors.toMap(WorkVO::getId, w -> w));
+
+
         List<FavoriteVO> favoriteVOList = new ArrayList<>();
         favorites.forEach(favorite -> {
-
-            Optional<Work> workOptional = workRepository.findById(favorite.getWorkId());
-            WorkVO workVO = workManager.getWorkVO(MusixiseContext.getCurrentUid(), workOptional.orElse(new Work()));
-            favoriteVOList.add(FavoriteTransfter.getFavoriteWithUser(workVO));
+            WorkVO workVO = workVOMap.get(favorite.getWorkId());
+            FavoriteVO favoriteWithUser = FavoriteTransfter.getFavoriteWithUser(workVO);
+            favoriteVOList.add(favoriteWithUser);
         });
 
         return new MusixisePageResponse<>(favoriteVOList, favorites.getTotalElements(), size, page);

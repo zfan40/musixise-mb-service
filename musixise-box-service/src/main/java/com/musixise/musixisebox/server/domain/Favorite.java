@@ -20,7 +20,7 @@ public class Favorite extends AbstractEntity implements Serializable {
     @NotNull
     private Long workId;
 
-    @Column(name = "userId")
+    @Column(name = "user_id")
     @NotNull
     private Long userId;
 

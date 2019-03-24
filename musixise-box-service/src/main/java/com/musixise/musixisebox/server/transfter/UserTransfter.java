@@ -26,12 +26,14 @@ public class UserTransfter {
 
     public static UserVO getUserVO(Musixiser musixiser) {
         UserVO userVO = new UserVO();
-        CommonUtil.copyPropertiesIgnoreNull(musixiser, userVO);
-        userVO.setRealname(musixiser.getRealname());
-        userVO.setUserId(musixiser.getUserId());
-        userVO.setCreatedDate(DateUtil.asDate(musixiser.getCreatedDate()));
-        userVO.setSmallAvatar(FileUtil.getImageFullName(musixiser.getSmallAvatar()));
-        userVO.setLargeAvatar(FileUtil.getImageFullName(musixiser.getSmallAvatar()));
+        if (musixiser != null) {
+            CommonUtil.copyPropertiesIgnoreNull(musixiser, userVO);
+            userVO.setRealname(musixiser.getRealname());
+            userVO.setUserId(musixiser.getUserId());
+            userVO.setCreatedDate(DateUtil.asDate(musixiser.getCreatedDate()));
+            userVO.setSmallAvatar(FileUtil.getImageFullName(musixiser.getSmallAvatar()));
+            userVO.setLargeAvatar(FileUtil.getImageFullName(musixiser.getSmallAvatar()));
+        }
 
         return userVO;
     }
