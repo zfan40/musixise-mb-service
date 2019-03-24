@@ -146,14 +146,29 @@ public class WorkController implements WorkApi {
                 String url = work.getUrl();
                 if (url.indexOf("mid") != -1) {
                     URL u = new URL(work.getUrl().replace("//", "https://"));
+
                     List<MidiUtil.MidiTrack> tracks = MidiUtil.getTracks(u);
+
+                    List<Long> machines = MidiUtil.getMachines(tracks);
+
+                    String md5 = StringUtil.getMD5(url);
+                    midiFileRepository.deleteByMd5(md5);
+
                     MidiFile midiFile = new MidiFile();
                     midiFile.setFile(url);
-                    midiFile.setMd5(StringUtil.getMD5(url));
-                    midiFile.setMachineNum(tracks.size());
+                    midiFile.setMd5(md5);
+                    midiFile.setMachineNum(machines.size());
                     midiFileRepository.save(midiFile);
-                    work.setMachineNum(tracks.size());
+
+                    work.setMachineNum(machines.size());
                     workRepository.save(work);
+
+//                    QWork workquery = QWork.work;
+//                    new JPAUpdateClause(null, workquery).where(workquery.id.eq(work.getId()))
+//                    .set(workquery.machineNum, 0)
+//                            .execute();
+
+
                     logger.info("success", work.getUrl(), work.getMachineNum());
                 } else {
                     logger.warn("not valid midi url", work.getUrl());

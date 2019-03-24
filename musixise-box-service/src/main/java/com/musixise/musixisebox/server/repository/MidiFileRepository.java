@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface MidiFileRepository extends JpaRepository<MidiFile, Long>, QuerydslPredicateExecutor<MidiFile> {
 
     Optional<MidiFile> findByMd5(String md5);
+    int deleteByMd5(String md5);
 }
