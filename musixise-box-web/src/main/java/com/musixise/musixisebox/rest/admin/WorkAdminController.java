@@ -53,7 +53,7 @@ public class WorkAdminController implements WorkAdminApi {
     @RequestMapping(value = "", method = RequestMethod.POST)
     @AppMethod(isAdmin = true)
     @Override
-    public MusixiseResponse create(@Valid AddWorkVO addWorkVO) {
+    public MusixiseResponse create(@Valid @RequestBody AddWorkVO addWorkVO) {
         Work work = new Work();
         CommonUtil.copyPropertiesIgnoreNull(addWorkVO, work);
         workRepository.save(work);
