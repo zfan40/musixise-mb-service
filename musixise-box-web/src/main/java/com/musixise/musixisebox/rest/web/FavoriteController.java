@@ -106,8 +106,10 @@ public class FavoriteController implements FavoriteApi {
         List<FavoriteVO> favoriteVOList = new ArrayList<>();
         favorites.forEach(favorite -> {
             WorkVO workVO = workVOMap.get(favorite.getWorkId());
-            FavoriteVO favoriteWithUser = FavoriteTransfter.getFavoriteWithUser(workVO);
-            favoriteVOList.add(favoriteWithUser);
+            if (workVO != null) {
+                FavoriteVO favoriteWithUser = FavoriteTransfter.getFavoriteWithUser(workVO);
+                favoriteVOList.add(favoriteWithUser);
+            }
         });
 
         return new MusixisePageResponse<>(favoriteVOList, favorites.getTotalElements(), size, page);
