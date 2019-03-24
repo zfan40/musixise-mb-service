@@ -3,6 +3,7 @@ package com.musixise.musixisebox.server.utils;
 import javax.sound.midi.*;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,10 +31,17 @@ public class MidiUtil {
         return pow * 440;
     }
 
+    public static List<MidiTrack> getTracks(URL url) throws InvalidMidiDataException, IOException {
+        return getTracks(MidiSystem.getSequence(url));
+    }
+
     public static List<MidiTrack> getTracks(InputStream inputStream) throws InvalidMidiDataException, IOException {
+        return getTracks(MidiSystem.getSequence(inputStream));
+    }
 
-        Sequence sequence = MidiSystem.getSequence(inputStream);
+    public static List<MidiTrack> getTracks(Sequence sequence) throws InvalidMidiDataException, IOException {
 
+        //Sequence sequence = MidiSystem.getSequence(inputStream);
 
         int key = 0;
         int octave = 0;
@@ -49,11 +57,11 @@ public class MidiUtil {
             //System.out.println();
             for (int i = 0; i < track.size(); i++) {
                 MidiEvent event = track.get(i);
-                System.out.print("@" + event.getTick() + " ");
+                //System.out.print("@" + event.getTick() + " ");
                 MidiMessage message = event.getMessage();
                 if (message instanceof ShortMessage) {
                     ShortMessage sm = (ShortMessage) message;
-                    System.out.print("Channel: " + sm.getChannel() + " ");
+                    //System.out.print("Channel: " + sm.getChannel() + " ");
                     if (sm.getCommand() == NOTE_ON) {
                         key = sm.getData1();
                         octave = (key / 12) - 1;

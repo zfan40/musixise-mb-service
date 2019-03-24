@@ -17,7 +17,10 @@ import com.musixise.musixisebox.server.service.MusixiseService;
 import com.musixise.musixisebox.server.service.WorkService;
 import com.musixise.musixisebox.server.transfter.WorkTransfter;
 import com.musixise.musixisebox.server.utils.CommonUtil;
+import com.musixise.musixisebox.server.utils.MidiUtil;
 import com.musixise.musixisebox.server.utils.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +41,8 @@ import java.util.Optional;
 
 @RequestMapping("/api/v1/work")
 public class WorkController implements WorkApi {
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Resource WorkRepository workRepository;
 
@@ -130,4 +136,36 @@ public class WorkController implements WorkApi {
             return new MusixiseResponse<>(ExceptionMsg.SUCCESS);
         }).orElse(new MusixiseResponse<>(ExceptionMsg.FAILED));
     }
+
+    @RequestMapping(value = "/recountMachineNum", method = RequestMethod.POST)
+    public MusixiseResponse<?> recountMachineNum() {
+        List<Work> all = workRepository.findAll();
+
+        all.forEach( work -> {
+            try {
+                String url = work.getUrl();
+                if (url.indexOf("midi") != -1) {
+                    URL u = new URL(work.getUrl().replace("//", "https://"));
+                    List<MidiUtil.MidiTrack> tracks = MidiUtil.getTracks(u);
+                    MidiFile midiFile = new MidiFile();
+                    midiFile.setFile(url);
+                    midiFile.setMd5(StringUtil.getMD5(url));
+                    midiFile.setMachineNum(tracks.size());
+                    midiFileRepository.save(midiFile);
+                    work.setMachineNum(tracks.size());
+                    workRepository.save(work);
+                    logger.info("success", work.getUrl(), work.getMachineNum());
+                } else {
+                    logger.warn("not valid midi url", work.getUrl());
+                }
+
+            } catch (Exception e) {
+                logger.error("recountMachineNum fail", work.getId() , e);
+            }
+
+        });
+
+        return new MusixiseResponse<>(ExceptionMsg.SUCCESS);
+    }
+
 }
