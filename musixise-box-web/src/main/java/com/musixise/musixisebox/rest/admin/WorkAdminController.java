@@ -7,10 +7,13 @@ import com.musixise.musixisebox.api.result.MusixisePageResponse;
 import com.musixise.musixisebox.api.result.MusixiseResponse;
 import com.musixise.musixisebox.api.web.vo.resp.work.WorkVO;
 import com.musixise.musixisebox.server.aop.AppMethod;
+import com.musixise.musixisebox.server.domain.MidiFile;
 import com.musixise.musixisebox.server.domain.Work;
+import com.musixise.musixisebox.server.repository.MidiFileRepository;
 import com.musixise.musixisebox.server.repository.WorkRepository;
 import com.musixise.musixisebox.server.transfter.WorkTransfter;
 import com.musixise.musixisebox.server.utils.CommonUtil;
+import com.musixise.musixisebox.server.utils.StringUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by zhaowei on 2018/5/12.
@@ -29,6 +33,8 @@ import java.util.List;
 public class WorkAdminController implements WorkAdminApi {
 
     @Resource WorkRepository workRepository;
+
+    @Resource MidiFileRepository midiFileRepository;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     @AppMethod(isAdmin = true)
@@ -56,6 +62,12 @@ public class WorkAdminController implements WorkAdminApi {
     public MusixiseResponse create(@Valid @RequestBody AddWorkVO addWorkVO) {
         Work work = new Work();
         CommonUtil.copyPropertiesIgnoreNull(addWorkVO, work);
+
+        //get machine num
+        Optional<MidiFile> midiFile = midiFileRepository.findByMd5(StringUtil.getMD5(work.getUrl()));
+        Integer MatchineNum = midiFile.map(MidiFile::getMachineNum).orElse(0);
+        work.setMachineNum(MatchineNum);
+
         workRepository.save(work);
         return new MusixiseResponse(ExceptionMsg.SUCCESS);
     }
