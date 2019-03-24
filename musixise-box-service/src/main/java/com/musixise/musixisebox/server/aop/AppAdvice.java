@@ -76,7 +76,7 @@ public class AppAdvice implements Ordered {
             if (appMethod.isLogin()) {
                 //check
                 if (!islogin) {
-                    if (point.getSignature().toString().indexOf("MusixisePageResponse") > 0) {
+                    if (point.getSignature().toString().indexOf("MusixisePageResponse") != -1) {
                         return  new MusixisePageResponse(ExceptionMsg.NEED_LOGIN);
                     } else {
                         return  new MusixiseResponse(ExceptionMsg.NEED_LOGIN);

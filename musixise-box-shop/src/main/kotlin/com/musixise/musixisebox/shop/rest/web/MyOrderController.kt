@@ -60,9 +60,12 @@ class MyOrderController {
             } catch (e: Exception) {
                 println(it.content)
             }
+
+            val orderIdStr = OrderUtil.genOrderId(it.userId, it.id, it.shipTime);
             val myOrderVO = MyOrderVO(
                 it.id,
                 it.price,
+                orderIdStr,
                 it.status,
                 it.shipTime,
                 it.confirmTime,
