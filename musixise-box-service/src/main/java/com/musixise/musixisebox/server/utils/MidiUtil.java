@@ -4,8 +4,7 @@ import javax.sound.midi.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MidiUtil {
@@ -23,6 +22,51 @@ public class MidiUtil {
 
         //排序去重
         return machines.stream().sorted().distinct().collect(Collectors.toList());
+
+    }
+
+    public static List<Long> getMachinesV2( List<MidiTrack> midiTrackList) {
+
+        //put same frequency togeter
+        Map<Long, List<MidiTrack>> frequencyMap = new HashMap<Long, List<MidiTrack>>();
+        //final result witch machines
+        List<Long> machinesList = new ArrayList<>();
+
+        midiTrackList.stream().forEach( s -> {
+            Long frequencyVal = s.frequency.longValue() * 2;
+            if (frequencyMap.containsKey(frequencyVal)) {
+                List<MidiTrack> oldList = frequencyMap.get(frequencyVal);
+                ArrayList tmp = new ArrayList(oldList);
+                tmp.add(s);
+                frequencyMap.put(frequencyVal, tmp);
+                //check time gap whether gt 1.2s
+
+                Boolean canReuse = true;
+                for (MidiTrack midiTrack : oldList) {
+                    if (s.time - midiTrack.time > 1200) {
+                        //reuse
+                        canReuse = true;
+                        break;
+                    } else {
+                        //new machines
+                        canReuse = false;
+                    }
+                }
+
+                if (!canReuse) {
+                    machinesList.add(frequencyVal);
+                }
+
+            } else {
+                //init
+                frequencyMap.put(frequencyVal, Arrays.asList(s));
+                machinesList.add(frequencyVal);
+            }
+
+
+        });
+
+        return machinesList;
 
     }
 

@@ -47,6 +47,9 @@ public class WorkVO {
     @ApiModelProperty(value = "音片数量", example = "超过18个就不能制作八音盒")
     private Integer machineNum;
 
+    @ApiModelProperty(value = "pv", example = "pv")
+    private Integer pv;
+
     public Long getId() {
         return id;
     }
@@ -149,5 +152,13 @@ public class WorkVO {
 
     public void setMachineNum(Integer machineNum) {
         this.machineNum = machineNum;
+    }
+
+    public Integer getPv() {
+        return pv;
+    }
+
+    public void setPv(Integer pv) {
+        this.pv = pv;
     }
 }

@@ -6,6 +6,7 @@ import com.musixise.musixisebox.server.domain.*;
 import com.musixise.musixisebox.server.manager.FavoriteManager;
 import com.musixise.musixisebox.server.manager.FollowManager;
 import com.musixise.musixisebox.server.manager.UserManager;
+import com.musixise.musixisebox.server.manager.WorkManager;
 import com.musixise.musixisebox.server.repository.FavoriteRepository;
 import com.musixise.musixisebox.server.repository.MidiFileRepository;
 import com.musixise.musixisebox.server.repository.WorkRepository;
@@ -16,6 +17,7 @@ import com.musixise.musixisebox.server.utils.MidiUtil;
 import com.musixise.musixisebox.server.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -47,6 +49,8 @@ public class WorkServiceImpl implements WorkService {
     @Resource FavoriteManager favoriteManager;
 
     @Resource MidiFileRepository midiFileRepository;
+
+    @Resource WorkManager workManager;
 
     @Override
     public WorkVO getListByUid(Long uid) {
@@ -126,6 +130,11 @@ public class WorkServiceImpl implements WorkService {
         }
 
         return true;
+    }
+
+    @Override
+    public Page<Work> getRecommends(int page, int limit) {
+        return workManager.getRecommends(page, limit);
     }
 
 }

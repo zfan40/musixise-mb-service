@@ -6,9 +6,16 @@ import com.musixise.musixisebox.server.domain.QWork;
 import com.musixise.musixisebox.server.domain.Work;
 import com.musixise.musixisebox.server.repository.MusixiserRepository;
 import com.musixise.musixisebox.server.repository.WorkRepository;
-import com.musixise.musixisebox.server.service.*;
+import com.musixise.musixisebox.server.service.FavoriteService;
+import com.musixise.musixisebox.server.service.FollowService;
+import com.musixise.musixisebox.server.service.MusixiseService;
+import com.musixise.musixisebox.server.service.UserService;
 import com.musixise.musixisebox.server.transfter.WorkTransfter;
 import com.querydsl.core.BooleanBuilder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -35,8 +42,6 @@ public class WorkManager {
 
     @Resource MusixiseService musixiseService;
 
-    @Resource WorkService workService;
-
     public WorkVO getWorkVO(Long uid, Work work) {
         UserVO userVO = userService.getById(work.getUserId(), false);
         Boolean isFavorite = favoriteService.isFavorite(uid, work.getId());
@@ -55,5 +60,19 @@ public class WorkManager {
 
     public List<Work> getWorkList(List<Long> workIds) {
         return workRepository.findAllById(workIds);
+    }
+
+    public Page<Work> getRecommends(int page, int limit) {
+
+        QWork work = QWork.work;
+        //BooleanBuilder booleanBuilder = new BooleanBuilder();
+        //booleanBuilder.and(work.id.in(workIds));
+        Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC,"pv"),
+                new Sort.Order(Sort.Direction.DESC, "lastModifiedDate"));
+        //Predicate predicate = work.id.longValue().lt(3);
+        PageRequest pageRequest = new PageRequest(page-1,limit,sort);
+
+        Pageable pageable = PageRequest.of(page-1, limit, sort);
+        return workRepository.findAll(pageRequest);
     }
 }

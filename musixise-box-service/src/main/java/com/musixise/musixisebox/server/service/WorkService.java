@@ -3,6 +3,7 @@ package com.musixise.musixisebox.server.service;
 
 import com.musixise.musixisebox.api.web.vo.resp.work.WorkVO;
 import com.musixise.musixisebox.server.domain.Work;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -18,5 +19,7 @@ public interface WorkService {
     List<WorkVO> getWorkList(List<Work> workList);
 
     Boolean saveMidiFile(byte[] bt, String file);
+
+    Page<Work> getRecommends(int page, int limit);
 
 }
