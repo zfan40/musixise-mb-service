@@ -48,6 +48,9 @@ public class WorkTransfter {
         workVO.setLastModifiedDate(DateUtil.asDate(work.getLastModifiedDate()));
         workVO.setUrl(FileUtil.getAudioFullName(work.getUrl()));
         workVO.setFileHash(StringUtil.getMD5(work.getUrl()));
+        if (work.getPv() == null) {
+            workVO.setPv(0);
+        }
         if (work.getCollectNum() == null) {
             workVO.setCollectNum(0);
         }
