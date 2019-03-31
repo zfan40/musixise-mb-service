@@ -1,11 +1,12 @@
 package com.musixise.musixisebox.server.utils;
 
+import javafx.util.Pair;
+
 import javax.sound.midi.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class MidiUtil {
 
@@ -13,27 +14,20 @@ public class MidiUtil {
     public static final int NOTE_OFF = 0x80;
     public static final String[] NOTE_NAMES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
 
-    public static List<Long> getMachines(List<MidiTrack> midiTrackList) {
-
-        List<Long> machines = new ArrayList<>();
-        midiTrackList.stream().forEach( s -> {
-            machines.add(s.frequency.longValue() *2);
-        });
-
-        //排序去重
-        return machines.stream().sorted().distinct().collect(Collectors.toList());
-
-    }
-
-    public static List<Long> getMachinesV2( List<MidiTrack> midiTrackList) {
+    public static List<Long> getMachines( List<MidiTrack> midiTrackList) {
 
         //put same frequency togeter
         Map<Long, List<MidiTrack>> frequencyMap = new HashMap<Long, List<MidiTrack>>();
-        //final result witch machines
+        //final result for machines
         List<Long> machinesList = new ArrayList<>();
 
+        //note bucket list
+        Map<Long, List<Pair<Long, Double> >> bucketMap = new HashMap<>();
+
         midiTrackList.stream().forEach( s -> {
+            //频率
             Long frequencyVal = s.frequency.longValue() * 2;
+
             if (frequencyMap.containsKey(frequencyVal)) {
                 List<MidiTrack> oldList = frequencyMap.get(frequencyVal);
                 ArrayList tmp = new ArrayList(oldList);
@@ -41,26 +35,62 @@ public class MidiUtil {
                 frequencyMap.put(frequencyVal, tmp);
                 //check time gap whether gt 1.2s
 
-                Boolean canReuse = true;
-                for (MidiTrack midiTrack : oldList) {
-                    if (s.time - midiTrack.time > 1200) {
-                        //reuse
-                        canReuse = true;
-                        break;
-                    } else {
-                        //new machines
-                        canReuse = false;
+                //取出上一个音片数据
+                List<Pair<Long, Double>> pairsList = bucketMap.get(frequencyVal);
+                Pair<Long, Double> lastDoublePair = bucketMap.get(frequencyVal).get(pairsList.size() - 1);
+
+                //间隔太短，继续向前寻找
+                Collections.reverse(pairsList);
+
+                Boolean canReuse = false;
+
+                if (s.getTime() - lastDoublePair.getValue() > 1200.00) {
+                    //可以复用这个音片
+                    Collections.reverse(pairsList);
+                    pairsList.add(new Pair(lastDoublePair.getKey(), s.getTime()));
+                    bucketMap.put(frequencyVal, pairsList);
+                    canReuse = true;
+                } else {
+                    List<Long> notAvaliableBucket = new ArrayList<>();
+                    //标记不能用的音片
+                    notAvaliableBucket.add(lastDoublePair.getKey());
+                    for (Pair<Long, Double> pair : pairsList) {
+                        //排除已经不能用的音片
+                        if (!notAvaliableBucket.contains(pair.getKey())) {
+                            //继续比较时间
+                            if (s.getTime() - pair.getValue() > 1200.00) {
+                                //可以复用这个音片
+                                Collections.reverse(pairsList);
+                                pairsList.add(new Pair(pair.getKey(), s.getTime()));
+                                bucketMap.put(frequencyVal, pairsList);
+                                canReuse = true;
+                                break;
+                            } else {
+                                //标记音片不能用
+                                notAvaliableBucket.add(pair.getKey());
+                            }
+                        }
                     }
                 }
 
                 if (!canReuse) {
+                    //new bucket
                     machinesList.add(frequencyVal);
+                    Collections.reverse(pairsList);
+                    //找出当前最大音片数+1
+                    long maxBucketNum = getBucketMax(pairsList);
+                    pairsList.add(new Pair<>(maxBucketNum+1, s.getTime()));
+                    bucketMap.put(frequencyVal, pairsList);
                 }
+
 
             } else {
                 //init
                 frequencyMap.put(frequencyVal, Arrays.asList(s));
                 machinesList.add(frequencyVal);
+                bucketMap.put(frequencyVal, new ArrayList<Pair<Long, Double>>() {{
+                    add(new Pair(1L, s.getTime()));
+                }});
             }
 
 
@@ -68,6 +98,18 @@ public class MidiUtil {
 
         return machinesList;
 
+    }
+
+    public static Long getBucketMax(List<Pair<Long, Double>> pairList) {
+
+        Long max = 0L;
+        for (Pair<Long, Double> s : pairList) {
+            if (s.getKey() > max) {
+                max = s.getKey();
+            }
+        }
+
+        return max;
     }
 
     public static Double getFrequency(int midi) {
@@ -85,69 +127,78 @@ public class MidiUtil {
 
     public static List<MidiTrack> getTracks(Sequence sequence) throws InvalidMidiDataException, IOException {
 
-        //Sequence sequence = MidiSystem.getSequence(inputStream);
-
-        int key = 0;
-        int octave = 0;
-        int note = 0;
+        int ppq         = sequence.getResolution();
+        int key         = 0;
+        int octave      = 0;
+        int note        = 0;
         String noteName = "";
-        int velocity = 0;
+        int velocity    = 0;
+        int tempo       = 120;
 
         List<MidiTrack> midiTrackList = new ArrayList<>();
         int trackNumber = 0;
         for (Track track : sequence.getTracks()) {
             trackNumber++;
-            //System.out.println("Track " + trackNumber + ": size = " + track.size());
-            //System.out.println();
             for (int i = 0; i < track.size(); i++) {
                 MidiEvent event = track.get(i);
-                //System.out.print("@" + event.getTick() + " ");
                 MidiMessage message = event.getMessage();
                 if (message instanceof ShortMessage) {
                     ShortMessage sm = (ShortMessage) message;
-                    //System.out.print("Channel: " + sm.getChannel() + " ");
                     if (sm.getCommand() == NOTE_ON) {
                         key = sm.getData1();
                         octave = (key / 12) - 1;
                         note = key % 12;
                         noteName = NOTE_NAMES[note];
                         velocity = sm.getData2();
-                        //System.out.println("Note on, " + noteName + octave + " key=" + key + " velocity: " + velocity);
-                        midiTrackList.add(new MidiTrack(noteName, key, event.getTick(), getFrequency(key)));
+
+                        double ticksToMs = ticksToMs(event.getTick(), ppq, tempo);
+                        midiTrackList.add(new MidiTrack(noteName, key, ticksToMs, getFrequency(key)));
                     } else if (sm.getCommand() == NOTE_OFF) {
                         key = sm.getData1();
                         octave = (key / 12) - 1;
                         note = key % 12;
                         noteName = NOTE_NAMES[note];
                         velocity = sm.getData2();
-                        //System.out.println("Note off, " + noteName + octave + " key=" + key + " velocity: " + velocity);
                     } else {
-                        //System.out.println("Command:" + sm.getCommand());
                     }
 
 
 
+                }  else if (message instanceof MetaMessage) {
+                    MetaMessage metaMessage = (MetaMessage) message;
+                    //META_TEMPO
+                    if (metaMessage.getType() == 81) {
+                        //tempo change
+                        tempo = tempoChanged(metaMessage);
+                    }
                 } else {
-                    //System.out.println("Other message: " + message.getClass());
                 }
             }
 
-            //System.out.println();
         }
 
         return midiTrackList;
     }
 
 
+    private static int tempoChanged(MetaMessage meta) {
+        int newTempoMSPQ = (meta.getData()[2] & 0xFF) |
+                ((meta.getData()[1] & 0xFF) << 8) |
+                ((meta.getData()[0] & 0xFF) << 16);
+        return 60000000 / newTempoMSPQ;
+    }
+
+
 //    public static void main(String[] args) throws InvalidMidiDataException, IOException {
-//
-//
-//        List<MidiTrack> tracks = MidiUtil.getTracks("");
-//
+//        List<MidiTrack> tracks = MidiUtil.getTracks(new URL("https://img.musixise.com/6dTh3SHJ_xuemaojiao.mid"));
 //        List<Long> machines = getMachines(tracks);
+//        System.out.println(machines);
 //
-//        System.out.println(tracks);
 //    }
+
+    private static double ticksToMs(long ticks, long resolutionTicksPerBeat, long tempoBPM) {
+        return 60000.00 / (tempoBPM * resolutionTicksPerBeat) * ticks;
+    }
 
     public static class MidiTrack {
 
@@ -164,14 +215,14 @@ public class MidiUtil {
         /**
          * 时长
          */
-        private long time;
+        private double time;
 
         /**
          * 频率
          */
         private Double frequency;
 
-        public MidiTrack(String name, int midi, long time, Double frequency) {
+        public MidiTrack(String name, int midi, double time, Double frequency) {
             this.name = name;
             this.midi = midi;
             this.time = time;
@@ -202,11 +253,11 @@ public class MidiUtil {
             this.midi = midi;
         }
 
-        public long getTime() {
+        public double getTime() {
             return time;
         }
 
-        public void setTime(long time) {
+        public void setTime(double time) {
             this.time = time;
         }
     }
