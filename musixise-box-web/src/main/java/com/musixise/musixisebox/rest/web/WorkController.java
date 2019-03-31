@@ -152,7 +152,7 @@ public class WorkController implements WorkApi {
                     List<Long> machines = MidiUtil.getMachines(tracks);
 
                     String md5 = StringUtil.getMD5(url);
-                    midiFileRepository.deleteByMd5(md5);
+                    midiFileRepository.deleteAll();
 
                     MidiFile midiFile = new MidiFile();
                     midiFile.setFile(url);
