@@ -14,11 +14,9 @@ public class MidiUtil {
     public static final int NOTE_ON = 0x90;
     public static final int NOTE_OFF = 0x80;
     public static final String[] NOTE_NAMES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+    public static final Double maxGapTime = 1200.00;
 
     public static List<Long> getMachines( List<MidiTrack> midiTrackList) {
-
-
-
 
         //put same frequency togeter
         Map<Long, List<MidiTrack>> frequencyMap = new HashMap<Long, List<MidiTrack>>();
@@ -27,6 +25,9 @@ public class MidiUtil {
 
         //note bucket list
         Map<Long, List<Pair<Long, Double> >> bucketMap = new HashMap<>();
+
+        //复制自己
+        midiTrackList.addAll(midiTrackList);
 
         midiTrackList.stream().forEach( s -> {
             //频率
@@ -39,46 +40,35 @@ public class MidiUtil {
                 frequencyMap.put(frequencyVal, tmp);
                 //check time gap whether gt 1.2s
 
-                //取出上一个音片数据
-
-                //Pair<String, String> pair = Pair.of("aku", "female");
-
+                //取出音片数据列表
                 List<Pair<Long, Double>> pairsList = bucketMap.get(frequencyVal);
-                Pair<Long, Double> lastDoublePair = bucketMap.get(frequencyVal).get(pairsList.size() - 1);
 
-                //间隔太短，继续向前寻找
                 Collections.reverse(pairsList);
 
                 Boolean canReuse = false;
 
-                if (s.getTime() - lastDoublePair.getSecond() > 1200.00) {
-                    //可以复用这个音片
-                    Collections.reverse(pairsList);
-                    pairsList.add(Pair.of(lastDoublePair.getFirst(), s.getTime()));
-                    bucketMap.put(frequencyVal, pairsList);
-                    canReuse = true;
-                } else {
-                    List<Long> notAvaliableBucket = new ArrayList<>();
-                    //标记不能用的音片
-                    notAvaliableBucket.add(lastDoublePair.getFirst());
-                    for (Pair<Long, Double> pair : pairsList) {
-                        //排除已经不能用的音片
-                        if (!notAvaliableBucket.contains(pair.getFirst())) {
-                            //继续比较时间
-                            if (s.getTime() - pair.getSecond() > 1200.00) {
-                                //可以复用这个音片
-                                Collections.reverse(pairsList);
-                                pairsList.add(Pair.of(pair.getFirst(), s.getTime()));
-                                bucketMap.put(frequencyVal, pairsList);
-                                canReuse = true;
-                                break;
-                            } else {
-                                //标记音片不能用
-                                notAvaliableBucket.add(pair.getFirst());
-                            }
+                List<Long> notAvaliableBucket = new ArrayList<>();
+                //标记不能用的音片
+                for (Pair<Long, Double> pair : pairsList) {
+                    //排除已经不能用的音片
+                    if (!notAvaliableBucket.contains(pair.getFirst()) ||
+                            s.getTime() == pair.getSecond()) {
+                        //继续比较时间
+                        if (Math.abs(s.getTime() - pair.getSecond()) > maxGapTime ||
+                         s.getTime() == pair.getSecond()) {
+                            //可以复用这个音片
+                            Collections.reverse(pairsList);
+                            pairsList.add(Pair.of(pair.getFirst(), s.getTime()));
+                            bucketMap.put(frequencyVal, pairsList);
+                            canReuse = true;
+                            break;
+                        } else {
+                            //标记音片不能用
+                            notAvaliableBucket.add(pair.getFirst());
                         }
                     }
                 }
+
 
                 if (!canReuse) {
                     //new bucket
@@ -196,12 +186,12 @@ public class MidiUtil {
     }
 
 
-//    public static void main(String[] args) throws InvalidMidiDataException, IOException {
-//        List<MidiTrack> tracks = MidiUtil.getTracks(new URL("https://img.musixise.com/6dTh3SHJ_xuemaojiao.mid"));
-//        List<Long> machines = getMachines(tracks);
-//        System.out.println(machines);
-//
-//    }
+    public static void main(String[] args) throws InvalidMidiDataException, IOException {
+        List<MidiTrack> tracks = MidiUtil.getTracks(new URL("https://img.musixise.com/6dTh3SHJ_xuemaojiao.mid"));
+        List<Long> machines = getMachines(tracks);
+        System.out.println(machines);
+
+    }
 
     private static double ticksToMs(long ticks, long resolutionTicksPerBeat, long tempoBPM) {
         return 60000.00 / (tempoBPM * resolutionTicksPerBeat) * ticks;
