@@ -186,12 +186,12 @@ public class MidiUtil {
     }
 
 
-    public static void main(String[] args) throws InvalidMidiDataException, IOException {
-        List<MidiTrack> tracks = MidiUtil.getTracks(new URL("https://img.musixise.com/6dTh3SHJ_xuemaojiao.mid"));
-        List<Long> machines = getMachines(tracks);
-        System.out.println(machines);
-
-    }
+//    public static void main(String[] args) throws InvalidMidiDataException, IOException {
+//        List<MidiTrack> tracks = MidiUtil.getTracks(new URL("https://img.musixise.com/6dTh3SHJ_xuemaojiao.mid"));
+//        List<Long> machines = getMachines(tracks);
+//        System.out.println(machines);
+//
+//    }
 
     private static double ticksToMs(long ticks, long resolutionTicksPerBeat, long tempoBPM) {
         return 60000.00 / (tempoBPM * resolutionTicksPerBeat) * ticks;
