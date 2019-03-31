@@ -140,7 +140,8 @@ public class WorkController implements WorkApi {
     @RequestMapping(value = "/recountMachineNum", method = RequestMethod.POST)
     public MusixiseResponse<?> recountMachineNum() {
         List<Work> all = workRepository.findAll();
-
+        //empty all midi file result
+        midiFileRepository.deleteAll();
         all.forEach( work -> {
             try {
                 String url = work.getUrl();
@@ -152,7 +153,6 @@ public class WorkController implements WorkApi {
                     List<Long> machines = MidiUtil.getMachines(tracks);
 
                     String md5 = StringUtil.getMD5(url);
-                    midiFileRepository.deleteAll();
 
                     MidiFile midiFile = new MidiFile();
                     midiFile.setFile(url);
