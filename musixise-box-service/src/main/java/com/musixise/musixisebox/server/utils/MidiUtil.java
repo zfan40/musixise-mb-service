@@ -1,6 +1,7 @@
 package com.musixise.musixisebox.server.utils;
 
-import javafx.util.Pair;
+
+import org.springframework.data.util.Pair;
 
 import javax.sound.midi.*;
 import java.io.IOException;
@@ -15,6 +16,9 @@ public class MidiUtil {
     public static final String[] NOTE_NAMES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
 
     public static List<Long> getMachines( List<MidiTrack> midiTrackList) {
+
+
+
 
         //put same frequency togeter
         Map<Long, List<MidiTrack>> frequencyMap = new HashMap<Long, List<MidiTrack>>();
@@ -36,6 +40,9 @@ public class MidiUtil {
                 //check time gap whether gt 1.2s
 
                 //取出上一个音片数据
+
+                //Pair<String, String> pair = Pair.of("aku", "female");
+
                 List<Pair<Long, Double>> pairsList = bucketMap.get(frequencyVal);
                 Pair<Long, Double> lastDoublePair = bucketMap.get(frequencyVal).get(pairsList.size() - 1);
 
@@ -44,30 +51,30 @@ public class MidiUtil {
 
                 Boolean canReuse = false;
 
-                if (s.getTime() - lastDoublePair.getValue() > 1200.00) {
+                if (s.getTime() - lastDoublePair.getSecond() > 1200.00) {
                     //可以复用这个音片
                     Collections.reverse(pairsList);
-                    pairsList.add(new Pair(lastDoublePair.getKey(), s.getTime()));
+                    pairsList.add(Pair.of(lastDoublePair.getFirst(), s.getTime()));
                     bucketMap.put(frequencyVal, pairsList);
                     canReuse = true;
                 } else {
                     List<Long> notAvaliableBucket = new ArrayList<>();
                     //标记不能用的音片
-                    notAvaliableBucket.add(lastDoublePair.getKey());
+                    notAvaliableBucket.add(lastDoublePair.getFirst());
                     for (Pair<Long, Double> pair : pairsList) {
                         //排除已经不能用的音片
-                        if (!notAvaliableBucket.contains(pair.getKey())) {
+                        if (!notAvaliableBucket.contains(pair.getFirst())) {
                             //继续比较时间
-                            if (s.getTime() - pair.getValue() > 1200.00) {
+                            if (s.getTime() - pair.getSecond() > 1200.00) {
                                 //可以复用这个音片
                                 Collections.reverse(pairsList);
-                                pairsList.add(new Pair(pair.getKey(), s.getTime()));
+                                pairsList.add(Pair.of(pair.getFirst(), s.getTime()));
                                 bucketMap.put(frequencyVal, pairsList);
                                 canReuse = true;
                                 break;
                             } else {
                                 //标记音片不能用
-                                notAvaliableBucket.add(pair.getKey());
+                                notAvaliableBucket.add(pair.getFirst());
                             }
                         }
                     }
@@ -79,7 +86,7 @@ public class MidiUtil {
                     Collections.reverse(pairsList);
                     //找出当前最大音片数+1
                     long maxBucketNum = getBucketMax(pairsList);
-                    pairsList.add(new Pair<>(maxBucketNum+1, s.getTime()));
+                    pairsList.add(Pair.of(maxBucketNum+1, s.getTime()));
                     bucketMap.put(frequencyVal, pairsList);
                 }
 
@@ -89,7 +96,7 @@ public class MidiUtil {
                 frequencyMap.put(frequencyVal, Arrays.asList(s));
                 machinesList.add(frequencyVal);
                 bucketMap.put(frequencyVal, new ArrayList<Pair<Long, Double>>() {{
-                    add(new Pair(1L, s.getTime()));
+                    add(Pair.of(1L, s.getTime()));
                 }});
             }
 
@@ -104,8 +111,8 @@ public class MidiUtil {
 
         Long max = 0L;
         for (Pair<Long, Double> s : pairList) {
-            if (s.getKey() > max) {
-                max = s.getKey();
+            if (s.getFirst() > max) {
+                max = s.getFirst();
             }
         }
 
