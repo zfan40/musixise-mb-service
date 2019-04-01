@@ -12,4 +12,5 @@ data class MyOrderVO(val id: Long?=null,
                      val userId: Long,
                      var amount: Long,
                      var content: BoxInfoVO?=null,
+                     var message: String?=null,
                      var address: Long = 0)

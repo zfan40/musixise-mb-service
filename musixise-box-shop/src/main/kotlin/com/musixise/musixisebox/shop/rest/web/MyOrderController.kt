@@ -72,6 +72,7 @@ class MyOrderController {
                 it.userId,
                 it.amount,
                 content,
+                it.message,
                 it.address);
             orderList.add(myOrderVO)
         }
