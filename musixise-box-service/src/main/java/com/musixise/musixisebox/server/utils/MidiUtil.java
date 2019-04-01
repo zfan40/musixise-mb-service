@@ -6,6 +6,7 @@ import org.springframework.data.util.Pair;
 import javax.sound.midi.*;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.*;
 
@@ -14,7 +15,7 @@ public class MidiUtil {
     public static final int NOTE_ON = 0x90;
     public static final int NOTE_OFF = 0x80;
     public static final String[] NOTE_NAMES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
-    public static final Double maxGapTime = 1200.00;
+    public static final Double minGapTime = 1200.00;
 
     public static List<Long> getMachines( List<MidiTrack> midiTrackList) {
 
@@ -27,7 +28,7 @@ public class MidiUtil {
         Map<Long, List<Pair<Long, Double> >> bucketMap = new HashMap<>();
 
         //复制自己
-        midiTrackList.addAll(midiTrackList);
+        midiTrackList = add20Sec(midiTrackList);
 
         midiTrackList.stream().forEach( s -> {
             //频率
@@ -51,11 +52,9 @@ public class MidiUtil {
                 //标记不能用的音片
                 for (Pair<Long, Double> pair : pairsList) {
                     //排除已经不能用的音片
-                    if (!notAvaliableBucket.contains(pair.getFirst()) ||
-                            s.getTime() == pair.getSecond()) {
+                    if (!notAvaliableBucket.contains(pair.getFirst())) {
                         //继续比较时间
-                        if (Math.abs(s.getTime() - pair.getSecond()) > maxGapTime ||
-                         s.getTime() == pair.getSecond()) {
+                        if (Math.abs(s.getTime() - pair.getSecond()) > minGapTime) {
                             //可以复用这个音片
                             Collections.reverse(pairsList);
                             pairsList.add(Pair.of(pair.getFirst(), s.getTime()));
@@ -95,6 +94,23 @@ public class MidiUtil {
 
         return machinesList;
 
+    }
+
+    private static List<MidiTrack> add20Sec( List<MidiTrack> midiTrackList) {
+
+        List<MidiTrack> newMidiTrackList = new ArrayList<>();
+        midiTrackList.forEach( m -> {
+            newMidiTrackList.add(m.clone());
+
+        });
+
+        midiTrackList.forEach( m -> {
+            m.setTime(m.getTime() + 20000.00);
+            newMidiTrackList.add(m.clone());
+
+        });
+
+        return newMidiTrackList;
     }
 
     public static Long getBucketMax(List<Pair<Long, Double>> pairList) {
@@ -187,7 +203,8 @@ public class MidiUtil {
 
 
 //    public static void main(String[] args) throws InvalidMidiDataException, IOException {
-//        List<MidiTrack> tracks = MidiUtil.getTracks(new URL("https://img.musixise.com/6dTh3SHJ_xuemaojiao.mid"));
+//        //List<MidiTrack> tracks = MidiUtil.getTracks(new URL("https://img.musixise.com/6dTh3SHJ_xuemaojiao.mid"));
+//        List<MidiTrack> tracks = MidiUtil.getTracks(new URL("https://audio.musixise.com/mawUa3G0_output.mid"));
 //        List<Long> machines = getMachines(tracks);
 //        System.out.println(machines);
 //
@@ -197,7 +214,7 @@ public class MidiUtil {
         return 60000.00 / (tempoBPM * resolutionTicksPerBeat) * ticks;
     }
 
-    public static class MidiTrack {
+    public static class MidiTrack implements Cloneable, Serializable {
 
         /**
          * 音名
@@ -256,6 +273,18 @@ public class MidiUtil {
 
         public void setTime(double time) {
             this.time = time;
+        }
+
+        @Override
+        protected MidiTrack clone() {
+
+            MidiTrack midiTrack = null;
+            try {
+                midiTrack = (MidiTrack) super.clone();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return midiTrack;
         }
     }
 
