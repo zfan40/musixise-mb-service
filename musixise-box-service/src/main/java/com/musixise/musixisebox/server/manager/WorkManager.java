@@ -102,13 +102,26 @@ public class WorkManager {
         QWork work = QWork.work;
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
+        //only for open work
+        booleanBuilder.and(work.status.eq(0));
+
+        //按PV 排序
+        Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC,"pv"),
+                new Sort.Order(Sort.Direction.DESC, "lastModifiedDate"));
+
         if (queryWork != null) {
             if (queryWork.getCategory() != null) {
                 booleanBuilder.and(work.category.eq(queryWork.getCategory()));
             }
+
+            if (queryWork.getOrderStrategy() != null && queryWork.getOrderStrategy().equals(2)) {
+                //按收藏量
+                sort = new Sort(new Sort.Order(Sort.Direction.DESC,"collectNum"),
+                        new Sort.Order(Sort.Direction.DESC, "lastModifiedDate"));
+            }
         }
-        Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC,"pv"),
-                new Sort.Order(Sort.Direction.DESC, "lastModifiedDate"));
+
+
         //Predicate predicate = work.id.longValue().lt(3);
         PageRequest pageRequest = new PageRequest(page-1,limit,sort);
 
