@@ -39,25 +39,25 @@ public class Musixiser extends AbstractEntity implements Serializable {
     private String nation;
 
     @Column(name = "is_master")
-    private Integer isMaster;
+    private Integer isMaster=0;
 
     @Column(name = "brief")
     private String brief;
 
     @Column(name = "user_id")
-    private Long userId;
+    private Long userId=0L;
 
     @Column(name = "follow_num")
-    private Integer followNum;
+    private Integer followNum=0;
 
     @Column(name = "fans_num")
-    private Integer fansNum;
+    private Integer fansNum=0;
 
     @Column(name = "song_num")
-    private Integer songNum;
+    private Integer songNum=0;
 
     @Column(name = "pv")
-    private Integer pv;
+    private Integer pv=0;
 
     public Long getId() {
         return id;

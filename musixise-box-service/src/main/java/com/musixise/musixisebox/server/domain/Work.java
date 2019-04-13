@@ -34,19 +34,19 @@ public class Work extends AbstractEntity implements Serializable {
     private String url;
 
     @Column(name = "user_id")
-    private Long userId;
+    private Long userId=0L;
 
     @Column(name = "status")
-    private Integer status;
+    private Integer status=0;
 
     @Column(name = "collect_num")
-    private Integer collectNum;
+    private Integer collectNum=0;
 
     @Column(name = "pv")
-    private Integer pv;
+    private Integer pv=0;
 
     @Column(name = "machine_num")
-    private Integer machineNum;
+    private Integer machineNum=0;
 
     @Column(name = "category")
     private Integer category=0;
