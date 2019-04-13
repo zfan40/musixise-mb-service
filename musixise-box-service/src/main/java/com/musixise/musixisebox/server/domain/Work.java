@@ -48,6 +48,9 @@ public class Work extends AbstractEntity implements Serializable {
     @Column(name = "machine_num")
     private Integer machineNum;
 
+    @Column(name = "category")
+    private Integer category=0;
+
     public Long getId() {
         return id;
     }
@@ -126,5 +129,13 @@ public class Work extends AbstractEntity implements Serializable {
 
     public void setMachineNum(Integer machineNum) {
         this.machineNum = machineNum;
+    }
+
+    public Integer getCategory() {
+        return category;
+    }
+
+    public void setCategory(Integer category) {
+        this.category = category;
     }
 }

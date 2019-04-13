@@ -1,5 +1,6 @@
 package com.musixise.musixisebox.server.manager;
 
+import com.musixise.musixisebox.api.web.vo.req.home.QueryWork;
 import com.musixise.musixisebox.api.web.vo.resp.UserVO;
 import com.musixise.musixisebox.api.web.vo.resp.work.WorkVO;
 import com.musixise.musixisebox.server.aop.MusixiseContext;
@@ -96,17 +97,22 @@ public class WorkManager {
      * @param limit
      * @return
      */
-    public Page<Work> getRecommends(int page, int limit) {
+    public Page<Work> getRecommends(QueryWork queryWork, int page, int limit) {
 
         QWork work = QWork.work;
-        //BooleanBuilder booleanBuilder = new BooleanBuilder();
-        //booleanBuilder.and(work.id.in(workIds));
+
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        if (queryWork != null) {
+            if (queryWork.getCategory() != null) {
+                booleanBuilder.and(work.category.eq(queryWork.getCategory()));
+            }
+        }
         Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC,"pv"),
                 new Sort.Order(Sort.Direction.DESC, "lastModifiedDate"));
         //Predicate predicate = work.id.longValue().lt(3);
         PageRequest pageRequest = new PageRequest(page-1,limit,sort);
 
         Pageable pageable = PageRequest.of(page-1, limit, sort);
-        return workRepository.findAll(pageRequest);
+        return workRepository.findAll(booleanBuilder, pageRequest);
     }
 }

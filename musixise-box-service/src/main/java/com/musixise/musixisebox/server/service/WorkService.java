@@ -1,6 +1,7 @@
 package com.musixise.musixisebox.server.service;
 
 
+import com.musixise.musixisebox.api.web.vo.req.home.QueryWork;
 import com.musixise.musixisebox.api.web.vo.resp.work.WorkVO;
 import com.musixise.musixisebox.server.domain.Work;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,6 @@ public interface WorkService {
 
     Boolean saveMidiFile(byte[] bt, String file);
 
-    Page<Work> getRecommends(int page, int limit);
+    Page<Work> getRecommends(QueryWork queryWork,  int page, int limit);
 
 }

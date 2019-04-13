@@ -1,6 +1,7 @@
 package com.musixise.musixisebox.rest.web;
 
 import com.musixise.musixisebox.api.result.MusixisePageResponse;
+import com.musixise.musixisebox.api.web.vo.req.home.QueryWork;
 import com.musixise.musixisebox.api.web.vo.resp.work.WorkVO;
 import com.musixise.musixisebox.server.domain.Work;
 import com.musixise.musixisebox.server.service.WorkService;
@@ -20,10 +21,10 @@ public class HomePageController {
     @Resource WorkService workService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public MusixisePageResponse<List<WorkVO>> getRecommends(  @RequestParam(value = "page", defaultValue = "1") Integer page,
-                                                @RequestParam(value = "size", defaultValue = "10") Integer size) {
+    public MusixisePageResponse<List<WorkVO>> getRecommends(QueryWork queryWork, @RequestParam(value = "page", defaultValue = "1") Integer page,
+                                                            @RequestParam(value = "size", defaultValue = "10") Integer size) {
 
-        Page<Work> recommends = workService.getRecommends(page, size);
+        Page<Work> recommends = workService.getRecommends(queryWork, page, size);
         List<WorkVO> workList = workService.getWorkList(recommends.getContent());
         return new MusixisePageResponse<>(workList, recommends.getTotalElements(), size, page);
     }

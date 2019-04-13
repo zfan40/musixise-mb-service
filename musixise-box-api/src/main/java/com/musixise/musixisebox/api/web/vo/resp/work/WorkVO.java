@@ -53,6 +53,9 @@ public class WorkVO {
     @ApiModelProperty(value = "作品状态(0=公开，1=私人，2=垃圾箱)", example = "0")
     private Integer status;
 
+    @ApiModelProperty(value = "作品类别", example = "1=母亲节活动")
+    private Integer category;
+
     public Long getId() {
         return id;
     }
@@ -171,5 +174,13 @@ public class WorkVO {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Integer getCategory() {
+        return category;
+    }
+
+    public void setCategory(Integer category) {
+        this.category = category;
     }
 }

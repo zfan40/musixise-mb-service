@@ -1,5 +1,6 @@
 package com.musixise.musixisebox.rest.web;
 
+import com.musixise.musixisebox.api.enums.CategoryEnum;
 import com.musixise.musixisebox.api.enums.ExceptionMsg;
 import com.musixise.musixisebox.api.result.MusixisePageResponse;
 import com.musixise.musixisebox.api.result.MusixiseResponse;
@@ -65,9 +66,18 @@ public class WorkController implements WorkApi {
         Integer MatchineNum = midiFile.map(MidiFile::getMachineNum).orElse(0);
         work.setMachineNum(MatchineNum);
 
+        //母情节活动
+        if (isMotherEvent(workMeta.getTitle())) {
+            work.setCategory(CategoryEnum.MOTHER_EVENT.getVale());
+        }
+
         workRepository.save(work);
         musixiseService.updateWorkCount(uid);
         return new MusixiseResponse<>(ExceptionMsg.SUCCESS, work.getId());
+    }
+
+    private Boolean isMotherEvent(String title) {
+        return  title.contains("#母情节");
     }
 
     @RequestMapping(value = "/getListByUid/{uid}", method = RequestMethod.GET)

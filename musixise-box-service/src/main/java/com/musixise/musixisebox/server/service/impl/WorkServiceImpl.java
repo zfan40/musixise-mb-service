@@ -1,5 +1,6 @@
 package com.musixise.musixisebox.server.service.impl;
 
+import com.musixise.musixisebox.api.web.vo.req.home.QueryWork;
 import com.musixise.musixisebox.api.web.vo.resp.UserVO;
 import com.musixise.musixisebox.api.web.vo.resp.work.WorkVO;
 import com.musixise.musixisebox.server.domain.*;
@@ -133,8 +134,8 @@ public class WorkServiceImpl implements WorkService {
     }
 
     @Override
-    public Page<Work> getRecommends(int page, int limit) {
-        return workManager.getRecommends(page, limit);
+    public Page<Work> getRecommends(QueryWork queryWork, int page, int limit) {
+        return workManager.getRecommends(queryWork, page, limit);
     }
 
 }
