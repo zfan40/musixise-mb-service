@@ -43,6 +43,9 @@ public class FavoriteVO {
     @ApiModelProperty(value = "用户信息", example = "")
     private UserVO userVO;
 
+    @ApiModelProperty(value = "作品状态(0=公开，1=私人，2=垃圾箱)", example = "0")
+    private Integer status;
+
     @ApiModelProperty(value = "音片数量", example = "超过18个就不能制作八音盒")
     private Integer machineNum;
 
@@ -148,5 +151,13 @@ public class FavoriteVO {
 
     public void setMachineNum(Integer machineNum) {
         this.machineNum = machineNum;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }
