@@ -22,9 +22,6 @@ import com.musixise.musixisebox.server.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -81,15 +78,7 @@ public class WorkController implements WorkApi {
                                                            @RequestParam(value = "page", defaultValue = "1") int page,
                                                            @RequestParam(value = "size", defaultValue = "10") int size) {
 
-        Sort sort = new Sort(Sort.Direction.DESC, "id");
-        Pageable pageable = PageRequest.of(page-1, size, sort);
-
-        Page<Work> workList = null;
-        if (title == null) {
-            workList = workRepository.findAllByUserIdOrderByIdDesc(uid, pageable);
-        } else {
-            workList = workRepository.findAllByUserIdAndTitleLikeOrderByIdDesc(uid, "%"+title+"%", pageable);
-        }
+        Page<Work> workList = workManager.getListByUid(uid, title, page, size);
 
         List<WorkVO> workVOList = workService.getWorkList(workList.getContent());
 
