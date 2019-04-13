@@ -50,6 +50,9 @@ public class WorkVO {
     @ApiModelProperty(value = "pv", example = "pv")
     private Integer pv;
 
+    @ApiModelProperty(value = "作品状态(0=公开，1=私人，2=垃圾箱)", example = "0")
+    private Integer status;
+
     public Long getId() {
         return id;
     }
@@ -160,5 +163,13 @@ public class WorkVO {
 
     public void setPv(Integer pv) {
         this.pv = pv;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }
