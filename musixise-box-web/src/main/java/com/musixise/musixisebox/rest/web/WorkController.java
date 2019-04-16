@@ -66,10 +66,7 @@ public class WorkController implements WorkApi {
         Integer MatchineNum = midiFile.map(MidiFile::getMachineNum).orElse(0);
         work.setMachineNum(MatchineNum);
 
-        //母情节活动
-        if (isMotherEvent(workMeta.getTitle())) {
-            work.setCategory(CategoryEnum.MOTHER_EVENT.getVale());
-        }
+
 
         workRepository.save(work);
         musixiseService.updateWorkCount(uid);
@@ -131,6 +128,10 @@ public class WorkController implements WorkApi {
         uid = MusixiseContext.getCurrentUid();
         return workRepository.findById(id).map(work -> {
             CommonUtil.copyPropertiesIgnoreNull(workMeta, work);
+            //母情节活动
+            if (isMotherEvent(workMeta.getTitle())) {
+                work.setCategory(CategoryEnum.MOTHER_EVENT.getVale());
+            }
             workRepository.save(work);
             return new MusixiseResponse<>(ExceptionMsg.SUCCESS);
         }).orElse(new MusixiseResponse<>(ExceptionMsg.FAILED));
