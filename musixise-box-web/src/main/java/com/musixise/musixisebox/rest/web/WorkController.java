@@ -74,7 +74,7 @@ public class WorkController implements WorkApi {
     }
 
     private Boolean isMotherEvent(String title) {
-        return  title.contains("#母情节");
+        return  title.contains("#母亲节");
     }
 
     @RequestMapping(value = "/getListByUid/{uid}", method = RequestMethod.GET)
@@ -129,7 +129,7 @@ public class WorkController implements WorkApi {
         return workRepository.findById(id).map(work -> {
             CommonUtil.copyPropertiesIgnoreNull(workMeta, work);
             //母情节活动
-            if (isMotherEvent(workMeta.getTitle())) {
+            if (isMotherEvent(workMeta.getContent())) {
                 work.setCategory(CategoryEnum.MOTHER_EVENT.getVale());
             }
             workRepository.save(work);
