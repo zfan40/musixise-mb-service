@@ -17,10 +17,10 @@ CREATE TABLE if not exists `mu_user` (
 );
 
 CREATE TABLE `mu_order` (
-  `id` int(11) NOT NULL,
+  `id` int(11) IDENTITY PRIMARY KEY,
   `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '价格',
   `status` int(11) NOT NULL DEFAULT '0' COMMENT '订单状态 0:未付款, 1:支付中, 2:等待发货 3:等待收货 4:订单完成',
-  `ship_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '下单时间',
+  `ship_time` timestamp DEFAULT CURRENT_TIMESTAMP COMMENT '下单时间',
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
   `address` int(11) NOT NULL DEFAULT '0' COMMENT '送货地址',
   `created_by` varchar(50) NOT NULL,
@@ -32,3 +32,51 @@ CREATE TABLE `mu_order` (
   `amount` bigint(20) NOT NULL,
   `message` varchar(255) DEFAULT NULL
 ) COMMENT='订单表';
+
+CREATE TABLE `mu_product` (
+  `id` int(11) NOT NULL,
+  `category` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(200) NOT NULL DEFAULT '' COMMENT '商品名称',
+  `intro` text COMMENT '商品描述',
+  `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '商品价格',
+  `status` int(11) NOT NULL DEFAULT '0' COMMENT '状态0=下架，1=上架',
+  `created_by` varchar(50) NOT NULL,
+  `created_date` datetime NOT NULL,
+  `last_modified_by` varchar(50) DEFAULT NULL,
+  `last_modified_date` datetime DEFAULT NULL,
+  `preview_pic` varchar(255) DEFAULT NULL,
+  `preview_video` varchar(255) DEFAULT NULL
+) COMMENT='产品表';
+
+CREATE TABLE `mu_address` (
+  `id` bigint(20) NOT NULL,
+  `city_name` varchar(255) DEFAULT NULL,
+  `country_name` varchar(255) DEFAULT NULL,
+  `detail_info` varchar(255) DEFAULT NULL,
+  `national_code` varchar(255) DEFAULT NULL,
+  `postal_code` varchar(255) DEFAULT NULL,
+  `province_name` varchar(255) DEFAULT NULL,
+  `tel_number` varchar(255) DEFAULT NULL,
+  `user_id` bigint(20) NOT NULL,
+  `user_name` varchar(255) DEFAULT NULL
+) ;
+
+
+CREATE TABLE `mu_work_list` (
+  `id` bigint(20) IDENTITY PRIMARY KEY,
+  `title` varchar(200)  NOT NULL,
+  `cover` varchar(200)  DEFAULT '',
+  `content` text  NOT NULL,
+  `url` varchar(255) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  `status` tinyint(3) UNSIGNED DEFAULT '0' COMMENT '0=正常，1=私有，2=删除',
+  `pv` int(11) DEFAULT '0',
+  `collect_num` int(11) DEFAULT '0' COMMENT '收藏次数',
+  `created_by` varchar(50) NOT NULL,
+  `created_date` timestamp NOT NULL DEFAULT null ,
+  `reset_date` timestamp NULL DEFAULT NULL,
+  `last_modified_by` varchar(50) DEFAULT NULL,
+  `last_modified_date` timestamp NULL DEFAULT NULL,
+  `machine_num` int(11) DEFAULT '0',
+  `category` int(11) DEFAULT NULL
+) ;

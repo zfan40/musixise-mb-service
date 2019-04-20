@@ -1,8 +1,10 @@
 package com.musixise.musixisebox.rest.web.shop;
 
 import com.musixise.musixisebox.api.result.MusixisePageResponse;
+import com.musixise.musixisebox.api.result.MusixiseResponse;
 import com.musixise.musixisebox.shop.rest.web.MyOrderController;
 import com.musixise.musixisebox.shop.rest.web.vo.req.OrderListQueryVO;
+import com.musixise.musixisebox.shop.rest.web.vo.req.OrderVO;
 import com.musixise.musixisebox.shop.rest.web.vo.resp.MyOrderVO;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,6 +22,17 @@ public class MyOrderControllerTest extends BaseTest {
 
     @Before
     public void setUp() throws Exception {
+
+    }
+
+    @Test
+    public void create() {
+
+        OrderVO orderVO = new OrderVO(1L, 1L, 1, 1, "meesagetest");
+        MusixiseResponse<String> stringMusixiseResponse = myOrderController.create(orderVO);
+        Assert.assertNotNull(stringMusixiseResponse);
+        Assert.assertEquals("201904202100000000010000000002", stringMusixiseResponse.getData());
+        Assert.assertEquals("0", stringMusixiseResponse.getRspCode());
 
     }
 
