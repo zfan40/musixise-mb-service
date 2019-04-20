@@ -1,9 +1,9 @@
 package com.musixise.musixisebox.shop.service.impl
 
-import com.alibaba.fastjson.JSON
 import com.github.wxpay.sdk.WXPay
 import com.github.wxpay.sdk.WXPayConstants
 import com.github.wxpay.sdk.WXPayUtil
+import com.google.gson.Gson
 import com.musixise.musixisebox.api.exception.MusixiseException
 import com.musixise.musixisebox.server.aop.MusixiseContext
 import com.musixise.musixisebox.server.config.pay.MyWxConfig
@@ -261,7 +261,8 @@ class IPayServiceImpl : IPayService {
     }
 
     fun getBoxInfo(order: Order) : BoxInfoVO {
-        return JSON.parseObject(order.content, BoxInfoVO::class.java)
+        //return JSON.parseObject(order.content, BoxInfoVO::class.java)
+        return Gson().fromJson(order.content.toString(), BoxInfoVO::class.java)
     }
 
     fun getOpenId() : String {

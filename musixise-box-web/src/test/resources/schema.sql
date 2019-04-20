@@ -80,3 +80,19 @@ CREATE TABLE `mu_work_list` (
   `machine_num` int(11) DEFAULT '0',
   `category` int(11) DEFAULT NULL
 ) ;
+
+CREATE TABLE `mu_user_bind` (
+  `bid` int(11) NOT NULL,
+  `open_id` varchar(128) NOT NULL,
+  `login` varchar(100) NOT NULL,
+  `provider` varchar(200) NOT NULL,
+  `access_token` varchar(255) NOT NULL DEFAULT '''''',
+  `expires_in` int(11) NOT NULL DEFAULT '0',
+  `refresh_token` varchar(255) NOT NULL DEFAULT '''''',
+  `unionid` varchar(100) NOT NULL DEFAULT '''''',
+  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `last_modified_by` varchar(50) NOT NULL,
+  `last_modified_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created_by` varchar(50) NOT NULL,
+  `user_id` bigint(20) NOT NULL DEFAULT '0'
+) COMMENT='用户绑定表';

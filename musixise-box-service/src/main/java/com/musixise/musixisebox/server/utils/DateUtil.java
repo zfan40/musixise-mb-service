@@ -3,6 +3,7 @@ package com.musixise.musixisebox.server.utils;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
@@ -49,6 +50,13 @@ public class DateUtil {
         } else {
             return null;
         }
+    }
+
+    public static Date asDate(String date) {
+        ZoneId zoneId = ZoneId.systemDefault();
+        LocalDateTime localDateTime = asLocalDateTime(date);
+        ZonedDateTime zdt = localDateTime.atZone(zoneId);
+        return Date.from(zdt.toInstant());
     }
 
     public static String getTimeFormatText(Long date) {

@@ -1,6 +1,5 @@
-package com.musixise.musixisebox.rest.web.shop;
+package com.musixise.musixisebox;
 
-import com.musixise.musixisebox.MusixiseBoxApplicationTests;
 import com.musixise.musixisebox.server.security.jwt.TokenProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.impl.DefaultClaims;
