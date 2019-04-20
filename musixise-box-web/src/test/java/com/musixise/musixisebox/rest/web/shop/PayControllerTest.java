@@ -79,9 +79,4 @@ public class PayControllerTest extends BaseTest {
         checkStatus(orderIdLong, OrderEnum.WAIT_DELIVER_GOODS);
     }
 
-    private void checkStatus(Long orderId, OrderEnum orderEnum) {
-        Order checkOrder = orderRepository.getOne(orderId);
-        Assert.assertEquals(java.util.Optional.of(Long.valueOf(orderEnum.getStatus())).get().longValue(), checkOrder.getStatus());
-
-    }
 }

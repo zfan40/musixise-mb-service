@@ -1,12 +1,19 @@
 package com.musixise.musixisebox;
 
 import com.musixise.musixisebox.server.security.jwt.TokenProvider;
+import com.musixise.musixisebox.shop.domain.Order;
+import com.musixise.musixisebox.shop.enums.OrderEnum;
+import com.musixise.musixisebox.shop.repository.OrderRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.impl.DefaultClaims;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -22,10 +29,14 @@ import java.util.Map;
 @SpringBootTest(classes = MusixiseBoxApplicationTests.class)
 @ActiveProfiles("test")
 @PrepareForTest(RequestContextHolder.class) // Static.class contains static methods
-public class BaseTest {
+@FixMethodOrder(MethodSorters.DEFAULT)
+public abstract class BaseTest {
 
     @MockBean
     TokenProvider tokenProvider;
+
+    @Autowired
+    private OrderRepository orderRepository;
 
     private MockHttpServletRequest request;
 
@@ -44,4 +55,12 @@ public class BaseTest {
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request), true);
 
     }
+
+
+    protected void checkStatus(Long orderId, OrderEnum orderEnum) {
+        Order checkOrder = orderRepository.getOne(orderId);
+        Assert.assertEquals(java.util.Optional.of(Long.valueOf(orderEnum.getStatus())).get().longValue(), checkOrder.getStatus());
+
+    }
+
 }

@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
+import java.util.*
 import javax.annotation.Resource
 
 @Component
@@ -67,6 +68,7 @@ class IOrderServiceImpl : IOrderService {
             userId = currentUid, status = 0,
             content = getProductContent(orderVO.wid, product.get()),
             amount = orderVO.amount,
+            shipTime = Date(),
             message = orderVO.message,
             address = orderVO.addressId)
         orderRepository.save(order);
