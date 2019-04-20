@@ -2,6 +2,7 @@ package com.musixise.musixisebox.shop.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import springfox.documentation.builders.ApiInfoBuilder
 import springfox.documentation.builders.ParameterBuilder
 import springfox.documentation.builders.PathSelectors
@@ -17,6 +18,7 @@ import java.util.*
 
 @Configuration
 @EnableSwagger2
+@Profile("!test")
 class SwaggerShopConfig {
     private fun getParameterBuilder(): ParameterBuilder {
         val aParameterBuilder = ParameterBuilder()

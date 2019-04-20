@@ -41,16 +41,16 @@
         </encoder>
     </appender>
 
-    <appender name="DBAPPENDER" class="ch.qos.logback.classic.db.DBAppender">
-        <connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
-            <dataSource class="org.apache.commons.dbcp.BasicDataSource">
-                <driverClassName>com.mysql.jdbc.Driver</driverClassName>
-                <url>jdbc:mysql://${DATASOURCE.HOST}:3306/musixise_logback</url>
-                <username>${DATASOURCE.USERNAME}</username>
-                <password>${DATASOURCE.PASSWORD}</password>
-            </dataSource>
-        </connectionSource>
-    </appender>
+    <!--<appender name="DBAPPENDER" class="ch.qos.logback.classic.db.DBAppender">-->
+        <!--<connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">-->
+            <!--<dataSource class="org.apache.commons.dbcp.BasicDataSource">-->
+                <!--<driverClassName>com.mysql.jdbc.Driver</driverClassName>-->
+                <!--<url>jdbc:mysql://${DATASOURCE.HOST}:3306/musixise_logback</url>-->
+                <!--<username>${DATASOURCE.USERNAME}</username>-->
+                <!--<password>${DATASOURCE.PASSWORD}</password>-->
+            <!--</dataSource>-->
+        <!--</connectionSource>-->
+    <!--</appender>-->
 
     <root level="WARN">
         <appender-ref ref="console" />

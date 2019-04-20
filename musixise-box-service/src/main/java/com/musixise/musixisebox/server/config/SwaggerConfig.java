@@ -2,6 +2,7 @@ package com.musixise.musixisebox.server.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.context.request.async.DeferredResult;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.ParameterBuilder;
@@ -23,6 +24,7 @@ import java.util.List;
  */
 @Configuration
 @EnableSwagger2
+@Profile("!test")
 public class SwaggerConfig {
 
     private ParameterBuilder getParameterBuilder() {

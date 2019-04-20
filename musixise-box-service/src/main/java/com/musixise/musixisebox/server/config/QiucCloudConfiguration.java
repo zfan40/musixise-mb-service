@@ -8,11 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 /**
  * Created by zhaowei on 2018/4/5.
  */
 @Configuration
+@Profile("!test")
 public class QiucCloudConfiguration {
     private final Logger log = LoggerFactory.getLogger(QiucCloudConfiguration.class);
 

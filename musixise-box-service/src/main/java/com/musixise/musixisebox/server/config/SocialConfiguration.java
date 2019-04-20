@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.social.UserIdSource;
 import org.springframework.social.config.annotation.ConnectionFactoryConfigurer;
@@ -31,6 +32,7 @@ import java.util.Map;
  */
 @Configuration
 @EnableSocial
+@Profile("!test")
 public class SocialConfiguration implements SocialConfigurer {
 
     @Resource SocialUserConnectionRepository socialUserConnectionRepository;
