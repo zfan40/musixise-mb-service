@@ -3,6 +3,7 @@ package com.musixise.musixisebox.rest.web;
 import com.musixise.musixisebox.api.result.MusixisePageResponse;
 import com.musixise.musixisebox.api.web.vo.req.home.QueryWork;
 import com.musixise.musixisebox.api.web.vo.resp.work.WorkVO;
+import com.musixise.musixisebox.server.aop.AppMethod;
 import com.musixise.musixisebox.server.domain.Work;
 import com.musixise.musixisebox.server.service.WorkService;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,8 @@ public class HomePageController {
 
     @Resource WorkService workService;
 
+
+    @AppMethod
     @RequestMapping(value = "", method = RequestMethod.GET)
     public MusixisePageResponse<List<WorkVO>> getRecommends(QueryWork queryWork, @RequestParam(value = "page", defaultValue = "1") Integer page,
                                                             @RequestParam(value = "size", defaultValue = "10") Integer size) {
