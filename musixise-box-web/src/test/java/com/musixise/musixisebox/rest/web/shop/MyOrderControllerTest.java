@@ -42,13 +42,15 @@ public class MyOrderControllerTest extends BaseTest {
 
     @Test
     public void createMusixDownload() {
-        OrderVO orderVO = new OrderVO(1L, 1L, 1, 1, "meesagetest");
+        //test create
+        OrderVO orderVO = new OrderVO(2L, 1L, 1, 1, "meesagetest");
         MusixiseResponse<String> stringMusixiseResponse = myOrderController.create(orderVO);
         Assert.assertNotNull(stringMusixiseResponse);
+        checkStatus(OrderUtil.INSTANCE.getOrderId(stringMusixiseResponse.getData()), OrderEnum.UNPAY);
     }
 
     @Test
-    public void pay() {
+    public void payForMusixBox() {
         PayVO payVO = new PayVO(99L);
         MusixiseResponse<Boolean> pay = myOrderController.pay(payVO);
         Assert.assertNotNull(pay);

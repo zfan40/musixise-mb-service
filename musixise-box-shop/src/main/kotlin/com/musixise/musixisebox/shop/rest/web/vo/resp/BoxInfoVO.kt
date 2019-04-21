@@ -5,3 +5,6 @@ data class BoxInfoVO(val wid: Long=0,
                      val title: String?=null,
                      val userId: Long=0,
                      val url: String?=null)
+
+
+data class ProductItem(val workName: String?=null, val productName: String?=null)

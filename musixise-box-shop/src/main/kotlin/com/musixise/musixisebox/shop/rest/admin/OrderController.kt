@@ -6,8 +6,10 @@ import com.musixise.musixisebox.api.exception.MusixiseException
 import com.musixise.musixisebox.api.result.MusixisePageResponse
 import com.musixise.musixisebox.api.result.MusixiseResponse
 import com.musixise.musixisebox.server.utils.CommonUtil
+import com.musixise.musixisebox.shop.domain.MusixDownloadInfo
 import com.musixise.musixisebox.shop.domain.Order
 import com.musixise.musixisebox.shop.domain.QOrder
+import com.musixise.musixisebox.shop.enums.ProductTypeEnum
 import com.musixise.musixisebox.shop.manager.AddressManager
 import com.musixise.musixisebox.shop.repository.AddressRepository
 import com.musixise.musixisebox.shop.repository.OrderRepository
@@ -64,7 +66,15 @@ class OrderController {
             CommonUtil.copyPropertiesIgnoreNull(it, orderVO)
 
             try {
-                orderVO.product = Gson().fromJson(it.content.toString(), BoxInfoVO::class.java)
+                when(it.productType) {
+                    ProductTypeEnum.MUSIX_BOX.type -> {
+                        orderVO.product = Gson().fromJson(it.content.toString(), BoxInfoVO::class.java)
+                    }
+
+                    ProductTypeEnum.MUSIX_DOWNLOAD.type -> {
+                        orderVO.product = Gson().fromJson(it.content.toString(), MusixDownloadInfo::class.java)
+                    }
+                }
             } catch (e: Exception) {
 
             }

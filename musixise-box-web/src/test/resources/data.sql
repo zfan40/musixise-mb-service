@@ -12,7 +12,10 @@ INSERT INTO `mu_order` (`id`, `price`, `status`, `ship_time`, `user_id`, `addres
 
 
 INSERT INTO `mu_product` (`id`, `category`, `name`, `intro`, `price`, `status`, `created_by`, `created_date`, `last_modified_by`, `last_modified_date`, `preview_pic`, `preview_video`) VALUES
-(1, 0, 'string2', 'string2', '1.02', 0, '', '2018-12-17 21:00:07', 'admin', '2018-12-17 21:00:11', NULL, NULL);
+(1, 1, '音乐盒', 'string2', '6.02', 0, '', '2018-12-17 21:00:07', 'admin', '2018-12-17 21:00:11', NULL, NULL);
+
+INSERT INTO `mu_product` (`id`, `category`, `name`, `intro`, `price`, `status`, `created_by`, `created_date`, `last_modified_by`, `last_modified_date`, `preview_pic`, `preview_video`) VALUES
+(2, 100, '音频下载', 'string2', '1.02', 0, '', '2018-12-17 21:00:07', 'admin', '2018-12-17 21:00:11', NULL, NULL);
 
 
 INSERT INTO `mu_address` (`id`, `city_name`, `country_name`, `detail_info`, `national_code`, `postal_code`, `province_name`, `tel_number`, `user_id`, `user_name`) VALUES

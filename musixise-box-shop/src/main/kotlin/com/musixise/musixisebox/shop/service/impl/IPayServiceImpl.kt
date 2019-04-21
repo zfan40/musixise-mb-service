@@ -8,10 +8,13 @@ import com.musixise.musixisebox.api.exception.MusixiseException
 import com.musixise.musixisebox.server.aop.MusixiseContext
 import com.musixise.musixisebox.server.config.pay.MyWxConfig
 import com.musixise.musixisebox.server.repository.UserBindRepository
+import com.musixise.musixisebox.shop.domain.MusixDownloadInfo
 import com.musixise.musixisebox.shop.domain.Order
 import com.musixise.musixisebox.shop.enums.OrderEnum
+import com.musixise.musixisebox.shop.enums.ProductTypeEnum
 import com.musixise.musixisebox.shop.repository.OrderRepository
 import com.musixise.musixisebox.shop.rest.web.vo.resp.BoxInfoVO
+import com.musixise.musixisebox.shop.rest.web.vo.resp.ProductItem
 import com.musixise.musixisebox.shop.rest.web.vo.resp.pay.WCPayRequestVO
 import com.musixise.musixisebox.shop.service.IOrderService
 import com.musixise.musixisebox.shop.service.IPayService
@@ -233,7 +236,7 @@ class IPayServiceImpl : IPayService {
         val boxInfo = getBoxInfo(order);
 
         val data = HashMap<String, String>()
-        data["body"] = boxInfo.product?.name + " " + boxInfo.title
+        data["body"] = boxInfo.productName + " " + boxInfo.workName
         data["out_trade_no"] = OrderUtil.genOrderId(MusixiseContext.getCurrentUid(), orderId)
         //data["device_info"] = ""
         data["fee_type"] = "CNY"
@@ -260,9 +263,20 @@ class IPayServiceImpl : IPayService {
 
     }
 
-    fun getBoxInfo(order: Order) : BoxInfoVO {
+    fun getBoxInfo(order: Order) : ProductItem {
         //return JSON.parseObject(order.content, BoxInfoVO::class.java)
-        return Gson().fromJson(order.content.toString(), BoxInfoVO::class.java)
+        when(order.productType) {
+            ProductTypeEnum.MUSIX_DOWNLOAD.type -> {
+
+                val musixDownload = Gson().fromJson(order.content.toString(), MusixDownloadInfo::class.java)
+                return ProductItem(musixDownload.title, musixDownload.product?.name)
+            }
+
+            else -> {
+                var musixBox = Gson().fromJson(order.content.toString(), BoxInfoVO::class.java)
+                return ProductItem(musixBox.title, musixBox.product?.name)
+            }
+        }
     }
 
     fun getOpenId() : String {

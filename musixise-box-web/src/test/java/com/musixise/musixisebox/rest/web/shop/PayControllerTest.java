@@ -6,7 +6,9 @@ import com.musixise.musixisebox.server.utils.DateUtil;
 import com.musixise.musixisebox.shop.domain.Order;
 import com.musixise.musixisebox.shop.enums.OrderEnum;
 import com.musixise.musixisebox.shop.repository.OrderRepository;
+import com.musixise.musixisebox.shop.rest.web.MyOrderController;
 import com.musixise.musixisebox.shop.rest.web.PayController;
+import com.musixise.musixisebox.shop.rest.web.vo.req.OrderVO;
 import com.musixise.musixisebox.shop.rest.web.vo.req.pay.UnifiedorderVO;
 import com.musixise.musixisebox.shop.rest.web.vo.resp.pay.WCPayRequestVO;
 import com.musixise.musixisebox.shop.utils.OrderUtil;
@@ -26,10 +28,13 @@ public class PayControllerTest extends BaseTest {
     private PayController payController;
 
     @Autowired
+    private MyOrderController myOrderController;
+
+    @Autowired
     private OrderRepository orderRepository;
 
     @Test
-    public void unifiedorder() {
+    public void unifiedorderForMusixBox() {
         //2018-12-16 19:44:05
         Date date = DateUtil.asDate("2018-12-16 19:44:05");
 
@@ -44,6 +49,36 @@ public class PayControllerTest extends BaseTest {
         //order after check
         UnifiedorderVO unifiedorderVO = new UnifiedorderVO();
         unifiedorderVO.setOrderId(orderId);
+        MusixiseResponse<WCPayRequestVO> unifiedorder = payController.unifiedorder(unifiedorderVO);
+        Assert.assertNotNull(unifiedorder);
+        Assert.assertEquals("wx353a60a8b049d366", unifiedorder.getData().getAppId());
+        Assert.assertTrue(unifiedorder.getData().getPackageStr().indexOf("prepay_id") != -1);
+        Assert.assertEquals("MD5", unifiedorder.getData().getSignType());
+
+        checkStatus(orderIdLong, OrderEnum.PEDDING_PAY);
+
+
+    }
+
+    @Test
+    public void unifiedorderForMusixDownload() {
+
+        OrderVO orderVO = new OrderVO(2L, 1L, 1, 1, "meesagetest");
+        MusixiseResponse<String> stringMusixiseResponse = myOrderController.create(orderVO);
+
+        String orderIdStr = stringMusixiseResponse.getData();
+        Assert.assertTrue(orderIdStr.length() > 20);
+
+        Long orderIdLong = OrderUtil.INSTANCE.getOrderId(orderIdStr);
+
+        //order before
+        Order order = orderRepository.getOne(orderIdLong);
+        Assert.assertNotNull(orderIdStr);
+        Assert.assertEquals(java.util.Optional.of(Long.valueOf(0L)).get().longValue(), order.getStatus());
+
+        //order after check
+        UnifiedorderVO unifiedorderVO = new UnifiedorderVO();
+        unifiedorderVO.setOrderId(orderIdStr);
         MusixiseResponse<WCPayRequestVO> unifiedorder = payController.unifiedorder(unifiedorderVO);
         Assert.assertNotNull(unifiedorder);
         Assert.assertEquals("wx353a60a8b049d366", unifiedorder.getData().getAppId());

@@ -27,6 +27,7 @@ CREATE TABLE `mu_order` (
   `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_modified_by` varchar(50) DEFAULT NULL,
   `last_modified_date` datetime DEFAULT NULL,
+  `product_type` int(11) NOT NULL DEFAULT '0',
   `confirm_time` datetime DEFAULT NULL,
   `content` text,
   `amount` bigint(20) NOT NULL,

@@ -6,6 +6,8 @@ import com.musixise.musixisebox.api.result.MusixisePageResponse
 import com.musixise.musixisebox.api.result.MusixiseResponse
 import com.musixise.musixisebox.server.aop.AppMethod
 import com.musixise.musixisebox.server.aop.MusixiseContext
+import com.musixise.musixisebox.shop.domain.MusixDownloadInfo
+import com.musixise.musixisebox.shop.enums.ProductTypeEnum
 import com.musixise.musixisebox.shop.rest.web.vo.req.OrderListQueryVO
 import com.musixise.musixisebox.shop.rest.web.vo.req.OrderVO
 import com.musixise.musixisebox.shop.rest.web.vo.req.PayVO
@@ -53,9 +55,19 @@ class MyOrderController {
 
         myOrderList.content.forEach{
 
-            var content:BoxInfoVO? = null
+            var content:Any? = null
             try {
-                content = Gson().fromJson(it.content.toString(), BoxInfoVO::class.java)
+
+                when(it.productType) {
+                    ProductTypeEnum.MUSIX_BOX.type -> {
+                        content = Gson().fromJson(it.content.toString(), BoxInfoVO::class.java)
+                    }
+
+                    ProductTypeEnum.MUSIX_DOWNLOAD.type -> {
+                        content = Gson().fromJson(it.content.toString(), MusixDownloadInfo::class.java)
+                    }
+
+                }
 
             } catch (e: Exception) {
                 println(it.content)

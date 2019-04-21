@@ -1,13 +1,11 @@
 package com.musixise.musixisebox.shop.service.impl
 
-import com.alibaba.fastjson.JSON
+import com.google.gson.Gson
 import com.musixise.musixisebox.api.exception.MusixiseException
 import com.musixise.musixisebox.server.aop.MusixiseContext
 import com.musixise.musixisebox.server.repository.WorkRepository
-import com.musixise.musixisebox.shop.domain.BoxInfo
-import com.musixise.musixisebox.shop.domain.Order
-import com.musixise.musixisebox.shop.domain.Product
-import com.musixise.musixisebox.shop.domain.QOrder
+import com.musixise.musixisebox.shop.domain.*
+import com.musixise.musixisebox.shop.enums.ProductTypeEnum
 import com.musixise.musixisebox.shop.repository.AddressRepository
 import com.musixise.musixisebox.shop.repository.OrderRepository
 import com.musixise.musixisebox.shop.repository.ProductRepository
@@ -70,6 +68,7 @@ class IOrderServiceImpl : IOrderService {
             amount = orderVO.amount,
             shipTime = Date(),
             message = orderVO.message,
+            productType = product.get().category,
             address = orderVO.addressId)
         orderRepository.save(order);
 
@@ -114,9 +113,23 @@ class IOrderServiceImpl : IOrderService {
     fun getProductContent(wid: Long, product: Product) : String {
         val one = workRepository.findById(wid)
         if (one.isPresent) {
+
             val work = one.get();
-            val boxInfo = BoxInfo(work.id, product, work.title, work.userId, work.url)
-            return JSON.toJSONString(boxInfo);
+            when(product.category) {
+                ProductTypeEnum.MUSIX_BOX.type -> {
+                    val boxInfo = BoxInfo(work.id, product, work.title, work.userId, work.url)
+                    return Gson().toJson(boxInfo)
+                }
+
+                ProductTypeEnum.MUSIX_DOWNLOAD.type -> {
+                    val musixDownloadInfo = MusixDownloadInfo(work.id, product, work.title, work.userId, work.url)
+                    return Gson().toJson(musixDownloadInfo)
+                }
+
+                else -> {
+                    throw MusixiseException("错误的商品类型信息"+product.category);
+                }
+            }
         }
 
         throw MusixiseException("未找到作品信息");
