@@ -47,4 +47,32 @@ public class ProductControllerTest extends BaseTest {
         Assert.assertEquals("previewVideo", checkProduct.getPreviewVideo());
 
     }
+
+    @Test
+    public void createMusixDownload() {
+        BigDecimal bigDecimal = new BigDecimal(6.01);
+        Product product = new Product(0,
+                ProductTypeEnum.MUSIX_DOWNLOAD.getType(),
+                "音频下载",
+                "intro",
+                bigDecimal,
+                "previewPic",
+                "previewVideo",
+                0
+
+        );
+        MusixiseResponse<Long> response = productController.create(product);
+        Assert.assertNotNull(response);
+        Assert.assertTrue(response.getData() > 0);
+
+        Product checkProduct = productRepository.getOne(product.getId());
+        Assert.assertNotNull(checkProduct);
+        Assert.assertEquals("intro", checkProduct.getIntro());
+        Assert.assertEquals("音频下载", checkProduct.getName());
+        Assert.assertEquals(100, ProductTypeEnum.MUSIX_DOWNLOAD.getType());
+        Assert.assertEquals("6.01", checkProduct.getPrice().toString());
+        Assert.assertEquals("previewPic", checkProduct.getPreviewPic());
+        Assert.assertEquals("previewVideo", checkProduct.getPreviewVideo());
+
+    }
 }
