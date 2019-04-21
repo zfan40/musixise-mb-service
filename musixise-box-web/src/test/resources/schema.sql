@@ -97,3 +97,15 @@ CREATE TABLE `mu_user_bind` (
   `created_by` varchar(50) NOT NULL,
   `user_id` bigint(20) NOT NULL DEFAULT '0'
 ) COMMENT='用户绑定表';
+
+CREATE TABLE `mu_purchase_lit` (
+  `id` int(11) IDENTITY PRIMARY KEY,
+  `created_by` varchar(50)  NOT NULL,
+  `created_date` datetime NOT NULL,
+  `last_modified_by` varchar(50)  DEFAULT NULL,
+  `last_modified_date` datetime DEFAULT NULL,
+  `order_id` bigint(20) NOT NULL,
+  `pid` bigint(20) NOT NULL,
+  `user_id` bigint(20) NOT NULL,
+  `wid` bigint(20) NOT NULL
+) ;

@@ -8,9 +8,11 @@ import com.musixise.musixisebox.server.aop.AppMethod
 import com.musixise.musixisebox.server.aop.MusixiseContext
 import com.musixise.musixisebox.shop.domain.MusixDownloadInfo
 import com.musixise.musixisebox.shop.enums.ProductTypeEnum
+import com.musixise.musixisebox.shop.manager.PurchaseListManager
 import com.musixise.musixisebox.shop.rest.web.vo.req.OrderListQueryVO
 import com.musixise.musixisebox.shop.rest.web.vo.req.OrderVO
 import com.musixise.musixisebox.shop.rest.web.vo.req.PayVO
+import com.musixise.musixisebox.shop.rest.web.vo.req.PurchaseCheckVO
 import com.musixise.musixisebox.shop.rest.web.vo.resp.BoxInfoVO
 import com.musixise.musixisebox.shop.rest.web.vo.resp.MyOrderVO
 import com.musixise.musixisebox.shop.service.IOrderService
@@ -25,6 +27,9 @@ class MyOrderController {
 
     @Resource
     lateinit var iOrderService: IOrderService;
+
+    @Resource
+    private lateinit var purchaseListManager: PurchaseListManager
 
 //    @RequestMapping("/create", consumes=arrayOf(MediaType.APPLICATION_JSON_VALUE)
 //        , produces =  arrayOf(MediaType.APPLICATION_JSON_VALUE), method = arrayOf(RequestMethod.POST))
@@ -91,5 +96,17 @@ class MyOrderController {
 
         return MusixisePageResponse(orderList, myOrderList.totalElements, orderListQueryVO.size, orderListQueryVO.page)
 
+    }
+
+    @GetMapping("/purchaseCheck")
+    @AppMethod(isLogin = true)
+    fun purchaseCheck(@Valid purchaseCheckVO: PurchaseCheckVO) : MusixiseResponse<Boolean> {
+        val exists = purchaseListManager.exists(
+            userId = MusixiseContext.getCurrentUid(),
+            pid = purchaseCheckVO.pid,
+            wid = purchaseCheckVO.wid
+        )
+
+        return MusixiseResponse<Boolean>(ExceptionMsg.SUCCESS, exists);
     }
 }

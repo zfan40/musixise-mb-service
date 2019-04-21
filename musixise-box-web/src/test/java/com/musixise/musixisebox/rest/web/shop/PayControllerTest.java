@@ -9,7 +9,9 @@ import com.musixise.musixisebox.shop.repository.OrderRepository;
 import com.musixise.musixisebox.shop.rest.web.MyOrderController;
 import com.musixise.musixisebox.shop.rest.web.PayController;
 import com.musixise.musixisebox.shop.rest.web.vo.req.OrderVO;
+import com.musixise.musixisebox.shop.rest.web.vo.req.PurchaseCheckVO;
 import com.musixise.musixisebox.shop.rest.web.vo.req.pay.UnifiedorderVO;
+import com.musixise.musixisebox.shop.rest.web.vo.resp.ProductItem;
 import com.musixise.musixisebox.shop.rest.web.vo.resp.pay.WCPayRequestVO;
 import com.musixise.musixisebox.shop.utils.OrderUtil;
 import org.junit.Assert;
@@ -112,6 +114,19 @@ public class PayControllerTest extends BaseTest {
         Assert.assertTrue(payNotify.indexOf("OK") != -1);
 
         checkStatus(orderIdLong, OrderEnum.WAIT_DELIVER_GOODS);
+
+
+        //check purcharselist
+
+        Order order = orderRepository.getOne(orderIdLong);
+
+        ProductItem boxInfo = OrderUtil.INSTANCE.getBoxInfo(order);
+
+        PurchaseCheckVO purchaseCheckVO = new PurchaseCheckVO(boxInfo.getPid(), boxInfo.getWid());
+        MusixiseResponse<Boolean> checkPurchase = myOrderController.purchaseCheck(purchaseCheckVO);
+        Assert.assertNotNull(checkPurchase);
+        Assert.assertTrue(checkPurchase.getData());
+
     }
 
 }
