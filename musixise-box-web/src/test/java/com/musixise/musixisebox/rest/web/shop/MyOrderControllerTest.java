@@ -29,7 +29,7 @@ public class MyOrderControllerTest extends BaseTest {
     }
 
     @Test
-    public void create() {
+    public void createMusixBox() {
 
         OrderVO orderVO = new OrderVO(1L, 1L, 1, 1, "meesagetest");
         MusixiseResponse<String> stringMusixiseResponse = myOrderController.create(orderVO);
@@ -38,6 +38,13 @@ public class MyOrderControllerTest extends BaseTest {
         checkStatus(OrderUtil.INSTANCE.getOrderId(stringMusixiseResponse.getData()), OrderEnum.UNPAY);
         Assert.assertEquals("0", stringMusixiseResponse.getRspCode());
 
+    }
+
+    @Test
+    public void createMusixDownload() {
+        OrderVO orderVO = new OrderVO(1L, 1L, 1, 1, "meesagetest");
+        MusixiseResponse<String> stringMusixiseResponse = myOrderController.create(orderVO);
+        Assert.assertNotNull(stringMusixiseResponse);
     }
 
     @Test

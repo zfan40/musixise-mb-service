@@ -34,7 +34,7 @@ CREATE TABLE `mu_order` (
 ) COMMENT='订单表';
 
 CREATE TABLE `mu_product` (
-  `id` int(11) NOT NULL,
+  `id` bigint(20) IDENTITY PRIMARY KEY,
   `category` int(11) NOT NULL DEFAULT '0',
   `name` varchar(200) NOT NULL DEFAULT '' COMMENT '商品名称',
   `intro` text COMMENT '商品描述',
