@@ -51,15 +51,26 @@ class IOrderServiceImpl : IOrderService {
 
         var currentUid = MusixiseContext.getCurrentUid()
 
-        //地址是否存在
-        addressRepository.findById(orderVO.addressId).map {
 
-            if (!it.userId.equals(currentUid)) {
-                throw MusixiseException("地址不存在02");
+        when(product.get().category) {
+            //virtual good don't need address
+            ProductTypeEnum.MUSIX_DOWNLOAD.type -> {
+                orderVO.addressId = 0
+
             }
 
-        }.orElseThrow {
-            throw MusixiseException("地址不存在01");
+            else -> {
+                //地址是否
+                addressRepository.findById(orderVO.addressId).map {
+
+                    if (!it.userId.equals(currentUid)) {
+                        throw MusixiseException("地址不存在02");
+                    }
+
+                }.orElseThrow {
+                    throw MusixiseException("地址不存在01");
+                }
+            }
         }
 
         val order = Order(price = totalPrice(product.get().price, orderVO.amount),
