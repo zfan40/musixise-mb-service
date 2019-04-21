@@ -150,7 +150,7 @@ public class AppAdvice implements Ordered {
 
         MDC.remove(TRACK_USER_ID);
         MDC.remove(TRACK_COST_TS);
-        MusixiseContext.set("_uid", 0);
+        MusixiseContext.set("_uid", 0L);
 
     }
 
