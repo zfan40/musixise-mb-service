@@ -243,7 +243,7 @@ class IPayServiceImpl : IPayService {
 
         when {
             !MusixiseContext.getCurrentUid().equals(order.userId) -> throw MusixiseException("支付异常01")
-            !OrderEnum.UNPAY.status.equals(order.status) -> throw MusixiseException("支付异常02")
+            order.status > 1 -> throw MusixiseException("支付异常02")
         }
 
         val boxInfo = getBoxInfo(order);
