@@ -133,7 +133,7 @@ class IOrderServiceImpl : IOrderService {
                 }
 
                 ProductTypeEnum.MUSIX_DOWNLOAD.type -> {
-                    val musixDownloadInfo = MusixDownloadInfo(work.id, product, work.title, work.userId, work.url)
+                    val musixDownloadInfo = MusixDownloadInfo(work.id, product, work.title, work.userId, work.url, "")
                     return Gson().toJson(musixDownloadInfo)
                 }
 
