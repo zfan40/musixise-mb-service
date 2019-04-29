@@ -26,14 +26,27 @@
     <!--输出到文件-->
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${log.path}/logback.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>15</maxHistory>
+            <fileNamePattern>${log.path}/main.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>7</maxHistory>
             <totalSizeCap>1GB</totalSizeCap>
             <!--<timeBasedFileNamingAndTriggeringPolicy-->
                     <!--class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">-->
                 <!--&lt;!&ndash;文件达到 最大8MB时会被压缩和切割 &ndash;&gt;-->
                 <!--<maxFileSize>8MB</maxFileSize>-->
             <!--</timeBasedFileNamingAndTriggeringPolicy>-->
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{trackId}] [%X{userId}] %contextName %ip [%X{trackClientIp}] [%thread] %-5level %logger %logger{36} - %msg [%X{costTs}]%n</pattern>
+            <charset>UTF-8</charset> <!-- 此处设置字符集 -->
+        </encoder>
+    </appender>
+
+    <!-- ACCESS -->
+    <appender name="ACCESS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/access.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{trackId}] [%X{userId}] %contextName %ip [%X{trackClientIp}] [%thread] %-5level %logger %logger{36} - %msg [%X{costTs}]%n</pattern>
@@ -57,6 +70,10 @@
         <!--<appender-ref ref="file" />-->
         <!--<appender-ref ref="DBAPPENDER" />-->
     </root>
+
+    <logger name="ACCESS" additivity="false" level="INFO">
+        <appender-ref ref="ACCESS"/>
+    </logger>
 
     <!-- logback为java中的包 -->
     <logger name="com.musixise.musixisebox.controller"/>

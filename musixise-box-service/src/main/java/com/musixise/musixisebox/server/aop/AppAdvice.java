@@ -39,6 +39,7 @@ public class AppAdvice implements Ordered {
     private final static String TRACK_COST_TS = "costTs";
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger accessLogger = LoggerFactory.getLogger("ACCESS");
 
     @Override
     public int getOrder() {
@@ -110,7 +111,7 @@ public class AppAdvice implements Ordered {
         MethodSignature signature = (MethodSignature) point.getSignature();
         String methodName = signature.getDeclaringTypeName() + "." + signature.getName();
 
-        logger.info("access request: {}", methodName);
+        accessLogger.info("{}", methodName);
         return result;
     }
 
