@@ -40,6 +40,7 @@ public class AppAdvice implements Ordered {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private Logger accessLogger = LoggerFactory.getLogger("ACCESS");
+    private Logger exceptionLogger = LoggerFactory.getLogger("EXCEPTION");
 
     @Override
     public int getOrder() {
@@ -156,7 +157,7 @@ public class AppAdvice implements Ordered {
 
     @AfterThrowing(pointcut = "within(com.musixise.musixisebox..*) && @annotation(appMethod)", throwing = "ex")
     public void addAfterThrowingLogger(JoinPoint joinPoint, AppMethod appMethod, Exception ex) {
-        logger.error("run exception " + getInvokeName(joinPoint) + " Params "+ ReflectionToStringBuilder.toString(joinPoint.getArgs(), ToStringStyle.SIMPLE_STYLE) + "  EXCEPTION", ex);
+        exceptionLogger.error("run exception " + getInvokeName(joinPoint) + " Params "+ ReflectionToStringBuilder.toString(joinPoint.getArgs(), ToStringStyle.SIMPLE_STYLE) + "  EXCEPTION", ex);
     }
 
     private String parseParames(Object[] parames) {
