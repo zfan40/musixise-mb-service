@@ -114,6 +114,8 @@ public class WorkManager {
                 booleanBuilder.and(work.category.eq(queryWork.getCategory()));
             }
 
+            //filter can't make box of product
+
             if (queryWork.getOrderStrategy() != null && queryWork.getOrderStrategy().equals(2)) {
                 //按收藏量
                 sort = new Sort(new Sort.Order(Sort.Direction.DESC,"collectNum"),

@@ -18,6 +18,7 @@ import com.musixise.musixisebox.server.service.MusixiseService;
 import com.musixise.musixisebox.server.service.WorkService;
 import com.musixise.musixisebox.server.transfter.WorkTransfter;
 import com.musixise.musixisebox.server.utils.CommonUtil;
+import com.musixise.musixisebox.server.utils.EventUtil;
 import com.musixise.musixisebox.server.utils.MidiUtil;
 import com.musixise.musixisebox.server.utils.StringUtil;
 import org.slf4j.Logger;
@@ -73,10 +74,6 @@ public class WorkController implements WorkApi {
         return new MusixiseResponse<>(ExceptionMsg.SUCCESS, work.getId());
     }
 
-    private Boolean isMotherEvent(String title) {
-        return  title.contains("#母亲节");
-    }
-
     @RequestMapping(value = "/getListByUid/{uid}", method = RequestMethod.GET)
     @AppMethod
     @Override
@@ -129,7 +126,7 @@ public class WorkController implements WorkApi {
         return workRepository.findById(id).map(work -> {
             CommonUtil.copyPropertiesIgnoreNull(workMeta, work);
             //母情节活动
-            if (isMotherEvent(workMeta.getContent())) {
+            if (EventUtil.isMotherEvent(workMeta.getContent())) {
                 work.setCategory(CategoryEnum.MOTHER_EVENT.getVale());
             }
             workRepository.save(work);

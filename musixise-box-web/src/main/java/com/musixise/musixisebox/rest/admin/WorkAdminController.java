@@ -2,6 +2,7 @@ package com.musixise.musixisebox.rest.admin;
 
 import com.musixise.musixisebox.api.admin.service.WorkAdminApi;
 import com.musixise.musixisebox.api.admin.vo.common.AddWorkVO;
+import com.musixise.musixisebox.api.enums.CategoryEnum;
 import com.musixise.musixisebox.api.enums.ExceptionMsg;
 import com.musixise.musixisebox.api.result.MusixisePageResponse;
 import com.musixise.musixisebox.api.result.MusixiseResponse;
@@ -13,6 +14,7 @@ import com.musixise.musixisebox.server.repository.MidiFileRepository;
 import com.musixise.musixisebox.server.repository.WorkRepository;
 import com.musixise.musixisebox.server.transfter.WorkTransfter;
 import com.musixise.musixisebox.server.utils.CommonUtil;
+import com.musixise.musixisebox.server.utils.EventUtil;
 import com.musixise.musixisebox.server.utils.StringUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -52,6 +54,12 @@ public class WorkAdminController implements WorkAdminApi {
     @AppMethod(isAdmin = true)
     @Override
     public MusixiseResponse update(@Valid @RequestBody WorkVO workVO) {
+
+        //母情节活动
+        if (EventUtil.isMotherEvent(workVO.getContent())) {
+            workVO.setCategory(CategoryEnum.MOTHER_EVENT.getVale());
+        }
+
         workRepository.save(WorkTransfter.getWork(workVO));
         return new MusixiseResponse(ExceptionMsg.SUCCESS);
     }
@@ -67,6 +75,11 @@ public class WorkAdminController implements WorkAdminApi {
         Optional<MidiFile> midiFile = midiFileRepository.findByMd5(StringUtil.getMD5(work.getUrl()));
         Integer MatchineNum = midiFile.map(MidiFile::getMachineNum).orElse(0);
         work.setMachineNum(MatchineNum);
+
+        //母情节活动
+        if (EventUtil.isMotherEvent(addWorkVO.getContent())) {
+            work.setCategory(CategoryEnum.MOTHER_EVENT.getVale());
+        }
 
         workRepository.save(work);
         return new MusixiseResponse(ExceptionMsg.SUCCESS);
