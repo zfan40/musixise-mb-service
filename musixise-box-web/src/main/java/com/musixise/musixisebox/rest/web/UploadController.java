@@ -3,16 +3,20 @@ package com.musixise.musixisebox.rest.web;
 import com.musixise.musixisebox.api.enums.ExceptionMsg;
 import com.musixise.musixisebox.api.result.MusixiseResponse;
 import com.musixise.musixisebox.api.web.service.UploadApi;
+import com.musixise.musixisebox.api.web.vo.resp.QiniuTokenVO;
 import com.musixise.musixisebox.server.aop.AppMethod;
 import com.musixise.musixisebox.server.aop.MusixiseContext;
 import com.musixise.musixisebox.server.manager.UploaderManager;
 import com.musixise.musixisebox.server.service.UploadService;
 import com.musixise.musixisebox.server.service.WorkService;
 import com.musixise.musixisebox.server.utils.FileUtil;
+import com.qiniu.util.Auth;
+import com.qiniu.util.StringMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.inject.Inject;
 
 /**
  * Created by zhaowei on 2018/4/5.
@@ -26,6 +30,9 @@ public class UploadController implements UploadApi {
     @Resource UploadService uploadServiceQiniuImpl;
 
     @Resource WorkService workService;
+
+    @Inject
+    Auth auth;
 
     /**
      * 上传图片
@@ -89,5 +96,20 @@ public class UploadController implements UploadApi {
         } catch (Exception e) {
             return new MusixiseResponse<>(ExceptionMsg.UPLOAD_ERROR);
         }
+    }
+
+    @RequestMapping(value = "getToken", method = RequestMethod.POST)
+    @AppMethod(isLogin = true)
+    public MusixiseResponse getToken(@RequestParam String fname) {
+
+        String fileName = uploaderManager.buildFileName(fname);
+
+        String token = auth.uploadToken("muixise-audio", null, 3600*4, new StringMap()
+                .putNotEmpty("saveKey", fileName), true);
+
+        QiniuTokenVO qiniuTokenVO = new QiniuTokenVO();
+        qiniuTokenVO.setToken(token);
+        qiniuTokenVO.setUrl(FileUtil.getAudioFullName(fileName));
+        return new MusixiseResponse<>(ExceptionMsg.SUCCESS, qiniuTokenVO);
     }
 }
