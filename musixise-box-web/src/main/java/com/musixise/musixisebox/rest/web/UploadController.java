@@ -102,6 +102,8 @@ public class UploadController implements UploadApi {
     @AppMethod(isLogin = true)
     public MusixiseResponse getToken(@RequestParam("fname") String fname) {
 
+        uploaderManager.setUploadService(uploadServiceQiniuImpl);
+
         String fileName = uploaderManager.buildFileName(fname);
 
         String token = auth.uploadToken("muixise-audio", null, 3600*4, new StringMap()
