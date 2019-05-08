@@ -100,7 +100,7 @@ public class UploadController implements UploadApi {
 
     @RequestMapping(value = "getToken", method = RequestMethod.POST)
     @AppMethod(isLogin = true)
-    public MusixiseResponse getToken(@RequestParam String fname) {
+    public MusixiseResponse getToken(@RequestParam("fname") String fname) {
 
         String fileName = uploaderManager.buildFileName(fname);
 
